@@ -1,0 +1,181 @@
+﻿---
+/**
+ * Perry peeking in from the bottom-right corner of the hero.
+ * Position: absolute against the nearest positioned ancestor (the Hero section).
+ * The container ignores pointer events, only the mascot itself is interactive.
+ */
+import { mascot } from '../data/site';
+import PerryImage from './PerryImage.astro';
+
+const enabled = mascot.enabled;
+const Trigger = enabled ? 'button' : 'div';
+const triggerProps = enabled
+  ? { type: 'button' as const, 'data-perry-trigger': '', 'aria-describedby': 'perry-hero-bubble' }
+  : {};
+---
+
+<div class="perry-hero" data-perry-talk={enabled ? '' : undefined}>
+  <div class="perry-hero__stage">
+    <span class="perry-hero__glow" aria-hidden="true"></span>
+    <Trigger class="perry-hero__btn" {...triggerProps}>
+      <span class="perry-hero__float">
+        <!-- Hero image: eager and async-decoded. Priority is low on purpose, the headline text and CSS matter more for first paint. -->
+        <PerryImage slot="hero" class="perry-hero__img" loading="eager" fetchpriority="low" />
+      </span>
+    </Trigger>
+  </div>
+  {
+    enabled && (
+      <span class="perry-bubble perry-bubble--tail-right perry-hero__bubble" id="perry-hero-bubble" role="tooltip">
+        {mascot.lines.hero}
+      </span>
+    )
+  }
+</div>
+
+<style>
+  .perry-hero {
+    --w: clamp(150px, 22vw, 300px);
+    --bleed: 48px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    width: var(--w);
+    pointer-events: none;
+  }
+  /* The stage reaches beyond the box on the top and left, so floating never clips him,
+     and clips exactly at the right and bottom edges, so he peeks in and never widens the page. */
+  .perry-hero__stage {
+    position: relative;
+    margin: calc(var(--bleed) * -1) 0 0 calc(var(--bleed) * -1);
+    padding: var(--bleed) 0 0 var(--bleed);
+    overflow: hidden;
+    overflow: clip;
+  }
+  .perry-hero__glow {
+    position: absolute;
+    left: calc(var(--bleed) * 0.4);
+    right: 0;
+    bottom: 0;
+    height: 62%;
+    background:
+      radial-gradient(ellipse 62% 55% at 58% 100%, rgb(124 58 237 / 0.55), rgb(59 130 246 / 0.24) 52%, transparent 78%);
+    filter: blur(8px);
+    opacity: 0.9;
+    transition: opacity 0.35s ease;
+  }
+  .perry-hero__btn {
+    appearance: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+    /* Resting pose: leaning in from the corner, a little cropped at the right and bottom. */
+    transform: translate(7%, 6%) rotate(-3deg);
+    transform-origin: 62% 100%;
+  }
+  div.perry-hero__btn {
+    cursor: default;
+  }
+  .perry-hero__btn:focus-visible {
+    outline: 2px solid var(--lavender);
+    outline-offset: -2px;
+    border-radius: 18px;
+  }
+  .perry-hero__float {
+    display: block;
+    transform-origin: 62% 100%;
+  }
+  .perry-hero :global(.perry-hero__img) {
+    width: 100%;
+    filter: drop-shadow(0 10px 18px rgb(2 6 23 / 0.55));
+  }
+  .perry-hero__bubble {
+    right: 66%;
+    top: calc(var(--w) * 0.04);
+  }
+  .perry-hero:has(.perry-hero__btn:focus-visible) .perry-hero__glow {
+    opacity: 1;
+  }
+
+  @media (max-width: 639px) {
+    .perry-hero {
+      --w: 92px;
+      --bleed: 32px;
+    }
+    .perry-hero__bubble {
+      top: 0;
+      right: 72%;
+    }
+  }
+
+  /* Motion is opt-in: with reduced motion Perry keeps the static resting pose. */
+  @media (prefers-reduced-motion: no-preference) {
+    .perry-hero__btn {
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .perry-hero__float {
+      animation: perry-hero-float 7s ease-in-out infinite;
+    }
+    .perry-hero__glow {
+      animation: perry-hero-glow 6s ease-in-out infinite;
+    }
+    .perry-hero__btn:is(:hover, :focus-visible) {
+      transform: translate(3%, -2%) rotate(-6deg);
+      animation: perry-hero-tip 0.7s ease-out;
+    }
+    .perry-hero.is-talking .perry-hero__btn {
+      animation: perry-hero-hop 0.6s ease-out;
+    }
+  }
+
+  @keyframes perry-hero-float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-9px) rotate(1.6deg);
+    }
+  }
+  @keyframes perry-hero-glow {
+    0%,
+    100% {
+      opacity: 0.75;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes perry-hero-tip {
+    0% {
+      transform: translate(7%, 6%) rotate(-3deg);
+    }
+    35% {
+      transform: translate(2%, -6%) rotate(-11deg);
+    }
+    65% {
+      transform: translate(3%, -1%) rotate(-3deg);
+    }
+    100% {
+      transform: translate(3%, -2%) rotate(-6deg);
+    }
+  }
+  @keyframes perry-hero-hop {
+    0%,
+    100% {
+      transform: translate(7%, 6%) rotate(-3deg);
+    }
+    40% {
+      transform: translate(4%, -5%) rotate(-9deg);
+    }
+  }
+</style>

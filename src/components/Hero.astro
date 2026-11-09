@@ -1,0 +1,363 @@
+﻿---
+/**
+ * Home hero. Text comes from site.ts. The bottom-right corner is reserved for <PerryHero />,
+ * which positions itself absolutely inside this section (see --perry-w / --perry-h below).
+ */
+import { site, social, education } from '../data/site';
+import Icon from './Icon.astro';
+import PerryHero from './PerryHero.astro';
+
+// "Chemical Engineering @ NUS": the abbreviation is read from the bracketed part of the institution name.
+const abbreviation = education.institution.match(/\(([^)]+)\)/)?.[1] ?? education.institution;
+const eyebrow = `${education.degree} @ ${abbreviation}`;
+const identityParts = site.identity.split(' | ');
+---
+
+<section id="hero" class="hero section" aria-labelledby="hero-title">
+  <div class="hero__motif" aria-hidden="true">
+    <svg class="hero__orbits" viewBox="-400 -400 800 800" fill="none" focusable="false">
+      <defs>
+        <linearGradient id="hero-orbit-grad" x1="-360" y1="-200" x2="360" y2="200" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#3b82f6"></stop>
+          <stop offset="0.55" stop-color="#7c3aed"></stop>
+          <stop offset="1" stop-color="#a78bfa"></stop>
+        </linearGradient>
+        <radialGradient id="hero-nucleus-glow">
+          <stop offset="0" stop-color="#a78bfa" stop-opacity="0.55"></stop>
+          <stop offset="1" stop-color="#a78bfa" stop-opacity="0"></stop>
+        </radialGradient>
+      </defs>
+      <circle r="300" stroke="url(#hero-orbit-grad)" stroke-width="1" opacity="0.5"></circle>
+      <circle r="236" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="2 12" stroke-linecap="round" opacity="0.7"
+      ></circle>
+      <g stroke="url(#hero-orbit-grad)" stroke-width="1.3">
+        <ellipse rx="360" ry="128"></ellipse>
+        <ellipse rx="360" ry="128" transform="rotate(60)"></ellipse>
+        <ellipse rx="360" ry="128" transform="rotate(120)"></ellipse>
+      </g>
+      <g fill="#c4b5fd">
+        <circle cx="360" cy="0" r="5"></circle>
+        <g transform="rotate(60)"><circle cx="-182" cy="110" r="5"></circle></g>
+        <g transform="rotate(120)"><circle cx="-176" cy="-111" r="5"></circle></g>
+      </g>
+      <circle r="44" fill="url(#hero-nucleus-glow)"></circle>
+      <circle r="6" fill="#c4b5fd"></circle>
+    </svg>
+  </div>
+
+  <div class="hero__inner container">
+    <div class="hero__content">
+      <p class="eyebrow hero__eyebrow" style="--i:0">{eyebrow}</p>
+      <h1 id="hero-title" class="hero__name" style="--i:1">{site.name}</h1>
+      <p class="hero__headline" style="--i:2">{site.headline}</p>
+      <p class="hero__identity" style="--i:3">
+        {
+          identityParts.map((part, index) => (
+            <>
+              {index > 0 && ' '}
+              <span class="hero__part">
+                {part}
+                {index < identityParts.length - 1 && (
+                  <span class="hero__sep" aria-hidden="true">
+                    |
+                  </span>
+                )}
+              </span>
+            </>
+          ))
+        }
+      </p>
+      <p class="hero__subtitle" style="--i:4">{site.subtitle}</p>
+      <div class="hero__actions" style="--i:5">
+        <a class="btn btn-primary hero__btn" href="#projects">
+          Explore Projects
+          <Icon name="arrow-right" size={18} />
+        </a>
+        <a class="btn hero__btn" href="#about">About Me</a>
+        <span class="hero__links">
+          <a
+            class="hero__icon"
+            href={social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub profile, opens in a new tab"
+          >
+            <Icon name="github" size={22} />
+          </a>
+          <a
+            class="hero__icon"
+            href={social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn profile, opens in a new tab"
+          >
+            <Icon name="linkedin" size={24} />
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <a class="hero__scroll" href="#about" aria-label="Scroll to the About section">
+    <span class="hero__scroll-label">Scroll</span>
+    <span class="hero__scroll-line" aria-hidden="true"></span>
+  </a>
+
+  <PerryHero />
+</section>
+
+<style>
+  .hero {
+    /* Space kept free for <PerryHero /> in the bottom-right corner. */
+    --perry-w: 320px;
+    --perry-h: 360px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: calc(100svh - var(--nav-h));
+    padding-block: clamp(2.5rem, 6vh, 4.5rem) clamp(5.5rem, 10vh, 7rem);
+  }
+  /* Soft scrim behind the copy keeps text contrast above the starfield. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 70% at 22% 48%, rgb(6 11 27 / 0.72), transparent 72%),
+      radial-gradient(48% 52% at 74% 40%, rgb(124 58 237 / 0.13), transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Decorative atom motif. Clipped on its own wrapper so the Perry layer is never cut off. */
+  .hero__motif {
+    position: absolute;
+    inset: 0;
+    overflow: clip;
+    pointer-events: none;
+  }
+  .hero__orbits {
+    position: absolute;
+    top: 50%;
+    right: -8%;
+    width: min(125vw, 1040px);
+    aspect-ratio: 1;
+    height: auto;
+    translate: 0 -50%;
+    opacity: 0.34;
+  }
+
+  .hero__inner {
+    position: relative;
+  }
+  .hero__content {
+    max-width: 46rem;
+  }
+
+  .hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0;
+    color: #bcaafd;
+  }
+  .hero__eyebrow::before {
+    content: '';
+    width: 2.2rem;
+    height: 1px;
+    background: linear-gradient(90deg, var(--blue-2), var(--lavender));
+  }
+
+  .hero__name {
+    margin-top: 1rem;
+    padding-bottom: 0.1em;
+    font-size: clamp(2.5rem, 11vw, 4.8rem);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    background: linear-gradient(100deg, #f8fafc 0%, #e2e8f0 36%, #c4b5fd 74%, #93c5fd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 2px 18px rgb(6 11 27 / 0.7));
+  }
+
+  .hero__headline {
+    margin-top: 0.9rem;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.3rem, 1rem + 1.6vw, 2.1rem);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    background: linear-gradient(90deg, #7fb0fb, #b3a2fb 58%, #d6ccff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero__identity {
+    margin-top: 1.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    line-height: 1.9;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #a3b2c8;
+  }
+  .hero__part {
+    white-space: nowrap;
+  }
+  .hero__sep {
+    margin-inline: 0.7em 0.35em;
+    color: var(--lavender);
+    opacity: 0.7;
+  }
+
+  .hero__subtitle {
+    margin-top: 1.1rem;
+    max-width: 56ch;
+    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.18rem);
+    color: #cbd5e1;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 2rem;
+  }
+  .hero__btn {
+    min-height: 48px;
+  }
+  .hero__links {
+    display: inline-flex;
+    gap: 0.6rem;
+    margin-left: 0.25rem;
+  }
+  .hero__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    color: #cbd5e1;
+    border: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.04);
+    transition: transform 0.25s ease, color 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+  .hero__icon:hover {
+    color: #fff;
+    transform: translateY(-3px);
+    background: rgb(124 58 237 / 0.2);
+    border-color: rgb(167 139 250 / 0.55);
+  }
+
+  /* Scroll cue, bottom-left so it never meets the Perry corner. */
+  .hero__scroll {
+    position: absolute;
+    left: max(1rem, calc((100% - var(--maxw)) / 2));
+    bottom: 1.1rem;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 44px;
+    padding: 0.35rem 0.5rem 0;
+    color: #a3b2c8;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+  .hero__scroll:hover {
+    color: #fff;
+  }
+  .hero__scroll-line {
+    position: relative;
+    width: 1px;
+    height: 38px;
+    overflow: hidden;
+    background: rgb(148 163 184 / 0.28);
+  }
+  .hero__scroll-line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 14px;
+    background: linear-gradient(180deg, transparent, var(--lavender));
+  }
+
+  /* Motion only when the visitor has not asked for less. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__orbits {
+      animation: hero-spin 180s linear infinite;
+    }
+    .hero__content > * {
+      animation: hero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+    }
+    .hero__scroll-line::after {
+      animation: hero-drip 2.4s ease-in-out infinite;
+    }
+  }
+  @keyframes hero-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes hero-drip {
+    0% {
+      transform: translateY(-14px);
+    }
+    100% {
+      transform: translateY(40px);
+    }
+  }
+
+  /* Desktop: keep the copy column clear of the Perry corner on mid-width screens. */
+  @media (min-width: 900px) {
+    .hero__name {
+      font-size: clamp(3.5rem, 6.6vw, 6rem);
+    }
+    .hero__content {
+      max-width: min(46rem, calc(100% - var(--perry-w) - 1.5rem));
+    }
+  }
+
+  /* Tablet and phone: Perry sits below the copy, so reserve space at the bottom.
+     PerryHero is 150px to 200px wide here (about 92px on phones), plus its speech bubble. */
+  @media (max-width: 899.98px) {
+    .hero {
+      --perry-w: 230px;
+      --perry-h: 260px;
+      padding-top: clamp(2.5rem, 7vh, 4rem);
+      padding-bottom: calc(var(--perry-h) + 2rem);
+    }
+  }
+  @media (max-width: 639.98px) {
+    .hero {
+      --perry-w: 150px;
+      --perry-h: 150px;
+    }
+    .hero__part {
+      white-space: normal;
+    }
+    .hero__links {
+      margin-left: 0;
+    }
+  }
+</style>

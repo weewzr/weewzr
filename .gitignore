@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-*/
+.astro/
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+.venv/
+__pycache__/
+_work/

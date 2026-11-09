@@ -1,0 +1,669 @@
+---
+/**
+ * Static case-study pages, one per project in src/data/site.ts.
+ * The long-form body comes from src/content/projects/<slug>.mdx when that file exists.
+ * Without an entry the page is still built from the data file, so the build never fails.
+ */
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { projects } from '../../data/site';
+import type { Project } from '../../data/site';
+import { withBase, homeAnchor } from '../../lib/url';
+
+interface Props {
+  project: Project;
+  entry: CollectionEntry<'projects'> | null;
+  prev: Project | null;
+  next: Project | null;
+}
+
+export async function getStaticPaths() {
+  const entries = await getCollection('projects');
+  const byId = new Map(entries.map((e) => [e.id, e]));
+  const n = projects.length;
+  return projects.map((project, i) => ({
+    params: { slug: project.slug },
+    props: {
+      project,
+      entry: byId.get(project.slug) ?? null,
+      // Cyclic navigation; two projects would point both ways at the same page, so only "next" is shown.
+      prev: n > 2 ? projects[(i - 1 + n) % n] : null,
+      next: n > 1 ? projects[(i + 1) % n] : null,
+    },
+  }));
+}
+
+const { project, entry, prev, next } = Astro.props;
+const rendered = entry ? await render(entry) : null;
+const Content = rendered?.Content ?? null;
+
+const title = entry?.data.title ?? `${project.name} case study`;
+const summary = entry?.data.summary ?? project.description;
+const path = `projects/${project.slug}/`;
+
+const full = withBase(project.image);
+const small = project.image.endsWith('.webp') ? withBase(project.image.replace(/\.webp$/, '-640.webp')) : null;
+const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
+
+// Fallback source list so a page without an MDX entry still points at its repository.
+const sources = entry?.data.sources?.length
+  ? entry.data.sources
+  : [{ label: `${project.name} repository on GitHub`, url: project.repoUrl }];
+const shortUrl = (url: string) => {
+  try {
+    const u = new URL(url);
+    return `${u.host}${u.pathname}`.replace(/\/$/, '');
+  } catch {
+    return url;
+  }
+};
+---
+
+<BaseLayout title={title} description={summary} path={path} type="article">
+  <article class="case" aria-labelledby="case-title">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href={homeAnchor('')}>Home</a></li>
+          <li><a href={homeAnchor('#projects')}>Projects</a></li>
+          <li aria-current="page">{project.name}</li>
+        </ol>
+      </nav>
+
+      <header class="case-head">
+        <div class="head-text">
+          <p class="status">{project.status}</p>
+          <h1 id="case-title" class="grad-text">{project.name}</h1>
+          <p class="tagline">{project.tagline}</p>
+          {entry && <p class="summary">{summary}</p>}
+
+          <ul class="tech" aria-label={`${project.name} technologies`}>
+            {project.tech.map((t) => <li class="chip">{t}</li>)}
+          </ul>
+
+          <div class="actions">
+            {
+              project.siteUrl && (
+                <a
+                  class="btn btn-primary"
+                  href={project.siteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit Website for ${project.name} (opens in a new tab)`}
+                >
+                  Visit Website
+                  <Icon name="external" size={18} />
+                </a>
+              )
+            }
+            <a
+              class="btn"
+              href={project.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View GitHub Repository for ${project.name} (opens in a new tab)`}
+            >
+              <Icon name="github" size={18} />
+              View GitHub Repository
+            </a>
+            {
+              !project.siteUrl && project.comingSoon && (
+                <span class="soon-label">Website Coming Soon</span>
+              )
+            }
+          </div>
+        </div>
+
+        <figure class="head-media">
+          <div class="frame">
+            <img
+              src={full}
+              srcset={srcset}
+              sizes="(min-width: 1180px) 560px, (min-width: 900px) 46vw, 100vw"
+              width="1280"
+              height="800"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              alt={project.imageAlt}
+            />
+          </div>
+          <figcaption>{project.imageCaption}</figcaption>
+        </figure>
+      </header>
+
+      <div class="case-body glass">
+        <div class="case-prose">
+          {
+            Content ? (
+              <Content />
+            ) : (
+              <>
+                <h2>About this project</h2>
+                <p>{project.description}</p>
+                <h2>Main features</h2>
+                <ul>
+                  {project.features.map((f) => (
+                    <li>{f}</li>
+                  ))}
+                </ul>
+              </>
+            )
+          }
+        </div>
+      </div>
+
+      <section class="sources glass" aria-labelledby="sources-title">
+        <h2 id="sources-title">Sources</h2>
+        <ul>
+          {
+            sources.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                  <span class="src-label">{s.label}</span>
+                  <span class="src-url">{shortUrl(s.url)}</span>
+                  <span class="sr-only"> (opens in a new tab)</span>
+                </a>
+                <Icon name="external" size={16} />
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      {
+        (prev || next) && (
+          <nav class={`pager ${prev && next ? 'two' : ''}`} aria-label="Other projects">
+            {prev && (
+              <a class="pager-link glass gradient-border" href={withBase(`projects/${prev.slug}/`)} rel="prev">
+                <span class="pager-dir">
+                  <Icon name="arrow-right" size={16} class="flip" /> Previous project
+                </span>
+                <span class="pager-name">{prev.name}</span>
+              </a>
+            )}
+            {next && (
+              <a class="pager-link next glass gradient-border" href={withBase(`projects/${next.slug}/`)} rel="next">
+                <span class="pager-dir">
+                  Next project <Icon name="arrow-right" size={16} />
+                </span>
+                <span class="pager-name">{next.name}</span>
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .case {
+    padding-top: calc(var(--nav-h) + clamp(1.25rem, 4vw, 2.5rem));
+    padding-bottom: clamp(3.5rem, 8vw, 6rem);
+  }
+
+  /* Breadcrumb */
+  .crumbs ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .crumbs li {
+    display: flex;
+    align-items: center;
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 0.5rem;
+    color: rgb(148 163 184 / 0.55);
+  }
+  .crumbs a {
+    display: inline-block;
+    padding-block: 0.4rem;
+    color: #c4b5fd;
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    text-decoration: underline;
+  }
+  .crumbs [aria-current='page'] {
+    padding-block: 0.4rem;
+    color: var(--text);
+  }
+
+  /* Header */
+  .case-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+    margin-top: 1.25rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .case-head {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 3rem;
+    }
+  }
+  .head-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
+    color: #ddd6fe;
+    background: rgb(124 58 237 / 0.16);
+    border: 1px solid rgb(167 139 250 / 0.38);
+  }
+  .status::before {
+    content: '';
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--lavender);
+    box-shadow: 0 0 8px var(--lavender);
+  }
+  h1 {
+    margin-top: 0.9rem;
+    font-size: clamp(2.4rem, 6vw, 3.75rem);
+    font-weight: 700;
+    padding-bottom: 0.08em;
+  }
+  .tagline {
+    margin-top: 0.6rem;
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    line-height: 1.45;
+    color: var(--lavender);
+  }
+  .summary {
+    margin-top: 1rem;
+    max-width: 60ch;
+    color: #cbd5e1;
+  }
+  .tech {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 1.5rem;
+  }
+  .actions .btn {
+    min-height: 44px;
+  }
+  .soon-label {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    border: 1px dashed rgb(148 163 184 / 0.4);
+  }
+  .head-media {
+    margin: 0;
+    min-width: 0;
+  }
+  .frame {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgb(148 163 184 / 0.25);
+    background: var(--bg-2);
+    aspect-ratio: 16 / 10;
+    box-shadow:
+      0 24px 56px -28px rgb(0 0 0 / 0.9),
+      0 0 50px rgb(124 58 237 / 0.16);
+  }
+  .frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .head-media figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* Body panel */
+  .case-body {
+    max-width: 52rem;
+    margin: clamp(2.5rem, 6vw, 4rem) auto 0;
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+    background: var(--glass-strong);
+  }
+
+  /* Sources */
+  .sources {
+    max-width: 52rem;
+    margin: 1.75rem auto 0;
+    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
+    background: var(--glass-strong);
+  }
+  .sources h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .sources ul {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .sources li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+  }
+  .sources li {
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .sources li :global(svg) {
+    flex: none;
+  }
+  .sources li a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.1rem;
+    min-height: 44px;
+    padding-block: 0.3rem;
+    text-decoration: none;
+    min-width: 0;
+  }
+  .src-label {
+    color: #c4b5fd;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .sources li a:hover .src-label {
+    color: #fff;
+  }
+  .src-url {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+
+  /* Previous / next */
+  .pager {
+    max-width: 52rem;
+    margin: 1.75rem auto 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .pager.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .pager-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-height: 44px;
+    padding: 1rem 1.25rem;
+    text-decoration: none;
+    color: var(--text);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .pager-link.next {
+    text-align: right;
+    align-items: flex-end;
+  }
+  .pager-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 36px rgb(124 58 237 / 0.28);
+  }
+  .pager-dir {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pager-dir :global(.flip) {
+    transform: scaleX(-1);
+  }
+  .pager-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.35rem;
+    color: #fff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pager-link:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Typography for the rendered MDX body. MDX output carries no Astro scope attribute, so these rules are
+     global, but every selector sits under .case-prose. */
+  .case-prose {
+    color: #d5deea;
+    font-size: 1.04rem;
+    line-height: 1.75;
+    overflow-wrap: break-word;
+  }
+  .case-prose > :first-child {
+    margin-top: 0;
+  }
+  .case-prose h2,
+  .case-prose h3,
+  .case-prose h4 {
+    color: #fff;
+    scroll-margin-top: calc(var(--nav-h) + 16px);
+  }
+  .case-prose h2 {
+    font-size: clamp(1.45rem, 3vw, 1.85rem);
+    font-weight: 600;
+    margin: 2.6rem 0 1rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .case-prose h3 {
+    font-size: clamp(1.15rem, 2.2vw, 1.35rem);
+    font-weight: 600;
+    margin: 2rem 0 0.7rem;
+  }
+  .case-prose h4 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.5rem;
+    color: #e2e8f0;
+  }
+  .case-prose p {
+    margin: 0 0 1.05rem;
+  }
+  .case-prose a {
+    color: #c4b5fd;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .case-prose a:hover {
+    color: #fff;
+  }
+  .case-prose strong {
+    color: #fff;
+    font-weight: 600;
+  }
+  .case-prose ul,
+  .case-prose ol {
+    margin: 0 0 1.15rem;
+    padding-left: 1.5rem;
+  }
+  /* Tailwind's preflight removes list markers, so restore them here. */
+  .case-prose ul {
+    list-style: disc;
+  }
+  .case-prose ul ul {
+    list-style: circle;
+  }
+  .case-prose ol {
+    list-style: decimal;
+  }
+  .case-prose li {
+    margin: 0.35rem 0;
+    padding-left: 0.2rem;
+  }
+  .case-prose li > ul,
+  .case-prose li > ol {
+    margin: 0.3rem 0 0.3rem;
+  }
+  .case-prose ul li::marker {
+    color: var(--lavender);
+  }
+  .case-prose ol li::marker {
+    color: var(--lavender);
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+  .case-prose blockquote {
+    margin: 1.5rem 0;
+    padding: 0.8rem 1.2rem;
+    border-left: 3px solid var(--purple);
+    border-radius: 0 12px 12px 0;
+    background: rgb(124 58 237 / 0.1);
+    color: #e2e8f0;
+  }
+  .case-prose blockquote > :last-child {
+    margin-bottom: 0;
+  }
+  .case-prose hr {
+    border: 0;
+    height: 1px;
+    margin: 2.25rem 0;
+    background: var(--line);
+  }
+  .case-prose code {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    padding: 0.12em 0.4em;
+    border-radius: 6px;
+    background: rgb(148 163 184 / 0.15);
+    color: #e0e7ff;
+  }
+  .case-prose pre {
+    margin: 1.4rem 0;
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgb(6 11 27 / 0.9) !important;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+  .case-prose pre code {
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+  .case-prose img,
+  .case-prose video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem auto;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .case-prose figure {
+    margin: 1.5rem 0;
+  }
+  .case-prose figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  /* Tables scroll sideways inside their own box on narrow screens. */
+  .case-prose table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    -webkit-overflow-scrolling: touch;
+  }
+  .case-prose th,
+  .case-prose td {
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  .case-prose th {
+    background: rgb(59 130 246 / 0.14);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .case-prose tbody tr:nth-child(even) td {
+    background: rgb(255 255 255 / 0.025);
+  }
+  .case-prose kbd {
+    padding: 0.1em 0.4em;
+    border-radius: 5px;
+    border: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.06);
+    font-size: 0.85em;
+  }
+  @media (max-width: 640px) {
+    .case-prose {
+      font-size: 1rem;
+    }
+    .case-prose table {
+      font-size: 0.86rem;
+    }
+  }
+</style>

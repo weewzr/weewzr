@@ -1,0 +1,16 @@
+---
+/**
+ * Index of every published note, grouped by category with anchors. The list itself is rendered by
+ * ResearchWriting.astro in standalone mode, which also shows the empty-state line when there are no notes.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ResearchWriting from '../../components/ResearchWriting.astro';
+---
+
+<BaseLayout
+  title="Notes and studies"
+  description="Technical notes, computational studies and engineering write-ups by Wee Zhern Ray, grouped by topic. Each entry links to the public source it is based on."
+  path="writing/"
+>
+  <ResearchWriting standalone />
+</BaseLayout>

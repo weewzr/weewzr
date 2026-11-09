@@ -1,0 +1,192 @@
+﻿---
+/**
+ * Perry stepping out of a purple CSS portal on the footer's top edge.
+ * Position: absolute at the top-right of the nearest positioned ancestor (the footer),
+ * sitting just above its top edge. Hidden below 700px so it never meets footer text.
+ */
+import { mascot } from '../data/site';
+import PerryImage from './PerryImage.astro';
+
+const enabled = mascot.enabled;
+const Trigger = enabled ? 'button' : 'div';
+const triggerProps = enabled
+  ? { type: 'button' as const, 'data-perry-trigger': '', 'aria-describedby': 'perry-footer-bubble' }
+  : {};
+---
+
+<div class="perry-footer" data-perry-talk={enabled ? '' : undefined}>
+  <div class="perry-footer__stage">
+    <span class="perry-footer__portal" aria-hidden="true"></span>
+    <Trigger class="perry-footer__btn" {...triggerProps}>
+      <span class="perry-footer__bob">
+        <PerryImage slot="footer" class="perry-footer__img" />
+      </span>
+    </Trigger>
+  </div>
+  {
+    enabled && (
+      <span class="perry-bubble perry-bubble--tail-right perry-footer__bubble" id="perry-footer-bubble" role="tooltip">
+        {mascot.lines.footer}
+      </span>
+    )
+  }
+</div>
+
+<style>
+  .perry-footer {
+    --w: clamp(108px, 12vw, 168px);
+    position: absolute;
+    right: clamp(1rem, 4vw, 3rem);
+    bottom: 100%;
+    z-index: 1;
+    width: var(--w);
+    height: calc(var(--w) * 0.8);
+    pointer-events: none;
+    display: none;
+  }
+  @media (min-width: 700px) {
+    .perry-footer {
+      display: block;
+    }
+  }
+  /* Clips at the footer's top edge, so the lower part of the portal and his feet sit behind it. */
+  .perry-footer__stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    overflow: clip;
+  }
+
+  /* Portal: concentric rings, a slow conic swirl and a dashed ring turning the other way. */
+  .perry-footer__portal {
+    position: absolute;
+    left: 0;
+    top: 2%;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    /* closest-side: 100% is the radius of the portal box, so the outer glow fades out inside it. */
+    background: radial-gradient(
+      circle closest-side,
+      #0a0620 0 16%,
+      rgb(76 29 149 / 0.9) 17% 29%,
+      rgb(124 58 237 / 0.95) 30% 35%,
+      rgb(30 27 75 / 0.92) 36% 50%,
+      rgb(167 139 250 / 0.88) 51% 56%,
+      rgb(30 64 175 / 0.6) 57% 70%,
+      rgb(96 165 250 / 0.75) 71% 76%,
+      rgb(124 58 237 / 0.28) 80%,
+      transparent 100%
+    );
+  }
+  .perry-footer__portal::before,
+  .perry-footer__portal::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+  }
+  .perry-footer__portal::before {
+    inset: 0;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0 18%,
+      rgb(196 181 253 / 0.55) 30%,
+      transparent 42% 58%,
+      rgb(147 197 253 / 0.45) 72%,
+      transparent 86%
+    );
+    -webkit-mask: radial-gradient(circle closest-side, transparent 22%, #000 28% 80%, transparent 100%);
+    mask: radial-gradient(circle closest-side, transparent 22%, #000 28% 80%, transparent 100%);
+  }
+  .perry-footer__portal::after {
+    inset: 10%;
+    border: 2px dashed rgb(196 181 253 / 0.5);
+  }
+
+  .perry-footer__btn {
+    appearance: none;
+    position: absolute;
+    left: 13%;
+    bottom: -3%;
+    display: block;
+    width: 74%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 14px;
+  }
+  div.perry-footer__btn {
+    cursor: default;
+  }
+  .perry-footer__btn:focus-visible {
+    outline: 2px solid var(--lavender);
+    outline-offset: 2px;
+  }
+  .perry-footer__bob {
+    display: block;
+    transform-origin: 50% 100%;
+  }
+  /* The walking image faces right. Mirror him so he walks out of the portal towards the page. */
+  .perry-footer :global(.perry-footer__img) {
+    width: 100%;
+    transform: scaleX(-1);
+    filter: drop-shadow(0 6px 10px rgb(2 6 23 / 0.5));
+  }
+  .perry-footer__bubble {
+    right: calc(100% + 0.6rem);
+    bottom: 14%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .perry-footer__portal::before {
+      animation: perry-portal-spin 16s linear infinite;
+    }
+    .perry-footer__portal::after {
+      animation: perry-portal-spin 28s linear infinite reverse;
+    }
+    .perry-footer__bob {
+      animation: perry-footer-bob 2.6s ease-in-out infinite;
+    }
+    .perry-footer__btn:is(:hover, :focus-visible) .perry-footer__bob,
+    .perry-footer.is-talking .perry-footer__bob {
+      animation: perry-footer-wave 1s ease-in-out;
+    }
+  }
+
+  @keyframes perry-portal-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes perry-footer-bob {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-4px) rotate(1.2deg);
+    }
+  }
+  /* Tilts goodbye: a small rocking wave from the feet. */
+  @keyframes perry-footer-wave {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    20% {
+      transform: translateY(-6px) rotate(-9deg);
+    }
+    45% {
+      transform: translateY(-3px) rotate(7deg);
+    }
+    70% {
+      transform: translateY(-5px) rotate(-6deg);
+    }
+  }
+</style>

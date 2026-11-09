@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://weewzr.github.io/weewzr/sitemap-index.xml

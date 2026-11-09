@@ -1,0 +1,237 @@
+﻿---
+/**
+ * Site footer. position:relative with no overflow clipping, because <PerryFooter /> peeks above the top edge.
+ * The right-hand side is kept free on desktop and the top padding grows on phones so the mascot never covers copy.
+ */
+import { site, social, nav, mascot } from '../data/site';
+import { withBase, homeAnchor } from '../lib/url';
+import Icon from './Icon.astro';
+import PerryFooter from './PerryFooter.astro';
+
+const year = new Date().getFullYear();
+const creditsUrl = `${social.github}/weewzr/blob/main/docs/CREDITS.md`;
+const built = [
+  { label: 'Astro', href: 'https://astro.build' },
+  { label: 'Three.js', href: 'https://threejs.org' },
+  { label: 'Tailwind CSS', href: 'https://tailwindcss.com' },
+] as const;
+---
+
+<footer class="footer">
+  <div class="footer__inner container">
+    <div class="footer__brand">
+      <a class="footer__name" href={withBase('')}>{site.name}</a>
+      <p class="footer__identity">{site.identity}</p>
+    </div>
+
+    <nav class="footer__col" aria-label="Footer">
+      <p class="footer__label">Explore</p>
+      <ul class="footer__list">
+        {
+          nav.map((item) => (
+            <li>
+              <a class="footer__link" href={homeAnchor(item.href)}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="footer__col">
+      <p class="footer__label">Elsewhere</p>
+      <ul class="footer__list">
+        <li>
+          <a class="footer__link" href={social.github} target="_blank" rel="noopener noreferrer">
+            <Icon name="github" size={16} />
+            GitHub
+            <span class="sr-only">(opens in a new tab)</span>
+          </a>
+        </li>
+        <li>
+          <a class="footer__link" href={social.linkedin} target="_blank" rel="noopener noreferrer">
+            <Icon name="linkedin" size={17} />
+            LinkedIn
+            <span class="sr-only">(opens in a new tab)</span>
+          </a>
+        </li>
+        {
+          social.email && (
+            <li>
+              <a class="footer__link" href={homeAnchor('#contact')}>
+                <Icon name="mail" size={17} />
+                Email (see Contact)
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+
+    <div class="footer__legal">
+      {mascot.enabled && <p class="footer__credit">{mascot.credit}</p>}
+      <p class="footer__meta">
+        Built with{' '}
+        <a href={built[0].href} target="_blank" rel="noopener noreferrer">{built[0].label}</a>,{' '}
+        <a href={built[1].href} target="_blank" rel="noopener noreferrer">{built[1].label}</a>{' '}
+        and{' '}
+        <a href={built[2].href} target="_blank" rel="noopener noreferrer">{built[2].label}</a>.
+      </p>
+      <p class="footer__meta">
+        <span>&copy; {year} {site.name}</span>
+        <span class="footer__dot" aria-hidden="true">&middot;</span>
+        <a href={creditsUrl} target="_blank" rel="noopener noreferrer">Credits and licences</a>
+      </p>
+    </div>
+  </div>
+
+  <PerryFooter />
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    padding-block: clamp(3.5rem, 6vw, 4.5rem) 2.25rem;
+    background: linear-gradient(180deg, rgb(6 11 27 / 0) 0, rgb(6 11 27 / 0.72) 3.5rem, rgb(4 8 20 / 0.92) 100%);
+  }
+  /* Top hairline. Drawn inside the footer box, so nothing above it is clipped. */
+  .footer::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(59 130 246 / 0.65) 22%,
+      rgb(124 58 237 / 0.75) 50%,
+      rgb(167 139 250 / 0.65) 78%,
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .footer__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .footer__name:hover {
+    color: #fff;
+  }
+  .footer__identity {
+    margin-top: 0.6rem;
+    max-width: 44ch;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .footer__label {
+    margin-bottom: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lavender);
+  }
+  .footer__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .footer__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 36px;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: color 0.25s ease;
+  }
+  .footer__link:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .footer__legal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .footer__credit {
+    max-width: 68ch;
+  }
+  .footer__meta {
+    margin: 0;
+  }
+  .footer__meta a {
+    color: #b4c0d4;
+    text-underline-offset: 3px;
+  }
+  .footer__meta a:hover {
+    color: #fff;
+  }
+  .footer__dot {
+    margin-inline: 0.5rem;
+  }
+
+  /* Phones: the mascot sits above the top edge, a little extra headroom keeps copy clear of its tail and bubble. */
+  @media (max-width: 899.98px) {
+    .footer {
+      padding-top: 4rem;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .footer__inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .footer__brand,
+    .footer__legal {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Desktop: three columns, with the right side left open for the footer mascot. */
+  @media (min-width: 900px) {
+    .footer__inner {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.8fr) minmax(0, 1.1fr);
+      column-gap: 2.5rem;
+      padding-right: min(10rem, 12vw);
+    }
+    .footer__brand {
+      grid-column: auto;
+    }
+    .footer__legal {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 1200px) {
+    .footer__inner {
+      padding-right: 14rem;
+    }
+  }
+</style>

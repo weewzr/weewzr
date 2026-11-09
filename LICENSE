@@ -1,0 +1,45 @@
+MIT License
+
+Copyright (c) 2026 Wee Zhern Ray
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----------------------------------------------------------------------------
+
+EXCLUSIONS FROM THE LICENCE ABOVE
+
+The MIT licence above covers the source code, configuration and written
+content of this repository, and the original graphics made for it (the
+favicon, the social card and the README banner and divider). It does not cover
+the following.
+
+1. Disney artwork. Perry the Platypus and Phineas and Ferb are the property of
+   Disney. The Perry images in public/mascot/ (every file except the original
+   silhouette.svg placeholder) and the file assets/readme/perry.png were
+   supplied by the repository owner as an unofficial fan tribute. They are not
+   covered by the MIT licence, no licence to it is granted here, and it is not
+   affiliated with or endorsed by Disney. The owner will remove it on request
+   from the rights holder. Do not copy, reuse or redistribute these files.
+
+2. Third-party software and fonts. Dependencies keep their own licences, which
+   are listed in docs/CREDITS.md.
+
+Project preview images in public/projects/ are screenshots and figures from the
+owner's public repositories KASCO, NUSH2 and STRATO, each of which carries the
+MIT licence.

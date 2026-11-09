@@ -1,0 +1,191 @@
+---
+import Icon from './Icon.astro';
+import PerryConsole from './PerryConsole.astro';
+import { researchInterests } from '../data/site';
+
+const badgeText = {
+  involvement: 'Research involvement',
+  interest: 'Interest',
+} as const;
+---
+
+<section id="research" class="section" aria-labelledby="research-title">
+  <div class="ri-wrap">
+    <header class="reveal">
+      <p class="eyebrow">Focus areas</p>
+      <h2 id="research-title" class="section-title">Research Interests</h2>
+      <p class="section-lead">
+        The badge on each card separates active research involvement from broader interests, which draw on my studies and public projects.
+      </p>
+    </header>
+
+    <ul class="ri-grid" role="list">
+      {
+        researchInterests.map((item, i) => (
+          <li class="ri-item reveal" style={`--i:${i}`}>
+            <article class:list={['ri-card', 'glass', 'gradient-border', { 'is-involvement': item.kind === 'involvement' }]}>
+              <div class="ri-top">
+                <span class="ri-ico">
+                  <Icon name={item.icon} size={26} />
+                </span>
+                <span class:list={['ri-badge', item.kind === 'involvement' ? 'is-fill' : 'is-outline']}>{badgeText[item.kind]}</span>
+              </div>
+              <h3 class="ri-title">{item.title}</h3>
+              <p class="ri-summary">{item.summary}</p>
+              <ul class="ri-chips" role="list" aria-label={`Keywords for ${item.title}`}>
+                {item.keywords.map((kw) => (
+                  <li class="chip">{kw}</li>
+                ))}
+              </ul>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="ri-egg reveal">
+      <PerryConsole />
+    </div>
+  </div>
+</section>
+
+<style>
+  .ri-wrap {
+    width: min(100% - 2rem, var(--maxw));
+    max-width: var(--maxw);
+    margin-inline: auto;
+  }
+  .ri-grid {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .ri-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .ri-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+  }
+  .ri-item {
+    min-width: 0;
+    display: flex;
+  }
+
+  .ri-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: clamp(1.25rem, 2.5vw, 1.6rem);
+    transition:
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .ri-card.is-involvement {
+    background:
+      radial-gradient(120% 80% at 0% 0%, rgb(124 58 237 / 0.2), transparent 60%),
+      var(--glass);
+  }
+  @media (hover: hover) {
+    .ri-card:hover {
+      transform: translateY(-5px);
+      border-color: rgb(167 139 250 / 0.45);
+      box-shadow:
+        0 18px 40px -18px rgb(79 70 229 / 0.55),
+        0 0 0 1px rgb(167 139 250 / 0.12);
+    }
+    .ri-card:hover .ri-ico {
+      color: #ddd6fe;
+      border-color: rgb(167 139 250 / 0.65);
+      box-shadow: 0 0 22px rgb(124 58 237 / 0.55);
+    }
+  }
+
+  .ri-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .ri-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    flex: none;
+    border-radius: 14px;
+    color: var(--lavender);
+    background: linear-gradient(145deg, rgb(59 130 246 / 0.2), rgb(124 58 237 / 0.26));
+    border: 1px solid rgb(167 139 250 / 0.3);
+    box-shadow: 0 0 14px rgb(124 58 237 / 0.18);
+    transition:
+      color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .ri-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.22rem 0.7rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .ri-badge.is-fill {
+    color: #fff;
+    background: linear-gradient(135deg, #2563eb, #6d3df0);
+    border: 1px solid transparent;
+    box-shadow: 0 4px 16px -6px rgb(79 70 229 / 0.8);
+  }
+  .ri-badge.is-outline {
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid rgb(148 163 184 / 0.45);
+  }
+
+  .ri-title {
+    margin-top: 1.1rem;
+    font-size: 1.22rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .ri-summary {
+    margin-top: 0.7rem;
+    color: #cbd5e1;
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+  .ri-chips {
+    list-style: none;
+    margin: auto 0 0;
+    padding: 1.1rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .ri-egg {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2rem, 5vw, 3.25rem);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ri-card:hover {
+      transform: none;
+    }
+  }
+</style>

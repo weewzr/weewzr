@@ -1,0 +1,43 @@
+---
+import { site } from '../data/site';
+import { withBase } from '../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  path?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+}
+const { title, description = site.description, image = site.ogImage, path = '', noindex = false, type = 'website' } = Astro.props;
+
+const fullTitle = title ? `${title} | ${site.name}` : site.title;
+const base = site.url.endsWith('/') ? site.url : `${site.url}/`;
+const canonical = new URL(path.replace(/^\//, ''), base).href;
+const ogImage = new URL(image, base).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="author" content={site.name} />
+<meta name="theme-color" content="#060B1B" />
+{noindex && <meta name="robots" content="noindex" />}
+<link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+<link rel="sitemap" href={withBase('sitemap-index.xml')} />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content="Celestial blue and purple banner for Wee Zhern Ray's engineering portfolio." />
+<meta property="og:locale" content="en_SG" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />

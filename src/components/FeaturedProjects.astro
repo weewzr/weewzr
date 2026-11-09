@@ -1,0 +1,56 @@
+---
+/**
+ * Featured projects section. Loops over `projects` in src/data/site.ts, so adding a
+ * project there (plus a preview image under public/projects) needs no change here.
+ */
+import ProjectCard from './ProjectCard.astro';
+import PerryAgent from './PerryAgent.astro';
+import { projects } from '../data/site';
+---
+
+<section id="projects" class="section" aria-labelledby="projects-title">
+  <div class="container">
+    {/* position: relative (see styles) so PerryAgent can anchor itself to the top-right corner of this header. */}
+    <header class="proj-head reveal">
+      <p class="eyebrow">Featured projects</p>
+      <h2 id="projects-title" class="section-title">Projects</h2>
+      <p class="section-lead">
+        Public computational projects with open source code. Each card links to the repository and, where one exists,
+        to the live tool. The case studies set out the assumptions, the checks and the limits of each model.
+      </p>
+      <PerryAgent />
+    </header>
+
+    <ol class="project-list" role="list">
+      {
+        projects.map((project, i) => (
+          <li class="reveal" style={`--i:${i}`}>
+            <ProjectCard project={project} index={i} />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .proj-head {
+    position: relative;
+    margin-bottom: clamp(2rem, 5vw, 3.25rem);
+  }
+  /* From 900px PerryAgent is absolute in the top-right corner (width clamp(120px, 11vw, 150px), about 0.8 of that
+     in height). Reserve that corner so the text never runs underneath it. Below 900px Perry sits in the flow. */
+  @media (min-width: 900px) {
+    .proj-head {
+      padding-right: calc(clamp(120px, 11vw, 150px) + 1.5rem);
+      min-height: 9rem;
+    }
+  }
+  .project-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 2.75rem);
+  }
+</style>

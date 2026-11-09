@@ -1,0 +1,181 @@
+---
+import Icon from './Icon.astro';
+import { skills } from '../data/site';
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const totalItems = skills.reduce((sum, group) => sum + group.items.length, 0);
+---
+
+<section id="skills" class="section" aria-labelledby="skills-title">
+  <div class="sk-wrap">
+    <header class="reveal">
+      <p class="eyebrow">Skills inventory</p>
+      <h2 id="skills-title" class="section-title">Technical Skills</h2>
+      <p class="section-lead">
+        Each entry is a tool or method evidenced in my public repositories or stated by me. I do not rate proficiency.
+      </p>
+    </header>
+
+    <ul class="sk-grid" role="list">
+      {
+        skills.map((group, i) => (
+          <li class="sk-item reveal" style={`--i:${i}`}>
+            <article class="sk-card glass gradient-border">
+              <header class="sk-head">
+                <span class="sk-ico">
+                  <Icon name={group.icon} size={22} />
+                </span>
+                <div class="sk-head-text">
+                  <span class="sk-idx" aria-hidden="true">[{pad(i + 1)}]</span>
+                  <h3>{group.category}</h3>
+                </div>
+              </header>
+              <ul class="sk-list" role="list" aria-label={`${group.category} skills`}>
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+              <p class="sk-count">[{pad(group.items.length)} entries]</p>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="sk-total reveal">inventory: {skills.length} categories, {totalItems} entries</p>
+  </div>
+</section>
+
+<style>
+  .sk-wrap {
+    width: min(100% - 2rem, var(--maxw));
+    max-width: var(--maxw);
+    margin-inline: auto;
+  }
+  .sk-grid {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .sk-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .sk-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .sk-head {
+      min-height: 4.2rem;
+    }
+  }
+  .sk-item {
+    min-width: 0;
+    display: flex;
+  }
+
+  .sk-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: clamp(1.15rem, 2.4vw, 1.5rem);
+    transition:
+      transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.3s ease;
+  }
+  @media (hover: hover) {
+    .sk-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px -20px rgb(79 70 229 / 0.6);
+    }
+  }
+
+  .sk-head {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .sk-ico {
+    display: inline-grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    flex: none;
+    border-radius: 12px;
+    color: var(--lavender);
+    background: linear-gradient(145deg, rgb(59 130 246 / 0.18), rgb(124 58 237 / 0.24));
+    border: 1px solid rgb(167 139 250 / 0.3);
+  }
+  .sk-head-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .sk-idx {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .sk-card h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .sk-list {
+    list-style: none;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    display: grid;
+  }
+  .sk-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 0.5rem 0;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: #dbe3f0;
+    overflow-wrap: anywhere;
+  }
+  .sk-list li::before {
+    content: '';
+    flex: none;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 1px;
+    background: var(--grad);
+    transform: translateY(-0.05rem);
+  }
+
+  .sk-count {
+    margin-top: auto;
+    padding-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .sk-total {
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sk-card:hover {
+      transform: none;
+    }
+  }
+</style>

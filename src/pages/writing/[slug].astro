@@ -1,0 +1,367 @@
+---
+/**
+ * One research note. Entries come from src/content/notes/*.md; the slug is the file name.
+ * Drafts are not built. The body is rendered Markdown inside a scoped typography wrapper.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { site } from '../../data/site';
+import { withBase } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  return notes.map((note) => ({ params: { slug: note.id }, props: { note } }));
+}
+
+const { note } = Astro.props;
+const { title, description, category, kind, date, sourceUrl, sourceLabel, tags } = note.data;
+const { Content } = await render(note);
+
+// Wrap each table in a keyboard-focusable scroll region so wide tables scroll on phones.
+const html = note.rendered?.html
+  ? note.rendered.html
+      .replace(/<table>/g, '<div class="table-scroll" role="region" tabindex="0" aria-label="Table, scrolls sideways on narrow screens"><table>')
+      .replace(/<\/table>/g, '</table></div>')
+  : null;
+
+const iso = date.toISOString().slice(0, 10);
+const shown = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
+const categorySlug = category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const path = `writing/${note.id}/`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: iso,
+  inLanguage: 'en',
+  articleSection: category,
+  keywords: tags.join(', '),
+  author: { '@type': 'Person', name: site.name, url: site.url },
+  mainEntityOfPage: new URL(path, site.url).href,
+  ...(sourceUrl ? { isBasedOn: sourceUrl } : {}),
+};
+const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
+---
+
+<BaseLayout title={title} description={description} path={path} type="article">
+  <script is:inline type="application/ld+json" set:html={jsonLdText} />
+
+  <article class="note">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href={withBase('')}>Home</a></li>
+        <li><a href={withBase('writing/')}>Notes and studies</a></li>
+        <li aria-current="page">{category}</li>
+      </ol>
+    </nav>
+
+    <header class="note-head">
+      <p class="eyebrow">{kind}</p>
+      <h1>{title}</h1>
+      <p class="note-lead">{description}</p>
+
+      <dl class="meta" aria-label="Note details">
+        <div>
+          <dt>Category</dt>
+          <dd><a href={withBase(`writing/#cat-${categorySlug}`)}>{category}</a></dd>
+        </div>
+        <div>
+          <dt>Type</dt>
+          <dd>{kind}</dd>
+        </div>
+        <div>
+          <dt>Published</dt>
+          <dd><time datetime={iso}>{shown}</time></dd>
+        </div>
+        {
+          tags.length > 0 && (
+            <div class="meta-tags">
+              <dt>Tags</dt>
+              <dd>
+                <ul>
+                  {tags.map((tag) => (
+                    <li class="chip">{tag}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </header>
+
+    <div class="prose">
+      {html ? <Fragment set:html={html} /> : <Content />}
+    </div>
+
+    {
+      sourceUrl && (
+        <aside class="source glass gradient-border" aria-labelledby="source-title">
+          <p class="eyebrow" id="source-title">Source document</p>
+          <p class="source-label">{sourceLabel ?? sourceUrl}</p>
+          <p class="source-url">{sourceUrl.replace(/^https?:\/\//, '')}</p>
+          <a class="btn" href={sourceUrl} target="_blank" rel="noopener noreferrer">
+            Open the source
+            <span class="sr-only"> (opens in a new tab)</span>
+            <Icon name="external" size={18} />
+          </a>
+        </aside>
+      )
+    }
+
+    <nav class="back" aria-label="More notes">
+      <a href={withBase('writing/')}>
+        <Icon name="arrow-right" size={18} class="flip" />
+        All notes and studies
+      </a>
+      <a href={withBase('')}>Home</a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .note {
+    width: min(100% - 2rem, 50rem);
+    margin-inline: auto;
+    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(4rem, 8vw, 6.5rem);
+  }
+
+  /* Breadcrumb. */
+  .crumbs {
+    margin-bottom: clamp(1rem, 3vw, 1.75rem);
+    font-size: 0.9rem;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.1rem 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--muted);
+  }
+  .crumbs li:not(:last-child)::after {
+    content: '/';
+    margin-left: 0.6rem;
+    opacity: 0.7;
+  }
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--lavender);
+  }
+
+  /* Header and meta row. */
+  .note-head h1 {
+    margin-top: 0.6rem;
+    font-size: clamp(1.8rem, 4.8vw, 2.85rem);
+    font-weight: 600;
+    line-height: 1.12;
+    overflow-wrap: anywhere;
+  }
+  .note-lead {
+    margin-top: 1.1rem;
+    max-width: 62ch;
+    font-size: 1.12rem;
+    color: var(--muted);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    margin: 1.75rem 0 0;
+    padding: 1rem 0;
+    border-block: 1px solid var(--line);
+  }
+  .meta > div {
+    min-width: 0;
+  }
+  .meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .meta dd {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    margin: 0;
+    font-size: 0.97rem;
+  }
+  .meta-tags ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.3rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Typography for the rendered Markdown. Selectors use :global because the content is injected. */
+  .prose {
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--text);
+    overflow-wrap: break-word;
+  }
+  .prose > :global(* + *) {
+    margin-top: 1.1rem;
+  }
+  .prose :global(h2) {
+    margin-top: 2.5rem;
+    font-size: clamp(1.35rem, 2.8vw, 1.7rem);
+    font-weight: 600;
+    scroll-margin-top: calc(var(--nav-h) + 12px);
+  }
+  .prose :global(h3) {
+    margin-top: 1.9rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .prose :global(h2 + *),
+  .prose :global(h3 + *) {
+    margin-top: 0.8rem;
+  }
+  .prose :global(a) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .prose :global(strong) {
+    color: #fff;
+    font-weight: 600;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.4rem;
+  }
+  .prose :global(li + li) {
+    margin-top: 0.55rem;
+  }
+  .prose :global(li::marker) {
+    color: var(--lavender);
+  }
+  .prose :global(sup),
+  .prose :global(sub) {
+    font-size: 0.72em;
+    line-height: 0;
+  }
+  .prose :global(blockquote) {
+    margin-inline: 0;
+    padding: 0.2rem 0 0.2rem 1.1rem;
+    border-left: 3px solid var(--purple);
+    color: var(--muted);
+  }
+  .prose :global(hr) {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin-block: 2rem;
+  }
+  .prose :global(code) {
+    padding: 0.08em 0.4em;
+    border: 1px solid rgb(99 102 241 / 0.25);
+    border-radius: 6px;
+    background: rgb(59 130 246 / 0.12);
+    color: #c7d2fe;
+    font-size: 0.88em;
+    overflow-wrap: anywhere;
+  }
+  .prose :global(pre) {
+    overflow-x: auto;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background-color: rgb(6 11 27 / 0.85) !important;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    -webkit-overflow-scrolling: touch;
+  }
+  .prose :global(pre code) {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    overflow-wrap: normal;
+  }
+  .prose :global(.table-scroll) {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: rgb(11 27 58 / 0.4);
+    -webkit-overflow-scrolling: touch;
+  }
+  .prose :global(table) {
+    width: 100%;
+    min-width: 22rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .prose :global(th),
+  .prose :global(td) {
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  .prose :global(thead th) {
+    background: rgb(59 130 246 / 0.12);
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+  .prose :global(tbody tr:last-child td) {
+    border-bottom: 0;
+  }
+
+  /* Source block and back links. */
+  .source {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+    margin-top: clamp(2.25rem, 5vw, 3.25rem);
+    padding: 1.3rem 1.4rem;
+    border-radius: var(--radius);
+    background: linear-gradient(155deg, rgb(17 36 76 / 0.62), rgb(9 20 44 / 0.62));
+  }
+  .source-label {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .source-url {
+    max-width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .source .btn {
+    margin-top: 0.6rem;
+  }
+  .back {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.75rem;
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+  }
+  .back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+  .back :global(.flip) {
+    transform: rotate(180deg);
+  }
+</style>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" width="640" height="440" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Mascot placeholder">
+  <title>Mascot placeholder</title>
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a99ee0"/>
+      <stop offset="1" stop-color="#7f74b8"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#body)" opacity="0.62">
+    <!-- tail: flat paddle behind the body -->
+    <ellipse cx="86" cy="300" rx="74" ry="30" transform="rotate(-14 86 300)"/>
+    <!-- body and head -->
+    <ellipse cx="300" cy="290" rx="196" ry="100"/>
+    <ellipse cx="462" cy="262" rx="82" ry="64"/>
+    <!-- bill -->
+    <path d="M510 252 Q572 244 618 270 Q630 288 612 302 Q566 318 508 306 Z"/>
+    <!-- legs and webbed feet -->
+    <rect x="170" y="340" width="40" height="64" rx="18"/>
+    <rect x="360" y="342" width="40" height="62" rx="18"/>
+    <rect x="236" y="350" width="38" height="54" rx="17"/>
+    <rect x="430" y="332" width="38" height="72" rx="17"/>
+    <ellipse cx="184" cy="408" rx="42" ry="13"/>
+    <ellipse cx="376" cy="408" rx="42" ry="13"/>
+    <ellipse cx="252" cy="408" rx="38" ry="12"/>
+    <ellipse cx="450" cy="408" rx="40" ry="12"/>
+  </g>
+  <!-- eye -->
+  <circle cx="478" cy="246" r="9" fill="#0b1b3a" opacity="0.55"/>
+</svg>

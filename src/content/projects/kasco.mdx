@@ -1,0 +1,81 @@
+---
+title: "KASCO: Kalimantan SAF Supply Chain Optimiser"
+summary: "A browser-based planning prototype for a Sustainable Aviation Fuel network across Kalimantan, built for Airbus Challenge 3, Autonomous SG 2026, whose Rust solver reports a proven optimality gap."
+order: 1
+sources:
+  - label: "README: who it is for"
+    url: "https://github.com/weewzr/KASCO/blob/main/README.md#who-it-is-for"
+  - label: "README: official inputs"
+    url: "https://github.com/weewzr/KASCO/blob/main/README.md#official-inputs"
+  - label: "README: results"
+    url: "https://github.com/weewzr/KASCO/blob/main/README.md#results"
+  - label: "README: method in brief"
+    url: "https://github.com/weewzr/KASCO/blob/main/README.md#method-in-brief"
+  - label: "README: limits"
+    url: "https://github.com/weewzr/KASCO/blob/main/README.md#limits"
+  - label: "Mathematical model (docs/MODEL.md)"
+    url: "https://github.com/weewzr/KASCO/blob/main/docs/MODEL.md"
+  - label: "HiGHS cross-check on five smaller cases (docs/data/bound_check.json)"
+    url: "https://github.com/weewzr/KASCO/blob/main/docs/data/bound_check.json"
+  - label: "HiGHS run on the full base case (docs/data/highs_check.json)"
+    url: "https://github.com/weewzr/KASCO/blob/main/docs/data/highs_check.json"
+  - label: "Official input check (docs/data/official_check.json)"
+    url: "https://github.com/weewzr/KASCO/blob/main/docs/data/official_check.json"
+  - label: "Free-depot check (docs/data/depot_check.json)"
+    url: "https://github.com/weewzr/KASCO/blob/main/docs/data/depot_check.json"
+---
+
+## The problem
+
+A Sustainable Aviation Fuel (SAF) network planner has to decide where to commit about USD 4.7B of plant capital before engineering starts, and the usual alternative is to compare a few hand-drawn layouts in a spreadsheet. KASCO is a working prototype, built for Airbus Challenge 3, Autonomous SG 2026. It picks refinery and depot sites and sizes across Kalimantan, routes biomass and SAF to four international airports, and shows the evidence behind each number. The planner makes the decision, and the tool does not claim to replace engineering judgement.
+
+The inputs are the official challenge data. Demand is 300 kt of SAF at each airport, 1,200 kt in total, which needs 6,000 kt of biomass at a yield of 0.20 t SAF per t biomass. CapEx is straight-line over 20 years, fixed OpEx is 5% of CapEx, distance is great-circle times 1.3, and the last leg to Tarakan is by barge.
+
+## Approach
+
+The candidate-site model is a capacitated facility location problem. Relaxing supply and demand with multipliers splits it into one small subproblem per site, which gives a proven lower bound, and branch-and-bound then searches refinery sites. A min-cost flow gives the optimal routing for any set of open refineries. Plants are then free to move anywhere on land to their weighted geometric median, with a land check. That last step is a local refinement.
+
+Under these inputs depots sit at refineries. The second leg costs more per tonne-km than the first and depots lose no mass, so the triangle inequality shows that moving a depot onto the single refinery it serves never raises transport cost. `scripts/verify_depots.py` closes the harder case of depots feeding two refineries for the base fleet. Real wet feedstock could change this, so a field-depot design is included as a priced alternative.
+
+The solver is written in Rust and compiled to WebAssembly, so the whole product runs in the browser from GitHub Pages with no server. The scenario tabs let the user edit every input and rerun the real solver. The decision-support tab is rule-based and traceable, uses no language model and declines questions outside the model. An optional panel using Claude Sonnet 5.5 answers free-form questions from solver data with the viewer's own API key, and removes any line whose figure is not in that data.
+
+## Verification
+
+`validate.rs` recomputes every balance and the objective from the flow records, and HiGHS provides a second opinion from an exported LP file.
+
+| Result | Status |
+|---|---|
+| Base case, 70 candidate sites | Feasible within a proven gap |
+| Five smaller cases | Rust cost equals the HiGHS proven optimum |
+| Refined coordinates | Local refinement, no global proof |
+| Field depots | Heuristic, no optimality proof |
+
+On the five smaller cases (total demand from 20 kt to 300 kt), HiGHS proved the optimum, the Rust cost matched it and the Rust bound stayed valid. On the full base case the exported model went to HiGHS with a 480 s time limit. It returned USD 890.32M and stopped with a 2.65% gap, so it supplies no proof there, and the base-case gap rests on the Rust bound. `scripts/check_official.py` compares the engine with the official workbook, and the recorded check holds 30 comparisons, all passed.
+
+## Results
+
+| Quantity | Value | Source document |
+|---|---|---|
+| Base case annual cost | USD 890.09M per year | README, Results |
+| Cost per tonne SAF, before feedstock | USD 742 | README, Results |
+| Fleet | 6 large refineries, 23 depot modules | README, Results |
+| Proven gap on candidate sites | within 0.75% | README, Results |
+| Saving against two simple heuristic layouts | USD 61M to 77M per year | README, Results |
+| Strong k-means benchmark, same fleet and refinement | about USD 1.1M above the network at median | README, Results |
+| Transport share of cost | 7.5% | README, Results |
+| Field-depot design | an estimated 25% fewer truck-km | README, Method in brief |
+
+The README states what this means. The k-means benchmark reaches the same network at best, so the value of the tool lies in the proven bound, the fleet and size choice in each scenario, and the limits it exposes. These are model results, with no measured savings against real planners behind them.
+
+## What it does not cover
+
+- The 80 biomass points are official modelling inputs and have not been surveyed as sites, and 13 fall off the coastline.
+- Site screening is preliminary. Land tenure is unchecked, and so are peat and forest status, so no site is shown to be buildable.
+- Official demand is about 12 times the author's estimate of today's real jet use at these airports, so this is a hub-scale plan.
+- The model is deterministic and annual, and biomass purchase price is outside the objective by instruction.
+- Refined coordinates carry no global proof, and the field-depot design carries no optimality proof.
+- The depot result reverses if depot mass retention falls below 0.833.
+
+## Technology
+
+The engine, command-line runner and browser entry points are Rust crates, and the browser build targets `wasm32-unknown-unknown` with a JavaScript front end. HiGHS and Python scripts perform the independent checks and generate the reports. Data comes from the official Airbus files, a Natural Earth land mask and OpenStreetMap road distances fetched through OSRM. GitHub Pages serves the `docs` folder, and the code is MIT licensed.

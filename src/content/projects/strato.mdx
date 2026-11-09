@@ -1,0 +1,76 @@
+---
+title: "STRATO: Spherical TRISO Analysis and Transport Operations"
+summary: "A verified numerical model of fission-product diffusion out of a single TRISO fuel particle, solved two independent ways in its Phase 1 release, which uses synthetic example parameters."
+order: 3
+sources:
+  - label: "README: status and scientific objective"
+    url: "https://github.com/weewzr/STRATO/blob/main/README.md#scientific-objective"
+  - label: "README: mathematical model (v1.0)"
+    url: "https://github.com/weewzr/STRATO/blob/main/README.md#mathematical-model-v10"
+  - label: "README: verification"
+    url: "https://github.com/weewzr/STRATO/blob/main/README.md#verification"
+  - label: "README: development status"
+    url: "https://github.com/weewzr/STRATO/blob/main/README.md#development-status"
+  - label: "README: known limitations of v1.0"
+    url: "https://github.com/weewzr/STRATO/blob/main/README.md#known-limitations-of-v10"
+  - label: "Final Deliverable, v1.0.0 (docs/mathematics/v1.0.0)"
+    url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/v1.0.0/STRATO_Final_Deliverable.md"
+  - label: "Synthetic five-layer input"
+    url: "https://github.com/weewzr/STRATO/blob/main/inputs/synthetic/synthetic_five_layer.toml"
+  - label: "Golden run output (tests/golden/v1.0/main_run_stdout.txt)"
+    url: "https://github.com/weewzr/STRATO/blob/main/tests/golden/v1.0/main_run_stdout.txt"
+  - label: "Golden verification output (tests/golden/v1.0/verify_stdout.txt)"
+    url: "https://github.com/weewzr/STRATO/blob/main/tests/golden/v1.0/verify_stdout.txt"
+  - label: "Continuous integration workflow"
+    url: "https://github.com/weewzr/STRATO/blob/main/.github/workflows/ci.yml"
+  - label: "Changelog"
+    url: "https://github.com/weewzr/STRATO/blob/main/CHANGELOG.md"
+---
+
+## The problem
+
+A TRISO fuel particle is a small kernel wrapped in coating layers. STRATO asks how fast fission products such as silver, caesium and strontium diffuse out through those layers, and it tracks the release fraction, the share of the initial inventory that has left through the outer surface. The aim is a model in which every equation, numerical method and parameter can be traced to a derivation or a published source.
+
+Version 1.0 is Phase 1 of that plan. It provides the verified numerical foundation, and physical inputs from the literature are added in later versions. Its bundled example uses synthetic parameters chosen for verification. They are not measured TRISO properties. The model holds temperature constant, gives each layer a constant diffusivity and places the whole initial inventory in the kernel. Radioactive decay, fission-product generation and temperature-dependent diffusivity are excluded and belong to the v2.0 scope.
+
+## Approach
+
+The particle has five concentric spherical layers: kernel, buffer, inner pyrolytic carbon, silicon carbide and outer pyrolytic carbon. Each obeys spherical diffusion with its own diffusivity. The centre is a symmetry point, interfaces are in perfect contact so that concentration and flux are continuous, and the outer surface absorbs everything that arrives.
+
+The same problem is solved twice. Code C is an exact multilayer Sturm-Liouville eigenfunction series, with eigenvalues isolated by a Sturm count and refined by bisection, and it reports its mode count, the time from which the series is valid and its round-off floor. Code B is a conservative finite-volume scheme with exact shell volumes and wall areas, series-resistance interface conductances and Backward Euler stepping. Each step is one tridiagonal solve by subtraction-free elimination, and inventory, cumulative release and their balance are tracked throughout. Two written documents derive both methods, and the second links each final equation to its pseudocode and to the Rust code with file and line references.
+
+## Verification
+
+The two methods check each other, and a regression test compares the build with the delivered v1.0 outputs. The verification example asserts every claim it prints. The CI workflow checks formatting, lints with warnings denied, runs the tests and the documentation build, runs the verification example and audits dependencies. The Final Deliverable records 20 Rust tests, all passing in its acceptance check, and marks each numerical property with an evidence status that runs from proved down to claimed only. It also lists 44 known inconsistencies between the earlier documents, code comments, tests and code, items I1 to I26 and K1 to K18, with a recommended correction for each.
+
+These checks show that the code solves its equations correctly. They say nothing about whether the equations or the inputs match real particles, because two methods can agree and still rest on the same wrong physics. Comparison with measured AGR-1 release data is planned for v2.0.
+
+## Results
+
+Every figure below comes from the synthetic five-layer case, so it describes the numerics and makes no physical prediction.
+
+| Quantity | Value | Source document |
+|---|---|---|
+| Spatial order, finite volume against exact series | 2.00 | README, Verification |
+| Temporal order, Backward Euler | 1.00 against a same-mesh reference | README, Verification |
+| Printed temporal orders on the 200-cell mesh | 0.98 to 0.89 | Final Deliverable, section 6 |
+| Inventory balance | relative residual at most 2.8e-13 | README, Verification |
+| Spatially extrapolated finite volume against series at 2e5 s | agree to 1.3e-12 | README, Verification |
+| Release fraction at 2e5 s, exact series | 0.43256 | tests/golden/v1.0/main_run_stdout.txt |
+| Release fraction at 2e5 s, 200 cells, 200 s steps | 0.43243, difference 1.27e-4 | tests/golden/v1.0/main_run_stdout.txt |
+| Series modes and accuracy floor | 32 modes, 4.0e-12 | tests/golden/v1.0/main_run_stdout.txt |
+
+The printed temporal orders fall below one because the spatial error of the 200-cell mesh enters the comparison. The gap of 1.27e-4 between the single run and the exact series is mostly time-step error, since Backward Euler is first order, and the verification output (tests/golden/v1.0/verify_stdout.txt) puts the spatial error at 200 cells at 5.5e-6.
+
+## What it does not cover
+
+- The inputs are synthetic, and no literature parameters are bundled yet.
+- Temperature is constant and diffusivity does not depend on it. The input temperature is recorded only.
+- There is no radioactive decay and no fission-product generation, so all inventory starts in the kernel.
+- Interfaces are in perfect contact with no partition coefficients, and the outer surface is a perfect sink.
+- The model covers a single intact particle. Matrix transport, failed particles and particle populations are not modelled.
+- Backward Euler is first order in time, so the time step controls accuracy at early times.
+
+## Technology
+
+STRATO is a Rust program built with Cargo, reading TOML input and writing CSV and SVG output. Python scripts under `scripts/` check the derivations and draw the figures. GitHub Actions runs the CI workflow and a documentation workflow, and the PDF documents are built with pandoc and XeLaTeX. The project is MIT licensed.

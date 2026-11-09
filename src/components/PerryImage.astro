@@ -1,0 +1,174 @@
+---
+/**
+ * Shared <picture> helper for every Perry placement.
+ * Reads mascot.assets from src/data/site.ts and prefixes paths with withBase().
+ * When mascot.enabled is false it renders public/mascot/silhouette.svg instead.
+ */
+import { mascot } from '../data/site';
+import { withBase } from '../lib/url';
+
+type Slot = keyof typeof mascot.assets;
+
+interface Props {
+  slot: Slot;
+  class?: string;
+  alt?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  decoding?: 'async' | 'sync' | 'auto';
+}
+
+const defaultAlt: Record<Slot, string> = {
+  hero: 'Perry the Platypus as Agent P, wearing a brown fedora',
+  projects: 'Perry the Platypus as Agent P, crouching and wearing a dark fedora',
+  research: 'Close-up of Perry the Platypus as Agent P, wearing a brown fedora',
+  footer: 'Perry the Platypus walking, seen from the side',
+};
+
+const {
+  slot,
+  class: className,
+  alt,
+  loading = 'lazy',
+  fetchpriority,
+  decoding = 'async',
+} = Astro.props;
+
+const asset = mascot.assets[slot];
+const enabled = mascot.enabled;
+const label = enabled ? (alt ?? defaultAlt[slot]) : 'Mascot placeholder';
+---
+
+{
+  enabled ? (
+    <picture>
+      <source type="image/webp" srcset={withBase(asset.webp)} />
+      <img
+        class:list={['perry-img', className]}
+        src={withBase(asset.png)}
+        width={asset.width}
+        height={asset.height}
+        alt={label}
+        loading={loading}
+        decoding={decoding}
+        fetchpriority={fetchpriority}
+        draggable="false"
+      />
+    </picture>
+  ) : (
+    <img
+      class:list={['perry-img', 'perry-img--placeholder', className]}
+      src={withBase('mascot/silhouette.svg')}
+      width={asset.width}
+      height={asset.height}
+      style={`aspect-ratio:${asset.width} / ${asset.height}`}
+      alt={label}
+      loading={loading}
+      decoding={decoding}
+      fetchpriority={fetchpriority}
+      draggable="false"
+    />
+  )
+}
+
+<style is:global>
+  .perry-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  .perry-img--placeholder {
+    object-fit: contain;
+    object-position: 50% 100%;
+  }
+
+  /* Speech bubble shared by PerryHero, PerryAgent and PerryFooter. Each component positions it. */
+  .perry-bubble {
+    position: absolute;
+    z-index: 3;
+    width: max-content;
+    max-width: min(15rem, 62vw);
+    padding: 0.45rem 0.75rem;
+    border-radius: 12px;
+    background: rgb(8 18 44 / 0.96);
+    border: 1px solid rgb(167 139 250 / 0.6);
+    color: #e2e8f0;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.35;
+    box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.75), 0 0 24px -8px rgb(124 58 237 / 0.55);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px) scale(0.96);
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0.22s;
+  }
+  .perry-bubble::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: inherit;
+    border: 0 solid rgb(167 139 250 / 0.6);
+    transform: rotate(45deg);
+  }
+  .perry-bubble--tail-right::after {
+    right: -6px;
+    top: calc(50% - 5px);
+    border-width: 1px 1px 0 0;
+  }
+  .perry-bubble--tail-bottom::after {
+    bottom: -6px;
+    right: 1.1rem;
+    border-width: 0 1px 1px 0;
+  }
+  [data-perry-talk]:is(:hover, .is-talking):not([data-dismissed]) .perry-bubble,
+  [data-perry-talk]:has([data-perry-trigger]:focus-visible):not([data-dismissed]) .perry-bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .perry-bubble {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Shared behaviour for Perry speech bubbles (PerryHero, PerryAgent, PerryFooter).
+  // Hover and keyboard focus are handled in CSS. This script adds tap support for touch devices
+  // (.is-talking for a few seconds) and lets Escape dismiss a bubble (WCAG 1.4.13).
+  const roots = document.querySelectorAll<HTMLElement>('[data-perry-talk]');
+  roots.forEach((root) => {
+    const trigger = root.querySelector<HTMLElement>('[data-perry-trigger]');
+    if (!trigger) return;
+    let timer = 0;
+    const show = () => {
+      root.removeAttribute('data-dismissed');
+      root.classList.add('is-talking');
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => root.classList.remove('is-talking'), 3200);
+    };
+    const hide = () => {
+      window.clearTimeout(timer);
+      root.classList.remove('is-talking');
+    };
+    const reset = () => root.removeAttribute('data-dismissed');
+    trigger.addEventListener('click', show);
+    trigger.addEventListener('blur', () => {
+      hide();
+      reset();
+    });
+    root.addEventListener('pointerleave', reset);
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      hide();
+      if (root.matches(':hover, :focus-within')) root.setAttribute('data-dismissed', 'true');
+    });
+  });
+</script>

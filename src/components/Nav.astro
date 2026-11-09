@@ -1,0 +1,467 @@
+﻿---
+/**
+ * Sticky glass navigation bar.
+ * - Links come from `nav` in site.ts and use homeAnchor() so they work on every page.
+ * - Below 860px the links move into a slide/fade panel opened by a menu button.
+ * - Without JavaScript the panel stays visible as a static block, so every link is reachable.
+ * - Scroll-spy (home page only) marks the section in view with aria-current="location".
+ */
+import { site, nav, social } from '../data/site';
+import { withBase, homeAnchor } from '../lib/url';
+import Icon from './Icon.astro';
+---
+
+<header class="nav" data-site-nav>
+  <div class="nav__bar container">
+    <a class="nav__brand" href={withBase('')} aria-label={`${site.name}, home`}>
+      <svg class="nav__mark" width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="nav-mark-grad" x1="4" y1="28" x2="28" y2="4" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#3b82f6"></stop>
+            <stop offset="0.55" stop-color="#8b5cf6"></stop>
+            <stop offset="1" stop-color="#c4b5fd"></stop>
+          </linearGradient>
+        </defs>
+        <ellipse
+          class="nav__mark-orbit"
+          cx="16"
+          cy="16"
+          rx="14"
+          ry="5.4"
+          transform="rotate(-30 16 16)"
+          stroke="url(#nav-mark-grad)"
+          stroke-width="1.4"></ellipse>
+        <path
+          d="M16 5.5 18.1 13.9 26.5 16 18.1 18.1 16 26.5 13.9 18.1 5.5 16 13.9 13.9Z"
+          fill="url(#nav-mark-grad)"></path>
+        <circle cx="26.1" cy="9.2" r="1.7" fill="#c4b5fd"></circle>
+      </svg>
+      <span class="nav__name">{site.name}</span>
+    </a>
+
+    <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+      <span class="nav__toggle-open"><Icon name="menu" size={24} /></span>
+      <span class="nav__toggle-close"><Icon name="close" size={24} /></span>
+    </button>
+
+    <nav class="nav__panel" id="site-menu" aria-label="Primary">
+      <ul class="nav__links">
+        {
+          nav.map((item) => (
+            <li>
+              <a class="nav__link" href={homeAnchor(item.href)} data-section={item.href.replace('#', '')}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="nav__social">
+        <a
+          class="nav__icon"
+          href={social.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub profile, opens in a new tab"
+        >
+          <Icon name="github" size={21} />
+        </a>
+        <a
+          class="nav__icon"
+          href={social.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn profile, opens in a new tab"
+        >
+          <Icon name="linkedin" size={22} />
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--nav-h);
+  }
+  /* Glass layer lives on a pseudo-element so the mobile panel is not nested inside a backdrop root. */
+  .nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(6 11 27 / 0.66);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(150%);
+  }
+  /* Bottom hairline. */
+  .nav::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(148 163 184 / 0.3) 18%,
+      rgb(167 139 250 / 0.38) 50%,
+      rgb(148 163 184 / 0.3) 82%,
+      transparent
+    );
+    pointer-events: none;
+  }
+  .nav__bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+  }
+
+  /* Brand */
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    flex-shrink: 0;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.08rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .nav__brand:hover {
+    color: #fff;
+  }
+  .nav__name {
+    white-space: nowrap;
+  }
+  .nav__mark {
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 8px rgb(124 58 237 / 0.45));
+  }
+  .nav__mark-orbit {
+    transform-origin: 16px 16px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nav__mark {
+      transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .nav__brand:hover .nav__mark {
+      transform: rotate(72deg);
+    }
+  }
+
+  /* Panel: inline row on desktop. */
+  .nav__panel {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-left: 0.5rem;
+  }
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+  .nav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.85rem;
+    color: #cbd5e1;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+  .nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 7px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #3b82f6, #a78bfa);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .nav__link:hover,
+  .nav__link[aria-current='location'] {
+    color: #fff;
+  }
+  .nav__link:hover::after,
+  .nav__link[aria-current='location']::after {
+    transform: scaleX(1);
+  }
+
+  .nav__social {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+  .nav__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: #cbd5e1;
+    border: 1px solid transparent;
+    transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+  .nav__icon:hover {
+    color: #fff;
+    background: rgb(124 58 237 / 0.2);
+    border-color: rgb(167 139 250 / 0.45);
+    transform: translateY(-2px);
+  }
+
+  /* Menu button: hidden on desktop. */
+  .nav__toggle {
+    display: none;
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    place-items: center;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.04);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+  .nav__toggle:hover {
+    background: rgb(124 58 237 / 0.2);
+    border-color: rgb(167 139 250 / 0.5);
+  }
+  .nav__toggle-open,
+  .nav__toggle-close {
+    display: grid;
+    place-items: center;
+  }
+  .nav__toggle-close {
+    display: none;
+  }
+  .nav__toggle[aria-expanded='true'] .nav__toggle-open {
+    display: none;
+  }
+  .nav__toggle[aria-expanded='true'] .nav__toggle-close {
+    display: grid;
+  }
+
+  /* Mobile layout. */
+  @media (max-width: 859.98px) {
+    .nav__toggle {
+      display: inline-grid;
+    }
+    .nav__panel {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex: none;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 0;
+      margin: 0;
+      padding: 0.35rem 1rem 1.1rem;
+      max-height: calc(100svh - var(--nav-h));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background: rgb(7 13 30 / 0.97);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 28px 48px -28px rgb(0 0 0 / 0.8);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition:
+        opacity 0.25s ease,
+        transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+        visibility 0s linear 0.3s;
+    }
+    .nav__toggle[aria-expanded='true'] + .nav__panel {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition-delay: 0s;
+    }
+    .nav__links {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin: 0;
+    }
+    .nav__link {
+      display: flex;
+      min-height: 52px;
+      padding: 0 0.25rem;
+      font-size: 1.05rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav__link::after {
+      left: 0.25rem;
+      right: auto;
+      bottom: 12px;
+      width: 2rem;
+    }
+    .nav__social {
+      padding-top: 0.85rem;
+      gap: 0.5rem;
+    }
+    .nav__icon {
+      border-color: var(--line);
+    }
+  }
+
+  /* Narrow phones: tighten the brand so the bar never overflows at 360px. */
+  @media (max-width: 380px) {
+    .nav__brand {
+      font-size: 1rem;
+      gap: 0.5rem;
+    }
+  }
+
+  /* Without JavaScript the panel is a plain block under the bar and the header is not sticky. */
+  @media (max-width: 859.98px) {
+    :global(html:not(.js)) .nav {
+      position: relative;
+      height: auto;
+    }
+    :global(html:not(.js)) .nav__bar {
+      flex-wrap: wrap;
+      height: auto;
+    }
+    :global(html:not(.js)) .nav__brand {
+      min-height: var(--nav-h);
+    }
+    :global(html:not(.js)) .nav__toggle {
+      display: none;
+    }
+    :global(html:not(.js)) .nav__panel {
+      position: static;
+      flex: 1 0 100%;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      max-height: none;
+      padding: 0 0 1rem;
+      background: none;
+      box-shadow: none;
+      border-bottom: 0;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav__panel {
+      transition: none !important;
+    }
+  }
+
+  /* Sections made programmatically focusable by the script below take focus without a ring. */
+  :global(section[tabindex='-1']:focus) {
+    outline: none;
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-nav]');
+  const toggle = header?.querySelector<HTMLButtonElement>('.nav__toggle');
+  const panel = header?.querySelector<HTMLElement>('#site-menu');
+
+  if (header && toggle && panel) {
+    const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+    const setOpen = (open: boolean, restoreFocus = false) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      if (!open && restoreFocus) toggle.focus();
+    };
+
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+
+    // Escape closes the panel; focus returns to the button if it was inside the panel.
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || !isOpen()) return;
+      setOpen(false, panel.contains(document.activeElement));
+    });
+
+    // A click outside the header closes the panel.
+    document.addEventListener('pointerdown', (event) => {
+      if (isOpen() && !header.contains(event.target as Node)) setOpen(false);
+    });
+
+    // Following a link closes the panel; the browser moves the focus start to the target section.
+    panel.addEventListener('click', (event) => {
+      if ((event.target as Element).closest('a')) setOpen(false);
+    });
+
+    // Tabbing out of the header closes the panel.
+    header.addEventListener('focusout', (event) => {
+      const next = event.relatedTarget as Node | null;
+      if (isOpen() && next && !header.contains(next)) setOpen(false);
+    });
+
+    // Reset when the layout switches to the desktop bar.
+    window.matchMedia('(min-width: 860px)').addEventListener('change', () => setOpen(false));
+
+    // Scroll-spy: only when the linked sections exist on this page (the home page).
+    const links = Array.from(panel.querySelectorAll<HTMLAnchorElement>('a[data-section]'));
+    const sections = links
+      .map((link) => document.getElementById(link.dataset.section ?? ''))
+      .filter((el): el is HTMLElement => el !== null);
+    const hero = document.getElementById('hero');
+
+    // Make section targets focusable so following an anchor moves focus (and the reading position)
+    // to the section instead of dropping it on the page body when the panel closes.
+    for (const section of sections) {
+      if (!section.hasAttribute('tabindex')) section.setAttribute('tabindex', '-1');
+    }
+
+    if (sections.length > 0 && 'IntersectionObserver' in window) {
+      const inView = new Map<string, boolean>();
+      const setCurrent = (id: string | null) => {
+        for (const link of links) {
+          if (link.dataset.section === id) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        }
+      };
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) inView.set(entry.target.id, entry.isIntersecting);
+          if (hero && inView.get('hero')) {
+            setCurrent(null);
+            return;
+          }
+          // Pick the lowest section on the page that crosses the reading band.
+          const current = sections.filter((s) => inView.get(s.id)).pop();
+          if (current) setCurrent(current.id);
+        },
+        { rootMargin: '-35% 0px -60% 0px', threshold: 0 },
+      );
+      sections.forEach((section) => io.observe(section));
+      if (hero) io.observe(hero);
+    }
+  }
+</script>

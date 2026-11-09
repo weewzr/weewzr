@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="28" viewBox="0 0 1200 28" role="img" aria-label="Decorative divider with a small star">
+  <title>Divider</title>
+  <defs>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3B82F6" stop-opacity="0"/>
+      <stop offset="0.3" stop-color="#3B82F6" stop-opacity="0.75"/>
+      <stop offset="0.5" stop-color="#8B5CF6" stop-opacity="0.9"/>
+      <stop offset="0.7" stop-color="#A78BFA" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#8B5CF6" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="starFill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+  <rect x="40" y="13.25" width="1120" height="1.5" rx="0.75" fill="url(#line)"/>
+  <circle cx="600" cy="14" r="22" fill="url(#halo)"/>
+  <path d="M600.0 4.0 Q601.4 12.6 610.0 14.0 Q601.4 15.4 600.0 24.0 Q598.6 15.4 590.0 14.0 Q598.6 12.6 600.0 4.0Z" fill="url(#starFill)"/>
+  <circle cx="566" cy="14" r="2" fill="#60A5FA" opacity="0.85"/>
+  <circle cx="634" cy="14" r="2" fill="#A78BFA" opacity="0.85"/>
+  <circle cx="538" cy="14" r="1.2" fill="#60A5FA" opacity="0.6"/>
+  <circle cx="662" cy="14" r="1.2" fill="#A78BFA" opacity="0.6"/>
+</svg>
