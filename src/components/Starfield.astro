@@ -439,6 +439,8 @@ const near = starTile({ size: 701, count: 5, rMin: 1.25, rMax: 1.7, oMin: 0.8, o
       // Respect Save-Data: the CSS layers already carry the look and skip the ~130 kB gzip download.
       const link = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
       if (link?.saveData) return;
+      // Reduced motion: the static CSS star layers are enough, so skip the WebGL download.
+      if (reduceQuery.matches) return;
       mounting = true;
       const canvas = document.createElement('canvas');
       canvas.className = 'cosmos-gl';
@@ -482,7 +484,10 @@ const near = starTile({ size: 701, count: 5, rMin: 1.25, rMax: 1.7, oMin: 0.8, o
     });
     reduceQuery.addEventListener('change', () => {
       if (reduceQuery.matches) clearShoot();
-      else scheduleShoot();
+      else {
+        scheduleShoot();
+        boot();
+      }
     });
     window.addEventListener('pagehide', () => {
       alive = false;

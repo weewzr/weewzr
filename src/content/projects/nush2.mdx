@@ -1,6 +1,6 @@
 ---
-title: "NUS-H2: Nuclear-Heated Hydrogen with Carbon Capture"
-summary: "An open Rust engine and browser simulator for a nuclear-heated, carbon-captured hydrogen plant in Singapore, reporting a base full cost of S$189.7 per tonne of CO2 abated and a S$100 per tonne target that is missed in every central case."
+title: "NUS-H2: Nuclear-Upgraded Steam Methane Reforming with Carbon Capture for Low-Carbon Hydrogen in Singapore"
+summary: "An open Rust engine and browser simulator for nuclear-upgraded steam methane reforming with carbon capture in Singapore. It reports a base full cost of S$189.7 per tonne of CO2 abated. The S$100 per tonne target is missed in every central case."
 order: 2
 sources:
   - label: "README: what NUS-H2 is"
@@ -17,19 +17,21 @@ sources:
     url: "https://github.com/weewzr/NUSH2/blob/main/docs/FINAL_DESIGN_DECISIONS.md"
   - label: "Validation matrix (docs/VALIDATION_MATRIX.md)"
     url: "https://github.com/weewzr/NUSH2/blob/main/docs/VALIDATION_MATRIX.md"
+  - label: "Reference list (references/README.md)"
+    url: "https://github.com/weewzr/NUSH2/blob/main/references/README.md"
   - label: "Site build and deploy workflow"
     url: "https://github.com/weewzr/NUSH2/blob/main/.github/workflows/site.yml"
 ---
 
 ## The problem
 
-Conventional steam methane reforming (SMR) makes hydrogen from natural gas and releases the resulting CO2. NUS-H2 asks what it would cost to abate that carbon in Singapore if a high-temperature gas-cooled reactor (HTGR) supplied the process heat and a monoethanolamine (MEA) unit captured the CO2 for offshore storage by ship. Cost is a levelised abatement cost, in S$ per tonne of CO2 abated, against an unabated SMR of equal hydrogen output.
+Conventional steam methane reforming (SMR) makes hydrogen from natural gas and releases the resulting CO2. NUS-H2 asks what it would cost to abate that carbon in Singapore if a high-temperature gas-cooled reactor supplied the process heat and a monoethanolamine (MEA) unit captured the CO2 for offshore storage by ship. Cost is a levelised abatement cost, in S$ per tonne of CO2 abated, against an unabated SMR of equal hydrogen output.
 
-The headline plant, Case B, makes 100,000 Nm3/h of purified hydrogen, or 66,925 t/y at 85% availability. It is sized to the SOXAL hydrogen plant on Jurong Island and sited on the proposed Western Island reclamation, which is the author's proposal with no official approval. INL's 130 MMSCFD plant stays as Case A, a reference that is never presented as a 210 MWth plant.
+The headline plant, Case B, makes 100,000 Nm3/h of purified hydrogen, or 66,925 t/y at 85% availability. It is sized to the SOXAL hydrogen plant on Jurong Island and sited on the proposed Western Island reclamation. Placing the plant there is the project's own proposal and has no official approval. The 130 million standard cubic feet per day (MMSCFD) plant of Idaho National Laboratory (INL) stays as Case A, a reference that is never presented as a 210 MWth plant.
 
 ## Approach
 
-A 210 MWth reactor supplies 120.8 MWth of process heat to the reformer through 900 C secondary helium. The plant needs 178.5 MWth in all, so 31.5 MWth is held as margin that earns nothing. Fresh natural gas is 23.2 MMSCFD, which is 12.6 MMSCFD below an unabated SMR, and the MEA unit captures 90.4% of the plant carbon. The pressure swing adsorption unit sits outside the boundary, and the engine does not simulate it.
+A 210 MWth reactor supplies 120.8 MWth of process heat to the reformer through 900 °C secondary helium. The plant needs 178.5 MWth in all, so 31.5 MWth is held as margin that earns nothing. Fresh natural gas is 23.2 MMSCFD, which is 12.6 MMSCFD below an unabated SMR, and the MEA unit captures 90.4% of the plant carbon. The pressure swing adsorption unit sits outside the boundary, and the engine does not simulate it.
 
 The engine is a Rust workspace with one crate per layer, from gas properties and MEA thermodynamics up to the plant model. Every input sits in `engine/data/parameters.toml`, labelled published, assumed, calculated or author decision, with its source and locator. The exporter is the only writer of `results/`. Two independent methods price one cost set: an annual incremental ledger whose level L5 is the full cost, and a discounted cash flow (DCF) at 8% real.
 
@@ -37,7 +39,7 @@ The engine is a Rust workspace with one crate per layer, from gas properties and
 
 Code tests and literature benchmarks are kept apart. `results/Validation_Results.csv` holds 650 rows: 325 pass, 32 fail, 251 are reported with no limit and 42 did not run. Of the passes, 92 use data that played no part in building or tuning the term under test. The rest are calibration or share a dataset with an engine input, so they earn no validation credit. Failed benchmarks stay recorded, and no constant was tuned and no tolerance changed to make a row pass.
 
-The failures carry through to the headline. The failed column gate keeps the reboiler duty at an assumed 3.8 GJ/t, and the failed Level 3 carbon gate keeps several terms on INL-anchored values. The two cost methods agree to within 0.20% of L5 on the 12-point headline grid and 0.47% at worst over 72 DCF points. No crate carries the author's sign-off yet. The site workflow regenerates the results, compares them with the committed files and runs a browser self test.
+The failures carry through to the headline. The failed column gate keeps the reboiler duty at an assumed 3.8 GJ/t, and the failed Level 3 carbon gate keeps several terms on INL-anchored values. The two cost methods agree to within 0.20% of L5 on the 12-point headline grid and 0.47% at worst over 72 DCF points. No crate carries the project owner's sign-off yet. The site workflow regenerates the results, compares them with the committed files and runs a browser self test.
 
 ## Results
 
@@ -46,21 +48,21 @@ Costs are S$ per tonne of CO2 abated, with the reactor charged at 210 MWth and a
 | Quantity | Value | Source document |
 |---|---|---|
 | Net abatement | 0.578 Mt/y, which meets the 250,000 t/y target | README, What NUS-H2 is |
-| Full cost, BOAK, 25 y | L5 189.7, DCF 190.1 | README, Headline results |
-| Full cost, BOAK, 60 y | L5 165.6, DCF 166.0 | README, Headline results |
-| Full cost, FOAK, 25 y | L5 277.9, DCF 278.4 | README, Headline results |
-| Full cost, FOAK, 60 y | L5 241.7, DCF 242.2 | README, Headline results |
-| Central cases reaching S$100/t | 0 of 8 | README, Headline results |
-| Lowest L5 at n = 1.0 | 108.5 (tenth of a kind, 60 y, reactor charged at 178.5 MWth) | README, Headline results |
+| Full cost, BOAK, 25 years | L5 189.7, DCF 190.1 | README, Headline results |
+| Full cost, BOAK, 60 years | L5 165.6, DCF 166.0 | README, Headline results |
+| Full cost, FOAK, 25 years | L5 277.9, DCF 278.4 | README, Headline results |
+| Full cost, FOAK, 60 years | L5 241.7, DCF 242.2 | README, Headline results |
+| Central cases reaching S$100 per tonne | 0 of 8 | README, Headline results |
+| Lowest L5 at n = 1.0 | 108.5 (tenth of a kind, 60 years, reactor charged at 178.5 MWth) | README, Headline results |
 | Named scenario MATURE_60Y | L5 95.6, DCF 95.9 | README, Headline results |
 
-The S$100 per tonne target is missed in every central case. The one named scenario below it stacks a tenth-of-a-kind reactor on INL's learning route with a 60 y life, then raises natural gas to S$20.7/GJ. That takes L5 from 189.7 through 146.3 and 128.2 to 95.6. The gas price is the engine's solve for the author's own target of S$96/t, and it lies above the S$10 to S$20/GJ range the engine holds. At S$20/GJ the same scenario gives S$99.6/t. The scenario rests on a price beyond the evidence in the inputs, so the base full cost stays the reference result.
+The S$100 per tonne target is missed in every central case. The one named scenario below it, MATURE_60Y, stacks a tenth-of-a-kind reactor on INL's learning route with a 60-year life, then raises natural gas to S$20.7 per GJ. That takes L5 from 189.7 through 146.3 and 128.2 to 95.6. The gas price is the engine's solve for the project's own mature-scenario target of S$96 per tonne, and S$20.7 per GJ lies above the S$10 to S$20 per GJ range the engine holds. At S$20 per GJ, the top of that range, the same scenario gives S$99.6 per tonne on L5, which is under the S$100 per tonne target by S$0.4. The scenario therefore meets the target at the edge of the tested gas range, but its S$95.6 figure rests on a price beyond the evidence in the inputs. It is not a central case, so the base full cost stays the reference result.
 
 ## What it does not cover
 
 - The reboiler duty of 3.8 GJ/t (range 3.4 to 4.2) is an assumption with no measurement on syngas, and the modelled stripper misses the pilot and design benchmarks it is judged on.
-- The reformer exit of 871 C is INL's equilibrium assumption. The engine's tube model reaches 782.1 C at 199 tubes.
-- Liquefaction for ship transport is not modelled, and the transport and storage tariff of S$60/t (range S$23.2 to S$112) is assumed.
+- The reformer exit of 871 °C is INL's equilibrium assumption. The engine's tube model reaches 782.1 °C at 199 tubes.
+- Liquefaction for ship transport is not modelled, and the transport and storage tariff of S$60 per tonne (range S$23.2 to S$112 per tonne) is assumed.
 - Reactor capital comes from INL's literature review, and no vendor quote is held for this plant.
 - At the high corner of the heat balance the plant needs 214.1 MWth, above the 210 MWth rating.
 

@@ -1,3 +1,4 @@
+/*! three.js, Copyright 2010-2026 three.js authors, MIT licence (https://github.com/mrdoob/three.js/blob/dev/LICENSE) */
 /**
  * Three.js star layer for the cosmos background (see src/components/Starfield.astro).
  *

@@ -9,8 +9,9 @@ interface Props {
   path?: string;
   noindex?: boolean;
   type?: 'website' | 'article';
+  jsonLd?: Record<string, unknown>;
 }
-const { title, description = site.description, image = site.ogImage, path = '', noindex = false, type = 'website' } = Astro.props;
+const { title, description = site.description, image = site.ogImage, path = '', noindex = false, type = 'website', jsonLd } = Astro.props;
 
 const fullTitle = title ? `${title} | ${site.name}` : site.title;
 const base = site.url.endsWith('/') ? site.url : `${site.url}/`;
@@ -22,7 +23,7 @@ const ogImage = new URL(image, base).href;
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
-<link rel="canonical" href={canonical} />
+{!noindex && <link rel="canonical" href={canonical} />}
 <meta name="author" content={site.name} />
 <meta name="theme-color" content="#060B1B" />
 {noindex && <meta name="robots" content="noindex" />}
@@ -41,3 +42,4 @@ const ogImage = new URL(image, base).href;
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}

@@ -13,6 +13,7 @@ interface Props {
   path?: string;
   noindex?: boolean;
   type?: 'website' | 'article';
+  jsonLd?: Record<string, unknown>;
 }
 const props = Astro.props;
 ---
@@ -40,8 +41,10 @@ const props = Astro.props;
       if (reduce || !('IntersectionObserver' in window)) {
         items.forEach((el) => el.classList.add('is-visible'));
       } else {
+        let fired = false;
         const io = new IntersectionObserver(
           (entries) => {
+            fired = true;
             for (const e of entries) {
               if (e.isIntersecting) {
                 e.target.classList.add('is-visible');
@@ -52,6 +55,10 @@ const props = Astro.props;
           { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
         );
         items.forEach((el) => io.observe(el));
+        // Safety net: if the observer never reports (some previews and crawlers), show everything.
+        window.setTimeout(() => {
+          if (!fired) items.forEach((el) => el.classList.add('is-visible'));
+        }, 2500);
       }
     </script>
   </body>

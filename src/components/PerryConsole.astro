@@ -9,7 +9,6 @@ import PerryImage from './PerryImage.astro';
 import Icon from './Icon.astro';
 
 const enabled = mascot.enabled;
-const triggerLabel = enabled ? `Open ${mascot.alias} research console` : 'Open research console';
 
 /** One-line, neutral descriptions of each field. They describe the field only. */
 const fieldNotes: Record<string, string> = {
@@ -39,11 +38,9 @@ const items = mascot.researchConsolePanel.map((name, i) => ({
       class="perry-console__trigger"
       aria-expanded="false"
       aria-controls="perry-console-panel"
-      aria-describedby="perry-console-line"
-      aria-label={triggerLabel}
     >
       <span class="perry-console__avatar">
-        <PerryImage slot="research" class="perry-console__img" />
+        <PerryImage slot="research" class="perry-console__img" alt="" />
       </span>
       <span class="perry-console__text">
         <span class="perry-console__prompt" aria-hidden="true">

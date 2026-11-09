@@ -10,7 +10,7 @@ import PerryHero from './PerryHero.astro';
 // "Chemical Engineering @ NUS": the abbreviation is read from the bracketed part of the institution name.
 const abbreviation = education.institution.match(/\(([^)]+)\)/)?.[1] ?? education.institution;
 const eyebrow = `${education.degree} @ ${abbreviation}`;
-const identityParts = site.identity.split(' | ');
+const identityParts = site.identity.split(' | ').filter((part) => part !== eyebrow);
 ---
 
 <section id="hero" class="hero section" aria-labelledby="hero-title">
@@ -309,13 +309,12 @@ const identityParts = site.identity.split(' | ');
       transform: rotate(360deg);
     }
   }
+  /* Transform only: text stays visible (and counts for LCP) even if animations never advance. */
   @keyframes hero-rise {
     from {
-      opacity: 0;
-      transform: translateY(18px);
+      transform: translateY(14px);
     }
     to {
-      opacity: 1;
       transform: none;
     }
   }

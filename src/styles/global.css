@@ -135,7 +135,8 @@
     margin-top: 1rem;
   }
   .grad-text {
-    background: var(--grad);
+    /* Lighter middle stop than --grad so large gradient text keeps at least 3:1 on the nebula. */
+    background: linear-gradient(135deg, #60a5fa, #9b7bf7 55%, #c4b5fd);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -199,7 +200,7 @@
     box-shadow: 0 8px 28px -8px rgb(79 70 229 / 0.7);
   }
   .btn-primary:hover {
-    background: linear-gradient(135deg, #3b82f6, #7c3aed);
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
     box-shadow: 0 12px 34px -8px rgb(124 58 237 / 0.85);
   }
   .chip {

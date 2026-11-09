@@ -50,7 +50,7 @@ export const education = {
 export const aboutParagraphs = [
   'I am a Chemical Engineering student at the National University of Singapore with a minor in Low-Carbon Energy and Hydrogen Technologies and a specialisation in Safety and Sustainability.',
   'My research involvement is in nuclear engineering. Alongside it I build computational models of chemical and energy systems, from fission-product transport in fuel particles to low-carbon hydrogen plants and fuel supply networks.',
-  'I care about models that can be checked. Each project below states its assumptions, validates against an independent method where one exists, and says plainly what it does not cover.',
+  'I care about models that can be checked. Each project below states its assumptions and checks its results against an independent method where one exists. The write-ups also say what each model leaves out.',
 ] as const;
 
 /** People and units named with the owner's permission. Keep wording factual. */
@@ -64,7 +64,7 @@ export const affiliations = [
   {
     unit: 'Department of Chemical and Biomolecular Engineering, NUS',
     url: 'https://cde.nus.edu.sg/chbe/',
-    people: ['Suraj Vasudevan'],
+    people: ['Dr Suraj Vasudevan'],
     note: '',
   },
 ] as const;
@@ -87,16 +87,16 @@ export const researchInterests: readonly ResearchInterest[] = [
     id: 'nuclear',
     title: 'Nuclear Engineering & Energy Systems',
     summary:
-      'Research involvement at NUS in nuclear engineering, and a public computational project on fission-product release from TRISO fuel particles.',
+      'Research involvement at NUS in nuclear engineering, and a public computational project on fission-product release from TRISO (tristructural isotropic) fuel particles.',
     kind: 'involvement',
     icon: 'atom',
-    keywords: ['Fuel particles', 'Transport', 'Reactor safety'],
+    keywords: ['Fuel particles', 'Transport', 'Fission-product release'],
   },
   {
     id: 'hydrogen',
     title: 'Hydrogen & Low-Carbon Technologies',
     summary:
-      'Low-carbon hydrogen routes for Singapore, including nuclear-heated steam methane reforming with carbon capture and sustainable aviation fuel supply chains.',
+      'Low-carbon hydrogen for Singapore through nuclear-upgraded steam methane reforming with carbon capture, and sustainable aviation fuel supply chains across Kalimantan.',
     kind: 'interest',
     icon: 'flask',
     keywords: ['Hydrogen', 'Carbon capture', 'SAF'],
@@ -105,7 +105,7 @@ export const researchInterests: readonly ResearchInterest[] = [
     id: 'process',
     title: 'Chemical Process Modelling & Simulation',
     summary:
-      'Mass and energy balances, flowsheet logic and reproducible process models, with inputs traced to a source and results checked against independent calculations.',
+      'Mass and energy balances and flowsheet logic in reproducible process models, with inputs traced to a source and results checked against independent calculations.',
     kind: 'interest',
     icon: 'flow',
     keywords: ['Balances', 'Flowsheets', 'Validation'],
@@ -114,7 +114,7 @@ export const researchInterests: readonly ResearchInterest[] = [
     id: 'tea',
     title: 'Techno-Economic Analysis',
     summary:
-      'Levelised cost and abatement cost ledgers, sensitivity studies and scenario analysis that show which assumptions drive a result.',
+      'Levelised cost and abatement cost ledgers, with sensitivity and scenario studies that show which assumptions drive a result.',
     kind: 'interest',
     icon: 'chart',
     keywords: ['Levelised cost', 'Sensitivity', 'Scenarios'],
@@ -123,16 +123,16 @@ export const researchInterests: readonly ResearchInterest[] = [
     id: 'safety',
     title: 'Process Safety & Sustainability',
     summary:
-      'Safety and sustainability thinking applied to energy systems, following my specialisation in Safety and Sustainability at NUS.',
+      'Applying process safety and sustainability principles to energy systems, following my specialisation in Safety and Sustainability at NUS.',
     kind: 'interest',
     icon: 'shield',
-    keywords: ['Process safety', 'Sustainability', 'Risk'],
+    keywords: ['Process safety', 'Sustainability'],
   },
   {
     id: 'scicomp',
     title: 'Scientific Computing & Numerical Methods',
     summary:
-      'Finite-volume schemes, eigenfunction expansions and mixed-integer optimisation, written in Rust and Python and verified with convergence and balance checks.',
+      'Finite-volume and eigenfunction methods for diffusion, and mixed-integer optimisation for supply networks, written in Rust and Python and verified with convergence and balance checks.',
     kind: 'interest',
     icon: 'grid',
     keywords: ['Finite volume', 'Optimisation', 'Verification'],
@@ -195,12 +195,12 @@ export const projects: readonly Project[] = [
     name: 'KASCO',
     tagline: 'Kalimantan SAF Supply Chain Optimiser',
     description:
-      'A working planning tool for a Sustainable Aviation Fuel network across Kalimantan. It chooses refinery and depot sites and sizes, routes biomass and fuel to four international airports and shows the proof behind each number. The Rust solver is compiled to WebAssembly, so the whole product runs in the browser with no server. Built for Airbus Challenge 3, Autonomous SG 2026.',
+      'A working planning tool for a Sustainable Aviation Fuel network across Kalimantan. It chooses refinery and depot sites and sizes and routes biomass and fuel to four international airports. It also shows the evidence behind each number. The Rust solver is compiled to WebAssembly, so the whole product runs in the browser with no server. Built for Airbus Challenge 3, Autonomous SG 2026.',
     status: 'Live prototype',
     tech: ['Rust', 'WebAssembly', 'HiGHS', 'Python', 'GitHub Pages'],
     features: [
       'Lagrangian branch-and-bound over refinery sites with exact min-cost flow',
-      'Independent validation: balances recomputed from flow records, HiGHS second opinion',
+      'Independent checks: balances recomputed from flow records, HiGHS second opinion',
       'Interactive network map and an editable scenario simulator that reruns the real solver in the browser',
     ],
     repoUrl: 'https://github.com/weewzr/KASCO',
@@ -212,10 +212,10 @@ export const projects: readonly Project[] = [
   {
     slug: 'nush2',
     name: 'NUS-H2',
-    tagline: 'Nuclear-heated steam methane reforming with carbon capture for low-carbon hydrogen in Singapore',
+    tagline: 'Nuclear-upgraded steam methane reforming with carbon capture for low-carbon hydrogen in Singapore',
     description:
       'A low-carbon hydrogen study with an open engine and a browser simulator. A high-temperature gas-cooled reactor supplies process heat to steam methane reforming, and an amine unit captures the carbon dioxide. The headline Case B plant makes 100,000 Nm3/h of purified hydrogen, and the study reports levelised abatement cost against a stated target, including where the target is missed.',
-    status: 'Complete study with live simulator',
+    status: 'Study with live simulator',
     tech: ['Rust', 'WebAssembly', 'JavaScript', 'Python', 'LaTeX', 'GitHub Actions'],
     features: [
       'Layered Rust engine with every input in a sourced parameter register',
@@ -237,7 +237,7 @@ export const projects: readonly Project[] = [
     status: 'v1.0, Phase 1',
     tech: ['Rust', 'Python', 'Finite volume', 'Sturm-Liouville expansion', 'GitHub Actions'],
     features: [
-      'Five-layer particle: kernel, buffer, inner PyC, SiC and outer PyC',
+      'Five-layer particle: kernel, buffer, inner pyrolytic carbon, silicon carbide and outer pyrolytic carbon',
       'Finite-volume solver with exact shell geometry, series interface conductances and Backward Euler stepping',
       'Analytical multilayer eigenfunction solver and full written derivations of both methods',
     ],
@@ -247,7 +247,8 @@ export const projects: readonly Project[] = [
     comingSoon: true,
     image: 'projects/strato.webp',
     imageAlt: 'Cross-section diagram of a TRISO coated fuel particle showing the kernel and four surrounding coating layers.',
-    imageCaption: 'TRISO cross-section figure from the STRATO documentation.',
+    imageCaption:
+      'TRISO cross-section from the STRATO documentation, drawn to scale with AGR-1 baseline dimensions. The bundled v1.0 example uses different, synthetic radii.',
   },
 ] as const;
 

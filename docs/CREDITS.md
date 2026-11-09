@@ -2,9 +2,7 @@
 
 ## Licence of this repository
 
-The source code, configuration and written content of this repository are released under the MIT licence, copyright 2026 Wee Zhern Ray. The full text is in [`LICENSE`](../LICENSE).
-
-The licence has one explicit exclusion.
+The source code, configuration and written content of this repository are released under the MIT licence, copyright 2026 Wee Zhern Ray. The full text is in [`LICENSE`](../LICENSE). Material outside the licence is listed in [`NOTICE.md`](../NOTICE.md), and the main item is the artwork below.
 
 ### Perry the Platypus and Phineas and Ferb artwork
 
@@ -24,7 +22,7 @@ The layout and mood were shaped by looking at the public portfolio templates bel
 
 ## GitHub profile README
 
-The profile page (`README.md` with `assets/readme/`) follows the structure GitHub documents for profile READMEs, in which a repository named after the account shows its README on the profile. The banner and divider graphics are original SVG files made for this repository. The contribution summary image is served by [GitHub Readme Streak Stats](https://github.com/DenverCoder1/github-readme-streak-stats) by Jonah Lawrence (MIT), which receives only the public account name `weewzr` when the image loads.
+The profile page (`README.md` with `assets/readme/`) follows the structure GitHub documents for profile READMEs, in which a repository named after the account shows its README on the profile. The banner and divider graphics are original SVG files made for this repository. The only other image is the Perry artwork described above.
 
 ## Dependencies
 
@@ -56,7 +54,9 @@ The fonts are self-hosted: the built site contains their `woff2` files. The copy
 
 ## Project preview images
 
-The images in `public/projects/` are real project material and carry no invented content: a screenshot of the live KASCO app, the process flow figure from the NUS-H2 repository and the TRISO cross-section figure from the STRATO documentation. Each of those repositories is public and MIT-licensed.
+The images in `public/projects/` are real project material and carry no invented content: a screenshot of the live KASCO app, the process flow figure from the NUS-H2 repository and the TRISO cross-section figure from the STRATO documentation. Each of those repositories is public. KASCO and STRATO are MIT-licensed, and NUS-H2 carries an MIT licence for its own work, with third-party material outside it.
+
+The STRATO cross-section is drawn to scale with the AGR-1 baseline particle dimensions measured by Morris et al. (2016), as the STRATO documentation states in the caption of that figure. The source is R. N. Morris, C. A. Baldwin, P. A. Demkowicz, J. D. Hunn and E. L. Reber, "Performance of AGR-1 high-temperature reactor fuel during post-irradiation heating tests", Nuclear Engineering and Design, volume 306, pages 24 to 35, <https://doi.org/10.1016/j.nucengdes.2016.04.031>. The dimensions are published data. The drawing itself comes from the STRATO repository.
 
 ## Affiliations
 

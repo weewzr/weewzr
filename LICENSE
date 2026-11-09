@@ -20,26 +20,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------------------
-
-EXCLUSIONS FROM THE LICENCE ABOVE
-
-The MIT licence above covers the source code, configuration and written
-content of this repository, and the original graphics made for it (the
-favicon, the social card and the README banner and divider). It does not cover
-the following.
-
-1. Disney artwork. Perry the Platypus and Phineas and Ferb are the property of
-   Disney. The Perry images in public/mascot/ (every file except the original
-   silhouette.svg placeholder) and the file assets/readme/perry.png were
-   supplied by the repository owner as an unofficial fan tribute. They are not
-   covered by the MIT licence, no licence to it is granted here, and it is not
-   affiliated with or endorsed by Disney. The owner will remove it on request
-   from the rights holder. Do not copy, reuse or redistribute these files.
-
-2. Third-party software and fonts. Dependencies keep their own licences, which
-   are listed in docs/CREDITS.md.
-
-Project preview images in public/projects/ are screenshots and figures from the
-owner's public repositories KASCO, NUSH2 and STRATO, each of which carries the
-MIT licence.
+This licence does not cover the third-party material listed in NOTICE.md.

@@ -8,6 +8,7 @@ import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
+import ScrollTable from '../../components/ScrollTable.astro';
 import { projects } from '../../data/site';
 import type { Project } from '../../data/site';
 import { withBase, homeAnchor } from '../../lib/url';
@@ -138,7 +139,7 @@ const shortUrl = (url: string) => {
         <div class="case-prose">
           {
             Content ? (
-              <Content />
+              <Content components={{ table: ScrollTable }} />
             ) : (
               <>
                 <h2>About this project</h2>
@@ -379,6 +380,7 @@ const shortUrl = (url: string) => {
     margin: 0.9rem 0 0;
     padding: 0;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.35rem;
   }
   .sources li {
@@ -386,6 +388,8 @@ const shortUrl = (url: string) => {
     align-items: center;
     gap: 0.5rem;
     color: var(--muted);
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .sources li {
     justify-content: space-between;
@@ -623,16 +627,18 @@ const shortUrl = (url: string) => {
     text-align: center;
   }
   /* Tables scroll sideways inside their own box on narrow screens. */
-  .case-prose table {
-    display: block;
-    width: max-content;
-    max-width: 100%;
+  .case-prose .table-scroll {
     margin: 1.5rem 0;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 6px;
+  }
+  .case-prose table {
+    width: 100%;
+    min-width: 34rem;
     border-collapse: collapse;
     font-size: 0.92rem;
     line-height: 1.5;
-    -webkit-overflow-scrolling: touch;
   }
   .case-prose th,
   .case-prose td {

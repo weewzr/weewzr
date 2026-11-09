@@ -1,0 +1,11 @@
+---
+// Used as the `table` component when rendering MDX case studies (see src/pages/projects/[slug].astro).
+import { tableLabel } from '../lib/tables';
+
+const inner = await Astro.slots.render('default');
+const label = tableLabel(inner);
+---
+
+<div class="table-scroll" role="region" tabindex="0" aria-label={label}>
+  <table set:html={inner} />
+</div>

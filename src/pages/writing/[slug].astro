@@ -8,6 +8,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { site } from '../../data/site';
 import { withBase } from '../../lib/url';
+import { wrapTables } from '../../lib/tables';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes', ({ data }) => !data.draft);
@@ -18,12 +19,8 @@ const { note } = Astro.props;
 const { title, description, category, kind, date, sourceUrl, sourceLabel, tags } = note.data;
 const { Content } = await render(note);
 
-// Wrap each table in a keyboard-focusable scroll region so wide tables scroll on phones.
-const html = note.rendered?.html
-  ? note.rendered.html
-      .replace(/<table>/g, '<div class="table-scroll" role="region" tabindex="0" aria-label="Table, scrolls sideways on narrow screens"><table>')
-      .replace(/<\/table>/g, '</table></div>')
-  : null;
+// Wrap each table in a labelled, keyboard-focusable scroll region so wide tables scroll on phones.
+const html = note.rendered?.html ? wrapTables(note.rendered.html) : null;
 
 const iso = date.toISOString().slice(0, 10);
 const shown = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);

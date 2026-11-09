@@ -1,7 +1,7 @@
 ---
 title: "How a Lagrangian bound gives a facility-location search a proven gap"
 description: "How KASCO relaxes supply and demand constraints to obtain a lower bound on network cost, and how that bound was checked against an independent solver."
-category: "Sustainability"
+category: "Scientific Computing"
 kind: "Computational study"
 date: 2026-11-10
 draft: false
@@ -12,7 +12,7 @@ tags: ["Lagrangian relaxation", "Facility location", "Branch and bound", "Sustai
 
 ## The question a heuristic cannot answer
 
-KASCO plans a Sustainable Aviation Fuel network across Kalimantan. It decides which refineries to open, how large they should be, and how biomass and fuel flow to four airports. A good layout is easy to propose. A planner also needs to know how far it could be from the best possible one. KASCO answers with a lower bound on cost, so every reported cost carries a proven gap to the optimum.
+KASCO plans a Sustainable Aviation Fuel network across Kalimantan. It decides which refineries to open and how large they should be, and it routes biomass and fuel to four airports. A good layout is easy to propose. A planner also needs to know how far it could be from the best possible one. KASCO answers with a lower bound on cost, so every reported cost carries a proven gap to the optimum.
 
 ## Relaxing the coupling constraints
 
@@ -28,7 +28,7 @@ Branch and bound over refinery sites forces a site open or closed and recomputes
 
 ## Reading the base case
 
-The gap is the difference between cost and bound, taken relative to the cost. In the published base case on candidate sites, the best design costs USD 890.32M per year and the bound is USD 883.60M, a proven gap of 0.75% (`docs/data/official_base.json`). That run used a 60-second limit and a 0.2% target, and it stopped after 3,975 nodes at the 0.75% gap. The proof covers candidate sites under the model's official inputs. A later step moves plants anywhere on land and lowers the cost to USD 890.09M per year. It finds a local optimum with no global proof, and the repository labels it so.
+The gap is the difference between cost and bound, taken relative to the cost. In the published base case on candidate sites, the best design costs USD 890.32M per year and the bound is USD 883.60M, a proven gap of about 0.75% (0.7549% in `docs/data/official_base.json`). That run used a 60-second limit and a 0.2% target, and it stopped at the time limit after 3,975 nodes, with the gap still above the target. The proof covers candidate sites under the model's official inputs. A later step moves plants anywhere on land and lowers the cost to USD 890.09M per year. It finds a local optimum with no global proof, and the repository labels it so.
 
 ## Checking the bound itself
 

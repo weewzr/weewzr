@@ -7,9 +7,20 @@ import Skills from '../components/Skills.astro';
 import FeaturedProjects from '../components/FeaturedProjects.astro';
 import ResearchWriting from '../components/ResearchWriting.astro';
 import Contact from '../components/Contact.astro';
+import { site, social, education } from '../data/site';
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  description: site.description,
+  sameAs: [social.github, social.linkedin],
+  affiliation: { '@type': 'CollegeOrUniversity', name: education.institution },
+};
 ---
 
-<BaseLayout path="">
+<BaseLayout path="" jsonLd={personLd}>
   <Hero />
   <About />
   <ResearchInterests />

@@ -54,7 +54,7 @@ If `site.title`, the identity line or the name changes, regenerate the social ca
 1. Add an entry to `projects` in `src/data/site.ts` (fields are typed by `Project`). Use a short lower-case `slug`.
 2. Add the preview image as `public/projects/<slug>.webp` at 1280x800, plus `public/projects/<slug>-640.webp` at 640 wide. The cards and case-study page use the 640 file as the small `srcset` candidate. `tools/make_project_images.py` produces both sizes from real project material in `_work/`; that folder is git-ignored, so keep the source figures there or produce the two WebP files yourself.
 3. Optional: add `src/content/projects/<slug>.mdx` for a long-form case study. The file name must match the slug. Front matter fields are `title`, `summary`, `order` and `sources` (a list of `label` and `url`). Without the file, the case-study page is still built from the data entry.
-4. Optional: add a row to the project table in `README.md`.
+4. Optional: add a `###` section for the project under Featured Projects in `README.md`, following the existing project sections.
 
 Use only numbers and claims that appear in the project's public repository, and say which repository file they come from. Never describe private repositories.
 
@@ -67,7 +67,7 @@ siteUrl: 'https://weewzr.github.io/STRATO/',   // was null
 comingSoon: false,                              // was true
 ```
 
-`futureSiteUrl` can stay as it is. In `README.md`, replace "Website coming soon" in the STRATO row with a link. The live-site button appears on the card and on the case-study page after the next deploy. Check the URL answers first with `python -I tools/check_links.py dist --external`.
+`futureSiteUrl` can stay as it is. In `README.md`, replace "Website coming soon" in the STRATO section with a link. The live-site button appears on the card and on the case-study page after the next deploy. Check the URL answers first with `python -I tools/check_links.py dist --external`.
 
 ## Add research notes
 
