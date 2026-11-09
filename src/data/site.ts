@@ -43,12 +43,12 @@ export const nav = [
 export const education = {
   institution: 'National University of Singapore (NUS)',
   degree: 'Chemical Engineering',
-  minor: 'Minor in Low-Carbon Energy and Hydrogen Technologies',
+  minor: 'Minor in Hydrogen and Low Carbon Technology',
   specialisation: 'Specialisation in Safety and Sustainability',
 } as const;
 
 export const aboutParagraphs = [
-  'I am a Chemical Engineering student at the National University of Singapore with a minor in Low-Carbon Energy and Hydrogen Technologies and a specialisation in Safety and Sustainability.',
+  'I am a Chemical Engineering student at the National University of Singapore with a minor in Hydrogen and Low Carbon Technology and a specialisation in Safety and Sustainability.',
   'My research involvement is in nuclear engineering. Alongside it I build computational models of chemical and energy systems, from fission-product transport in fuel particles to low-carbon hydrogen plants and fuel supply networks.',
   'I care about models that can be checked. Each project below states its assumptions and checks its results against an independent method where one exists. The write-ups also say what each model leaves out.',
 ] as const;

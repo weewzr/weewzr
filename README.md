@@ -4,7 +4,7 @@
 
 <img align="right" src="assets/readme/perry.png" width="130" title="Perry the Platypus (Disney). Unofficial fan tribute." alt="Perry the Platypus as Agent P, crouching in a dark maroon fedora, shown as fan artwork">
 
-Hi, I am **Wee Zhern Ray**, a Chemical Engineering student at the National University of Singapore (NUS) with a minor in Low-Carbon Energy and Hydrogen Technologies and a specialisation in Safety and Sustainability. I am involved in nuclear engineering research at NUS.
+Hi, I am **Wee Zhern Ray**, a Chemical Engineering student at the National University of Singapore (NUS) with a minor in Hydrogen and Low Carbon Technology and a specialisation in Safety and Sustainability. I am involved in nuclear engineering research at NUS.
 
 [Personal website](https://weewzr.github.io/weewzr/) | [LinkedIn](https://www.linkedin.com/in/wee-zhern-ray/) | [Featured projects](#featured-projects)
 
