@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -15,7 +16,7 @@ export default defineConfig({
   // Parallel agents and CI can override these so concurrent builds do not collide.
   outDir: process.env.ASTRO_OUT_DIR ?? './dist',
   cacheDir: process.env.ASTRO_CACHE_DIR ?? './node_modules/.astro',
-  integrations: [mdx(), sitemap()],
+  integrations: [react(), mdx(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },
