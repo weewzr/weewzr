@@ -5,7 +5,11 @@
  */
 import ProjectCard from './ProjectCard.astro';
 import PerryAgent from './PerryAgent.astro';
-import { projects } from '../data/site';
+import { projects, researchInterests } from '../data/site';
+
+// Chips come from the research areas that at least one project uses, in researchInterests order.
+// Adding a project (with its `areas` ids) in src/data/site.ts needs no change here.
+const areaChips = researchInterests.filter((area) => projects.some((p) => p.areas.includes(area.id)));
 ---
 
 <section id="projects" class="section" aria-labelledby="projects-title">
@@ -22,10 +26,28 @@ import { projects } from '../data/site';
       <PerryAgent />
     </header>
 
-    <ol class="project-list" role="list">
+    {
+      areaChips.length > 1 && (
+        <div class="proj-filter" data-project-filter>
+          <div class="chips" role="group" aria-label="Filter projects by research area">
+            <button type="button" class="filter-chip" data-area="all" aria-pressed="true">
+              All projects
+            </button>
+            {areaChips.map((area) => (
+              <button type="button" class="filter-chip" data-area={area.id} data-label={area.short} aria-pressed="false">
+                {area.short}
+              </button>
+            ))}
+          </div>
+          <p class="filter-status" role="status" data-filter-status />
+        </div>
+      )
+    }
+
+    <ol class="project-list" role="list" data-project-list>
       {
         projects.map((project, i) => (
-          <li class="reveal" style={`--i:${i}`}>
+          <li class="reveal" style={`--i:${i}`} data-areas={project.areas.join(' ')}>
             <ProjectCard project={project} index={i} />
           </li>
         ))
@@ -47,6 +69,49 @@ import { projects } from '../data/site';
       min-height: 9rem;
     }
   }
+  /* The filter needs JavaScript, so it stays hidden until the `js` class from BaseLayout is present. */
+  .proj-filter {
+    display: none;
+    margin: -0.75rem 0 clamp(1.5rem, 4vw, 2.25rem);
+  }
+  :global(.js) .proj-filter {
+    display: block;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .filter-chip {
+    min-height: 44px;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgb(148 163 184 / 0.3);
+    background: rgb(11 27 58 / 0.55);
+    color: #cbd5e1;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .filter-chip:hover {
+    border-color: rgb(167 139 250 / 0.6);
+    color: #fff;
+  }
+  .filter-chip[aria-pressed='true'] {
+    color: #fff;
+    background: rgb(124 58 237 / 0.3);
+    border-color: rgb(167 139 250 / 0.6);
+  }
+  .filter-status {
+    min-height: 1.5em;
+    margin: 0.6rem 0 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
   .project-list {
     list-style: none;
     margin: 0;
@@ -55,3 +120,36 @@ import { projects } from '../data/site';
     gap: clamp(1.75rem, 4vw, 2.75rem);
   }
 </style>
+
+<script>
+  // Project filter by research area. The list is complete HTML; this only hides non-matching items.
+  const root = document.querySelector<HTMLElement>('[data-project-filter]');
+  const list = document.querySelector<HTMLElement>('[data-project-list]');
+  if (root && list) {
+    const items = Array.from(list.children) as HTMLElement[];
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('button[data-area]'));
+    const status = root.querySelector<HTMLElement>('[data-filter-status]');
+
+    const apply = (area: string, label: string) => {
+      let shown = 0;
+      for (const item of items) {
+        const match = area === 'all' || (item.dataset.areas ?? '').split(' ').includes(area);
+        item.hidden = !match;
+        if (match) {
+          // Keep the left/right image alternation correct for the cards that remain.
+          item.querySelector('.card')?.setAttribute('data-flip', shown % 2 === 1 ? 'true' : 'false');
+          shown += 1;
+        }
+      }
+      for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.area === area));
+      if (status) {
+        status.textContent =
+          area === 'all' ? '' : `Showing ${shown} of ${items.length} projects in ${label}.`;
+      }
+    };
+
+    for (const b of buttons) {
+      b.addEventListener('click', () => apply(b.dataset.area ?? 'all', b.dataset.label ?? ''));
+    }
+  }
+</script>

@@ -5,6 +5,7 @@
  */
 import Icon from './Icon.astro';
 import { withBase } from '../lib/url';
+import { researchInterests } from '../data/site';
 import type { Project } from '../data/site';
 
 interface Props {
@@ -15,6 +16,10 @@ interface Props {
 const { project, index = 0 } = Astro.props;
 const flip = index % 2 === 1;
 const titleId = `project-${project.slug}-title`;
+// Research-area badges: short labels from researchInterests, in the order the project lists them.
+const areaLabels = project.areas
+  .map((id) => researchInterests.find((r) => r.id === id)?.short)
+  .filter((label): label is string => Boolean(label));
 const caseHref = withBase(`projects/${project.slug}/`);
 
 // Preview images ship as name.webp (1280 wide) and name-640.webp (640 wide).
@@ -57,6 +62,16 @@ const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
         ))
       }
     </ul>
+
+    {
+      areaLabels.length > 0 && (
+        <ul class="areas" aria-label={`${project.name} research areas`}>
+          {areaLabels.map((label) => (
+            <li class="area">{label}</li>
+          ))}
+        </ul>
+      )
+    }
 
     <ul class="tech" aria-label={`${project.name} technologies`}>
       {project.tech.map((t) => <li class="chip">{t}</li>)}
@@ -246,6 +261,29 @@ const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
     display: inline-flex;
     margin-top: 0.2rem;
     color: var(--blue-2);
+  }
+  .areas {
+    list-style: none;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .area {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.18rem 0.65rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.03em;
+    color: #ddd6fe;
+    background: rgb(124 58 237 / 0.14);
+    border: 1px solid rgb(167 139 250 / 0.35);
+  }
+  .areas + .tech {
+    margin-top: 0.5rem;
   }
   .tech {
     list-style: none;

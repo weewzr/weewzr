@@ -76,6 +76,8 @@ export const affiliations = [
 export type ResearchInterest = {
   id: string;
   title: string;
+  /** Short label for filter chips and project badges. */
+  short: string;
   summary: string;
   kind: 'involvement' | 'interest';
   icon: string;
@@ -86,6 +88,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   {
     id: 'nuclear',
     title: 'Nuclear Engineering & Energy Systems',
+    short: 'Nuclear',
     summary:
       'Research involvement at NUS in nuclear engineering, and a public computational project on fission-product release from TRISO (tristructural isotropic) fuel particles.',
     kind: 'involvement',
@@ -95,6 +98,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   {
     id: 'hydrogen',
     title: 'Hydrogen & Low-Carbon Technologies',
+    short: 'Hydrogen and low carbon',
     summary:
       'Low-carbon hydrogen for Singapore through nuclear-upgraded steam methane reforming with carbon capture, and sustainable aviation fuel supply chains across Kalimantan.',
     kind: 'interest',
@@ -104,6 +108,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   {
     id: 'process',
     title: 'Chemical Process Modelling & Simulation',
+    short: 'Process modelling',
     summary:
       'Mass and energy balances and flowsheet logic in reproducible process models, with inputs traced to a source and results checked against independent calculations.',
     kind: 'interest',
@@ -113,6 +118,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   {
     id: 'tea',
     title: 'Techno-Economic Analysis',
+    short: 'Techno-economics',
     summary:
       'Levelised cost and abatement cost ledgers, with sensitivity and scenario studies that show which assumptions drive a result.',
     kind: 'interest',
@@ -122,6 +128,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   {
     id: 'safety',
     title: 'Process Safety & Sustainability',
+    short: 'Safety and sustainability',
     summary:
       'Applying process safety and sustainability principles to energy systems, following my specialisation in Safety and Sustainability at NUS.',
     kind: 'interest',
@@ -131,6 +138,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   {
     id: 'scicomp',
     title: 'Scientific Computing & Numerical Methods',
+    short: 'Scientific computing',
     summary:
       'Finite-volume and eigenfunction methods for diffusion, and mixed-integer optimisation for supply networks, written in Rust and Python and verified with convergence and balance checks.',
     kind: 'interest',
@@ -171,6 +179,8 @@ export type Project = {
   description: string;
   status: string;
   tech: readonly string[];
+  /** Ids from `researchInterests`. They drive the filter chips and the area badges on each card. */
+  areas: readonly string[];
   features: readonly string[];
   repoUrl: string;
   /** Verified live site, or null if none exists yet. */
@@ -198,6 +208,7 @@ export const projects: readonly Project[] = [
       'A working planning tool for a Sustainable Aviation Fuel network across Kalimantan. It chooses refinery and depot sites and sizes and routes biomass and fuel to four international airports. It also shows the evidence behind each number. The Rust solver is compiled to WebAssembly, so the whole product runs in the browser with no server. Built for Airbus Challenge 3, Autonomous SG 2026.',
     status: 'Live prototype',
     tech: ['Rust', 'WebAssembly', 'HiGHS', 'Python', 'GitHub Pages'],
+    areas: ['hydrogen', 'scicomp'],
     features: [
       'Lagrangian branch-and-bound over refinery sites with exact min-cost flow',
       'Independent checks: balances recomputed from flow records, HiGHS second opinion',
@@ -217,6 +228,7 @@ export const projects: readonly Project[] = [
       'A low-carbon hydrogen study with an open engine and a browser simulator. A high-temperature gas-cooled reactor supplies process heat to steam methane reforming, and an amine unit captures the carbon dioxide. The headline Case B plant makes 100,000 Nm3/h of purified hydrogen, and the study reports levelised abatement cost against a stated target, including where the target is missed.',
     status: 'Study with live simulator',
     tech: ['Rust', 'WebAssembly', 'JavaScript', 'Python', 'LaTeX', 'GitHub Actions'],
+    areas: ['nuclear', 'hydrogen', 'process', 'tea'],
     features: [
       'Layered Rust engine with every input in a sourced parameter register',
       'Mass and energy balances, emissions ledger, levelised cost ledger and a discounted cash flow cross-check',
@@ -236,6 +248,7 @@ export const projects: readonly Project[] = [
       'A transparent, verifiable model of fission-product release from a single TRISO coated fuel particle. It solves the same multilayer spherical diffusion problem two independent ways, a conservative finite-volume method and an exact eigenfunction series, so each method checks the other. Version 1.0 covers constant temperature and constant diffusivity per layer.',
     status: 'v1.0, Phase 1',
     tech: ['Rust', 'Python', 'Finite volume', 'Sturm-Liouville expansion', 'GitHub Actions'],
+    areas: ['nuclear', 'scicomp'],
     features: [
       'Five-layer particle: kernel, buffer, inner pyrolytic carbon, silicon carbide and outer pyrolytic carbon',
       'Finite-volume solver with exact shell geometry, series interface conductances and Backward Euler stepping',
@@ -256,7 +269,7 @@ export const projects: readonly Project[] = [
  * Case-study tabs. Each tab collects the `##` sections of a project MDX file whose heading text is
  * listed, in the order given here. Sections listed in `caseStudyPinned`, and any heading that is in
  * neither list, stay below the tabs and are always visible, so limits are never behind a click.
- * With JavaScript off every section is shown in authored order.
+ * With JavaScript off every section is shown in this same order.
  */
 export const caseStudyTabs = [
   { id: 'overview', label: 'Overview', headings: ['The problem'] },
