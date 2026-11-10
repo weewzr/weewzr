@@ -9,9 +9,11 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import ScrollTable from '../../components/ScrollTable.astro';
-import { projects } from '../../data/site';
+import { projects, caseStudyTabs, caseStudyPinned } from '../../data/site';
 import type { Project } from '../../data/site';
 import { withBase, homeAnchor } from '../../lib/url';
+// Classic script text, inlined after the content so the tabs form before the first paint.
+import caseTabsScript from '../../scripts/case-tabs.js?raw';
 
 interface Props {
   project: Project;
@@ -39,6 +41,13 @@ export async function getStaticPaths() {
 const { project, entry, prev, next } = Astro.props;
 const rendered = entry ? await render(entry) : null;
 const Content = rendered?.Content ?? null;
+
+// A tab exists when at least one of its section headings is in the rendered MDX. The bar is rendered here,
+// hidden, and src/scripts/case-tabs.js groups the sections and reveals it. Fewer than two tabs: no bar.
+const h2Texts = new Set((rendered?.headings ?? []).filter((h) => h.depth === 2).map((h) => h.text.trim()));
+const pinnedTexts = new Set<string>(caseStudyPinned);
+const activeTabs = caseStudyTabs.filter((tab) => tab.headings.some((h) => h2Texts.has(h) && !pinnedTexts.has(h)));
+const tabConfig = JSON.stringify({ tabs: caseStudyTabs, pinned: caseStudyPinned });
 
 const title = entry?.data.title ?? `${project.name} case study`;
 const summary = entry?.data.summary ?? project.description;
@@ -135,7 +144,18 @@ const shortUrl = (url: string) => {
         </figure>
       </header>
 
-      <div class="case-body glass">
+      <div class="case-body glass" data-case-tabs={activeTabs.length > 1 ? '' : undefined} data-config={tabConfig}>
+        {
+          activeTabs.length > 1 && (
+            <div class="case-tabs-bar" data-case-tabs-bar>
+              {activeTabs.map((tab) => (
+                <button type="button" id={`tab-btn-${tab.id}`} data-tab={tab.id} aria-controls={`tab-${tab.id}`}>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          )
+        }
         <div class="case-prose">
           {
             Content ? (
@@ -154,6 +174,7 @@ const shortUrl = (url: string) => {
             )
           }
         </div>
+        {activeTabs.length > 1 && <script is:inline set:html={caseTabsScript} />}
       </div>
 
       <section class="sources glass" aria-labelledby="sources-title">
@@ -663,6 +684,65 @@ const shortUrl = (url: string) => {
     border: 1px solid var(--line);
     background: rgb(255 255 255 / 0.06);
     font-size: 0.85em;
+  }
+
+  /* Case-study tabs (see src/scripts/case-tabs.js). Without the script the bar stays hidden and every
+     section is shown in authored order. The script sets data-ready on .case-body once the tabs exist. */
+  .case-tabs-bar {
+    display: none;
+  }
+  [data-case-tabs][data-ready] .case-tabs-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0 0 1.75rem;
+    padding: 0.3rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgb(6 11 27 / 0.55);
+  }
+  .case-tabs-bar button {
+    flex: 1 1 auto;
+    min-height: 44px;
+    padding: 0.4rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: #cbd5e1;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .case-tabs-bar button:hover {
+    background: rgb(148 163 184 / 0.14);
+    color: #fff;
+  }
+  .case-tabs-bar button[aria-selected='true'] {
+    color: #fff;
+    background: rgb(124 58 237 / 0.3);
+    border-color: rgb(167 139 250 / 0.55);
+  }
+  .case-tab-panel {
+    scroll-margin-top: calc(var(--nav-h) + 16px);
+  }
+  .case-tab-panel > :first-child {
+    margin-top: 0;
+  }
+  @media print {
+    .case-tabs-bar {
+      display: none !important;
+    }
+    .case-tab-panel {
+      display: block !important;
+    }
+    .case-tab-panel + .case-tab-panel {
+      margin-top: 2.6rem;
+    }
   }
   @media (max-width: 640px) {
     .case-prose {

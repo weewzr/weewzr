@@ -252,6 +252,21 @@ export const projects: readonly Project[] = [
   },
 ] as const;
 
+/**
+ * Case-study tabs. Each tab collects the `##` sections of a project MDX file whose heading text is
+ * listed, in the order given here. Sections listed in `caseStudyPinned`, and any heading that is in
+ * neither list, stay below the tabs and are always visible, so limits are never behind a click.
+ * With JavaScript off every section is shown in authored order.
+ */
+export const caseStudyTabs = [
+  { id: 'overview', label: 'Overview', headings: ['The problem'] },
+  { id: 'methods', label: 'Methods', headings: ['Approach', 'Technology'] },
+  { id: 'results', label: 'Results', headings: ['Results'] },
+  { id: 'verification', label: 'Verification', headings: ['Verification'] },
+] as const;
+
+export const caseStudyPinned = ['What it does not cover'] as const;
+
 /** Research & Writing categories. Notes live in src/content/notes/*.md(x). */
 export const noteCategories = [
   'Nuclear Engineering',
