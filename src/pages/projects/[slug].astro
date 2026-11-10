@@ -737,9 +737,8 @@ const shortUrl = (url: string) => {
     .case-tabs-bar {
       display: none !important;
     }
-    .case-tab-panel {
-      display: block !important;
-    }
+    /* Hidden panels are shown for printing by the beforeprint handler in case-tabs.js: the preflight
+       [hidden] rule is important and layered, so a CSS override here would lose. */
     .case-tab-panel + .case-tab-panel {
       margin-top: 2.6rem;
     }

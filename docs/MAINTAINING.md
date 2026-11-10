@@ -65,7 +65,7 @@ Use only numbers and claims that appear in the project's public repository, and 
 
 Both features are progressive enhancement. The built HTML is complete without JavaScript.
 
-**Tabs.** A case-study page groups its `##` sections into Overview, Methods, Results and Verification. `caseStudyTabs` in `src/data/site.ts` lists, for each tab, the exact heading texts it collects. `caseStudyPinned` lists headings that always stay below the tabs; "What it does not cover" is pinned so that limits are never behind a click. A heading in neither list also stays below the tabs. The page renders the tab bar from the headings of the compiled MDX, hidden by CSS. `src/scripts/case-tabs.js` is inlined after the content, moves the sections into panels before the first paint, and reveals the bar as a WAI-ARIA tablist (arrow keys, Home, End, roving tabindex; a link or address that names a heading inside another panel opens that panel). A project with fewer than two matching sections gets no tabs. Without JavaScript every section is shown in authored order and the bar is hidden. When the MDX headings change, update the lists in `site.ts`; `tools/check_structure.py` fails if a tab names no heading that exists on the page.
+**Tabs.** A case-study page groups its `##` sections into Overview, Methods, Results and Verification. `caseStudyTabs` in `src/data/site.ts` lists, for each tab, the exact heading texts it collects. `caseStudyPinned` lists headings that always stay below the tabs; "What it does not cover" is pinned so that limits are never behind a click. A heading in neither list also stays below the tabs. The page renders the tab bar from the headings of the compiled MDX, hidden by CSS. `src/scripts/case-tabs.js` is inlined after the content, moves the sections into panels before the first paint, and reveals the bar as a WAI-ARIA tablist (arrow keys, Home, End, roving tabindex; a link or address that names a heading inside another panel opens that panel). A project with fewer than two matching sections gets no tabs. Without JavaScript every section is shown in authored order and the bar is hidden. Printing or saving as PDF includes every panel: the script unhides them on `beforeprint` and restores the active one on `afterprint` (a print stylesheet cannot do this, because the Tailwind preflight `[hidden]` rule is important and layered). When the MDX headings change, update the lists in `site.ts`; `tools/check_structure.py` fails if a tab names no heading that exists on the page.
 
 **Filter.** The Projects section shows one chip per research area that at least one project uses, plus "All projects". The chips are toggle buttons (`aria-pressed`) with a polite status line. The chip labels are the `short` field of `researchInterests`. The filter only sets `hidden` on list items, so the full list is in the HTML. The chips are hidden until the `js` class set by `BaseLayout.astro` is present.
 
@@ -177,7 +177,7 @@ Integration findings:
 - The Astryx layer order (`@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;`) has to come before the Tailwind import in `global.css`. The Astryx docs warn that a later `@layer` line silently inverts the cascade.
 - Server rendering works: the tab buttons are in the static HTML with the correct ARIA attributes. Before hydration they do nothing, so extra work would be needed to keep the page honest without JavaScript.
 
-Decision: the tab strip and the chip filter cost about 1.5 kB of script with the existing stack. About 180 kB gzip of extra transfer and a 3.4 s wait on a throttled phone, to switch four panels, is not justified. The island was removed in the next commit, and `git show 4b63aff` reproduces it.
+Decision: the tab strip and the chip filter cost under 2 kB of script per page (gzip) with the existing stack. About 180 kB gzip of extra transfer and a 3.4 s wait on a throttled phone, to switch four panels, is not justified. The island was removed in the next commit, and `git show 4b63aff` reproduces it.
 
 ### Theming decisions
 
@@ -204,7 +204,7 @@ None.
 | Case-study prose and tables | Markdown, Table | Static Markdown rendered at build time. A React renderer adds cost and rewrite risk for no gain. |
 | Buttons, chips, glass cards, breadcrumbs | Button, Badge, Card, Breadcrumbs | Hand-written CSS with a consistent focus ring. Astryx would need a theme to look the same and ships its CSS to every island. |
 | Base layout, SEO | none | Astro layouts and static metadata, with no UI to improve. |
-| Tabs, filter | TabList, SegmentedControl | Measured above, then rebuilt with HTML and about 1.5 kB of script. |
+| Tabs, filter | TabList, SegmentedControl | Measured above, then rebuilt with HTML and under 2 kB of script per page (gzip). |
 
 ### Dependencies
 
@@ -217,11 +217,11 @@ Baseline is `main` at `beec215`. After is the head of this branch. Sizes come fr
 | Measure | Before | After |
 | --- | --- | --- |
 | JavaScript, 2 files, raw / gzip | 540,251 / 132,835 B | 540,251 / 132,835 B |
-| CSS, 5 files, raw / gzip | 91,346 / 22,514 B | 93,463 / 22,902 B |
-| HTML, 9 pages, raw / gzip | 339,604 / 75,388 B | 361,372 / 82,200 B |
+| CSS, 5 files, raw / gzip | 91,346 / 22,514 B | 93,423 / 22,895 B |
+| HTML, 9 pages, raw / gzip | 339,604 / 75,388 B | 362,665 / 82,690 B |
 | Case-study layout shift, 4 loads each, both widths | 0.0002 to 0.0009 (STRATO at 1440 px: 0.179 to 0.19) | unchanged |
 
-The HTML growth comes mostly from the tab script (4.4 kB raw, 1.5 kB gzip) inlined into each of the three case-study pages, plus the filter chips and the area badges on the home page. The script is inline so the tabs form before the first paint. Minifying it would save roughly 2 kB raw per page.
+The HTML growth comes mostly from the tab script (4.8 kB raw, 1.7 kB gzip) inlined into each of the three case-study pages, plus the filter chips and the area badges on the home page. The script is inline so the tabs form before the first paint. Minifying it would save roughly 2 kB raw per page.
 
 Lighthouse 13.6.0 (Edge, headless, local static server, performance category), baseline and branch loaded in rotating order in the same session. Values are the individual runs, with the median in brackets.
 

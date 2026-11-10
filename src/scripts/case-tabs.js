@@ -141,6 +141,17 @@
     });
   });
 
+  // Printing: show every panel. The preflight [hidden] rule is important and layered, so no unlayered CSS
+  // rule can undo it; the panels are shown here and the current one is restored afterwards.
+  window.addEventListener('beforeprint', function () {
+    panels.forEach(function (panel) {
+      panel.hidden = false;
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    select(current, false, false);
+  });
+
   select(0, false, false);
   openFromHash();
   window.addEventListener('hashchange', openFromHash);
