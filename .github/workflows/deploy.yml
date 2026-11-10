@@ -45,6 +45,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Standard-library Python only. External URLs are not requested here.
+      - name: Check links and page structure
+        run: |
+          python3 -I tools/check_links.py dist
+          python3 -I tools/check_structure.py dist
+
       - name: Upload the site artifact
         uses: actions/upload-pages-artifact@v5
         with:
