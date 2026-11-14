@@ -5,6 +5,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # A pull request runs the build job only (type check, build, link and structure checks).
+  # Nothing is deployed from a pull request: the deploy job below is limited to main.
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 # Least privilege: the build job (which installs npm packages) only reads the repository.
@@ -52,12 +56,14 @@ jobs:
           python3 -I tools/check_structure.py dist
 
       - name: Upload the site artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

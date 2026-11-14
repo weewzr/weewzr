@@ -131,7 +131,7 @@ Perry the Platypus and the Phineas and Ferb artwork belong to Disney (see `LICEN
 
 ## How deployment works
 
-`.github/workflows/deploy.yml` runs on every push to `main` and can be started manually from the Actions tab (Deploy to GitHub Pages, Run workflow).
+`.github/workflows/deploy.yml` runs on every push to `main` and can be started manually from the Actions tab (Deploy to GitHub Pages, Run workflow). It also runs on every pull request into `main`, where only the `build` job runs: the pull request is type-checked, built and link-checked exactly as a deployment would be, and nothing is published.
 
 1. The `build` job checks out the code, installs the newest Node 22.x with the npm cache, runs `npm ci`, `npm run check` and `npm run build`, then runs `tools/check_links.py` and `tools/check_structure.py` on `./dist` and uploads it as the Pages artifact. If `astro check`, the build or either checker fails, nothing is deployed and the live site stays as it was.
 2. The `deploy` job publishes that artifact to the `github-pages` environment with `actions/deploy-pages`.
