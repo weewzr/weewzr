@@ -13,7 +13,7 @@ import Figure from '../../components/case/Figure.astro';
 import Roadmap from '../../components/case/Roadmap.astro';
 import SourceList from '../../components/case/SourceList.astro';
 import CaseProseStyles from '../../components/case/CaseProseStyles.astro';
-import { projects, caseStudyTabs, caseStudyPinned } from '../../data/site';
+import { projects, caseStudyTabs, caseStudyPinned, site } from '../../data/site';
 import type { Project } from '../../data/site';
 import { withBase } from '../../lib/url';
 // Classic script text, inlined after the content so the tabs form before the first paint.
@@ -74,9 +74,33 @@ const sources: { label: string; url: string }[] = entry?.data.sources?.length
   : project.repoUrl
     ? [{ label: `${project.name} repository on GitHub`, url: project.repoUrl }]
     : [];
+// Structured data. A planned project has no code, so it is described as a plain creative work.
+const languages = project.tech.filter((t) => ['Rust', 'Python', 'JavaScript'].includes(t));
+const projectLd: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': project.repoUrl ? 'SoftwareSourceCode' : 'CreativeWork',
+  name: project.name,
+  headline: title,
+  description: project.description,
+  url: new URL(path, site.url).href,
+  author: { '@type': 'Person', name: site.name, url: site.url },
+  ...(project.repoUrl ? { codeRepository: project.repoUrl } : {}),
+  ...(languages.length ? { programmingLanguage: languages } : {}),
+};
 ---
 
-<BaseLayout title={title} description={summary} path={path} type="article">
+<BaseLayout
+  title={title}
+  description={summary}
+  path={path}
+  type="article"
+  breadcrumbs={[
+    { label: 'Home', path: '' },
+    { label: 'Projects', path: 'projects/' },
+    { label: project.name, path },
+  ]}
+  jsonLd={projectLd}
+>
   <article class="case" aria-labelledby="case-title">
     <div class="container">
       <nav class="crumbs" aria-label="Breadcrumb">

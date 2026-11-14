@@ -8,6 +8,8 @@ const source = z.object({ label: z.string(), url: z.string().url().optional() })
 /** An image under /public. `src` is a path without the base, for example "research/cn5303/pfd.webp". */
 const image = z.object({
   src: z.string(),
+  /** Optional smaller copy (about 640 px wide) used for gallery thumbnails. */
+  thumb: z.string().optional(),
   alt: z.string(),
   caption: z.string().optional(),
   width: z.number().int().positive(),

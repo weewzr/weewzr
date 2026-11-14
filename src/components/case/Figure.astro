@@ -65,15 +65,16 @@ const url = withBase(src);
     background: var(--bg-2);
   }
   .fig-open {
-    position: relative;
     display: block;
     border-radius: 12px;
     cursor: zoom-in;
+    text-decoration: none;
   }
+  /* The hint sits under the image, never on it, so it cannot cover an axis label or a value. */
   .fig-hint {
-    position: absolute;
-    right: 0.6rem;
-    bottom: 0.6rem;
+    display: block;
+    width: fit-content;
+    margin: 0.5rem 0 0 auto;
     padding: 0.2rem 0.65rem;
     border-radius: 999px;
     font-family: var(--font-mono);

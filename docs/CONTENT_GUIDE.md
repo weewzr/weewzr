@@ -109,7 +109,7 @@ To publish a gallery, in this order:
 
 1. Confirm permission for every photograph. If children or other people who have not agreed can be identified, do not publish it.
 2. Export WebP files no wider than 1600 px with all metadata removed (phone photographs carry GPS coordinates). Put them in `public/<section>/<slug>/<gallery-id>/`.
-3. List them under `images`, each with `src`, `alt`, `width`, `height` and an optional `caption`. Alt text describes the scene and names nobody.
+3. List them under `images`, each with `src`, `alt`, `width`, `height` and an optional `caption`. Alt text describes the scene and names nobody. Add `thumb` with the path of a copy about 640 px wide so that the page loads the small file first and the large one only when a photograph is opened.
 4. Set `published: true`.
 
 ### Documents (reports, slides, posters, essays)
