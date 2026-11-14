@@ -23,11 +23,17 @@ The Python tools need Pillow (tested with Pillow 11.1.0 on Python 3.10). `tools/
 
 | What | Where |
 | --- | --- |
-| Personal info, links, nav, skills, projects, mascot settings | `src/data/site.ts` (single source of truth) |
-| Page sections | `src/components/` (Hero, About, ResearchInterests, Skills, FeaturedProjects, ResearchWriting, Contact) |
-| Layout, SEO tags, global shell | `src/layouts/BaseLayout.astro`, `src/components/SEO.astro` |
-| Colours, spacing, helper classes | `src/styles/global.css` (CSS variables on `:root`) |
-| Project case-study pages | `src/pages/projects/[slug].astro`, optional MDX in `src/content/projects/` |
+| Personal info, links, the section list (`sections`), nav, skills, projects, mascot settings, the CV switch (`cv`, off) | `src/data/site.ts` (single source of truth) |
+| Home page blocks | `src/components/` (Hero, ResearchInterests, FeaturedProjects, Contact) and `src/components/home/` (previews of each section) |
+| Section pages | `src/pages/projects/index.astro`, `research/`, `community/`, `innovation/`, `about/`, built with `PageHero`, `WorkGrid` and `WorkCard` in `src/components/` |
+| Layout, SEO tags, breadcrumbs, global shell | `src/layouts/BaseLayout.astro`, `src/components/SEO.astro`, `Nav.astro`, `Footer.astro` |
+| Design tokens, cards, status pills, page hero, helper classes | `src/styles/global.css` (CSS variables on `:root`) |
+| Project case-study pages | `src/pages/projects/[slug].astro`, MDX in `src/content/projects/` |
+| Research, community and innovation case studies | `src/pages/<section>/[slug].astro`, MDX in `src/content/<section>/`, shared layout `src/components/case/CaseStudy.astro` |
+| Case-study building blocks | `src/components/case/` (Toc, Facts, Timeline, Roadmap, Gallery, DocumentViewer, Figure, Callout, RelatedLinks, SourceList), scripts in `src/scripts/case-*.ts`, helpers in `src/lib/case.ts` |
+| Published documents (PDF and page images) | `public/documents/<slug>/`, made with `tools/make_document_pages.py` |
+| How to add any kind of content | `docs/CONTENT_GUIDE.md` |
+| Design and library research behind the redesign | `docs/research/` |
 | Case-study tabs | `caseStudyTabs` and `caseStudyPinned` in `src/data/site.ts`, `src/scripts/case-tabs.js`, tab styles in `src/pages/projects/[slug].astro` |
 | Project filter and area badges | `areas` on each project in `src/data/site.ts`, `src/components/FeaturedProjects.astro` (chips and script), `src/components/ProjectCard.astro` (badges) |
 | Research notes | `src/content/notes/*.md` or `*.mdx`; the index and note pages are in `src/pages/writing/` |
@@ -56,7 +62,7 @@ If `site.title`, the identity line or the name changes, regenerate the social ca
 
 1. Add an entry to `projects` in `src/data/site.ts` (fields are typed by `Project`). Use a short lower-case `slug`. Set `areas` to ids from `researchInterests` (for example `['nuclear', 'scicomp']`); the filter chips and the badges on the card come from them, so no component needs an edit.
 2. Add the preview image as `public/projects/<slug>.webp` at 1280x800, plus `public/projects/<slug>-640.webp` at 640 wide. The cards and case-study page use the 640 file as the small `srcset` candidate. `tools/make_project_images.py` produces both sizes from real project material in `_work/`; that folder is git-ignored, so keep the source figures there or produce the two WebP files yourself.
-3. Optional: add `src/content/projects/<slug>.mdx` for a long-form case study. The file name must match the slug. Front matter fields are `title`, `summary`, `order` and `sources` (a list of `label` and `url`). Without the file, the case-study page is still built from the data entry.
+3. Optional: add `src/content/projects/<slug>.mdx` for a long-form case study. The file name must match the slug. Front matter fields are `title`, `summary`, `order`, `statusNote`, `roadmap`, `figures` and `sources` (a list of `label` and `url`). Without the file, the case-study page is still built from the data entry. `docs/CONTENT_GUIDE.md` has the full recipe, including planned projects that have no repository yet.
 4. Optional: add a `###` section for the project under Featured Projects in `README.md`, following the existing project sections.
 
 Use only numbers and claims that appear in the project's public repository, and say which repository file they come from. Never describe private repositories.
@@ -65,7 +71,7 @@ Use only numbers and claims that appear in the project's public repository, and 
 
 Both features are progressive enhancement. The built HTML is complete without JavaScript.
 
-**Tabs.** A case-study page groups its `##` sections into Overview, Methods, Results and Verification. `caseStudyTabs` in `src/data/site.ts` lists, for each tab, the exact heading texts it collects. `caseStudyPinned` lists headings that always stay below the tabs; "What it does not cover" is pinned so that limits are never behind a click. A heading in neither list also stays below the tabs. The page renders the tab bar from the headings of the compiled MDX, hidden by CSS. `src/scripts/case-tabs.js` is inlined after the content, moves the sections into panels before the first paint, and reveals the bar as a WAI-ARIA tablist (arrow keys, Home, End, roving tabindex; a link or address that names a heading inside another panel opens that panel). A project with fewer than two matching sections gets no tabs. Without JavaScript every section is shown in authored order and the bar is hidden. Printing or saving as PDF includes every panel: the script unhides them on `beforeprint` and restores the active one on `afterprint` (a print stylesheet cannot do this, because the Tailwind preflight `[hidden]` rule is important and layered). When the MDX headings change, update the lists in `site.ts`; `tools/check_structure.py` fails if a tab names no heading that exists on the page.
+**Tabs.** A project case-study page groups its `##` sections into Overview (The problem, Objectives), Methods (Architecture, Approach, Algorithms and models, Technology), Results and Verification. The research, community and innovation pages do not use tabs: they show every section with an "On this page" list. `caseStudyTabs` in `src/data/site.ts` lists, for each tab, the exact heading texts it collects. `caseStudyPinned` lists headings that always stay below the tabs; "What it does not cover" is pinned so that limits are never behind a click. A heading in neither list also stays below the tabs. The page renders the tab bar from the headings of the compiled MDX, hidden by CSS. `src/scripts/case-tabs.js` is inlined after the content, moves the sections into panels before the first paint, and reveals the bar as a WAI-ARIA tablist (arrow keys, Home, End, roving tabindex; a link or address that names a heading inside another panel opens that panel). A project with fewer than two matching sections gets no tabs. Without JavaScript every section is shown in authored order and the bar is hidden. Printing or saving as PDF includes every panel: the script unhides them on `beforeprint` and restores the active one on `afterprint` (a print stylesheet cannot do this, because the Tailwind preflight `[hidden]` rule is important and layered). When the MDX headings change, update the lists in `site.ts`; `tools/check_structure.py` fails if a tab names no heading that exists on the page.
 
 **Filter.** The Projects section shows one chip per research area that at least one project uses, plus "All projects". The chips are toggle buttons (`aria-pressed`) with a polite status line. The chip labels are the `short` field of `researchInterests`. The filter only sets `hidden` on list items, so the full list is in the HTML. The chips are hidden until the `js` class set by `BaseLayout.astro` is present.
 
@@ -150,6 +156,12 @@ The profile README must stay in the `weewzr/weewzr` repository, so a root URL ne
 ## Before pushing
 
 Run `npm run check`, `npm run build`, `python -I tools/check_links.py dist` and `python -I tools/check_structure.py dist`. Search the changes for tokens, private repository names and any personal detail that is not already in `src/data/site.ts`.
+
+Three rules are enforced by habit and partly by the checkers:
+
+- No student number, university email address or other person's name in any page, image or PDF. `tools/make_document_pages.py` refuses a PDF that contains a student number or a university email address. Names have to be removed by hand before it runs.
+- No photograph in which a child can be identified. Check backgrounds such as whiteboards for names before publishing a photograph taken at a partner's premises.
+- No CV. `cv.enabled` in `src/data/site.ts` is `false`, and `tools/check_structure.py` fails if a CV link appears in the build.
 
 ## Astryx evaluation
 

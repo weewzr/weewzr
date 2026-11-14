@@ -74,7 +74,7 @@ A low-carbon hydrogen study for Singapore with an open engine and a browser simu
 
 ### STRATO: Spherical TRISO Analysis and Transport Operations
 
-**v1.0, Phase 1** | Website coming soon | [Repository](https://github.com/weewzr/STRATO)
+**v1.0.1, Phase 2 in design** | Website coming soon | [Repository](https://github.com/weewzr/STRATO)
 
 A transparent, verifiable model of fission-product release from a single TRISO coated fuel particle. It solves the same multilayer spherical diffusion problem with a finite-volume method and with an exact eigenfunction series, so each method checks the other.
 
@@ -83,6 +83,15 @@ A transparent, verifiable model of fission-product release from a single TRISO c
 - Analytical multilayer eigenfunction solver and full written derivations of both methods.
 
 **Stack:** Rust, Python, Finite volume, Sturm-Liouville expansion, GitHub Actions
+
+<img src="assets/readme/divider.svg" width="100%" alt="">
+
+## More on the Website
+
+- **Research and academic work:** [a low-carbon data centre case study for Singapore](https://weewzr.github.io/weewzr/research/cn5303-low-carbon-data-centre/) and [a review essay on ammonia cracking for hydrogen](https://weewzr.github.io/weewzr/research/cn5190-ammonia-cracking/).
+- **Planned project:** [AmCraX](https://weewzr.github.io/weewzr/projects/amcrax/), an ammonia cracking and hydrogen production simulation platform. No code yet.
+- **Community engagement:** [Grant A Wish XXIV](https://weewzr.github.io/weewzr/community/grant-a-wish-xxiv/), which I lead as Project Director.
+- **Innovation and competitions:** [ThickSense](https://weewzr.github.io/weewzr/innovation/thicksense/), an iDEATE 2026 semifinalist concept for checking thickened drinks.
 
 <img src="assets/readme/divider.svg" width="100%" alt="">
 

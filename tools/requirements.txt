@@ -1,2 +1,4 @@
 Pillow>=12.1.1
 numpy>=2.2.1
+# tools/make_document_pages.py only
+PyMuPDF>=1.28.2
