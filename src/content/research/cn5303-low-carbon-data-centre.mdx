@@ -1,0 +1,260 @@
+---
+title: "A Case Study of Low-Carbon Data Centre Deployment in Singapore"
+shortTitle: "Low-Carbon Data Centre in Singapore"
+summary: "A five-member team assessed how a 100 MW IT data centre on Jurong Island could cut its electricity-related emissions through cooling efficiency, rooftop solar, shared ammonia generation and a possible small modular reactor. The report finds a 90.1% reduction at S$145 per tonne of CO₂e avoided, as a desk study."
+kind: "Team case study, CN5303 Industrial Case Studies for Renewable Energy Systems"
+role: "Electricity supply assessment and integrated proposal"
+period: "Completed November 2026"
+date: 2026-11-12
+status: "Completed"
+order: 1
+tags:
+  - "Data centres"
+  - "Decarbonisation"
+  - "Techno-economic assessment"
+  - "Singapore"
+  - "Cooling optimisation"
+  - "Small modular reactors"
+  - "Ammonia power"
+facts:
+  - label: "Reference facility"
+    value: "100 MW IT, 930.8 GWh/yr, 374 kt CO₂e/yr on the grid"
+  - label: "Long-term emissions"
+    value: "374.2 to 37.0 kt CO₂e/yr (90.1% lower)"
+  - label: "Abatement cost"
+    value: "S$145 per t CO₂e (integrated long term)"
+  - label: "Near-term cooling package"
+    value: "17.0 GWh/yr saved, PUE 1.25 to 1.227"
+  - label: "Hourly carbon-free matching"
+    value: "97.1% (illustrative)"
+documents:
+  - id: report
+    title: "Final report"
+    kind: report
+    description: "The full team report, 75 pages."
+    published: true
+    pdf: "documents/cn5303-low-carbon-data-centre/report.pdf"
+    pageDir: "documents/cn5303-low-carbon-data-centre/report"
+    pages: 75
+    pageWidth: 991
+    pageHeight: 1400
+    note: "Public edition of a five-member team report. The other authors' names, all student numbers and email addresses, and the lecturer's name have been removed from the cover and from Appendix B. Images were recompressed to reduce the file size. The text is unchanged."
+  - id: slides
+    title: "Final presentation slides"
+    kind: slides
+    description: "The team's final presentation, 43 slides, 12 November 2026."
+    published: true
+    pdf: "documents/cn5303-low-carbon-data-centre/slides.pdf"
+    pageDir: "documents/cn5303-low-carbon-data-centre/slides"
+    pages: 43
+    pageWidth: 1600
+    pageHeight: 1237
+    note: "Public edition. The other presenters' names have been removed from the title slide. Where a slide and the report give different figures, this page follows the report."
+galleries:
+  - id: presentation
+    title: "Final presentation"
+    date: "12 November 2026"
+    published: true
+    images:
+      - src: "research/cn5303/presentation/01.webp"
+        thumb: "research/cn5303/presentation/01-640.webp"
+        alt: "Six people stand in a row in a seminar room giving a thumbs up after the final presentation."
+        caption: "After the final presentation, 12 November 2026."
+        width: 1600
+        height: 962
+related:
+  - label: "CN5190 ammonia cracking review (ammonia as a hydrogen carrier, the fuel behind Scenario C)"
+    href: "research/cn5190-ammonia-cracking/"
+sources:
+  - label: "Group report, A Case Study of Low-Carbon Data Centre Deployment in Singapore, 75 pages, November 2026 (shown under Documents)"
+  - label: "Group presentation slides, 43 slides, 12 November 2026 (shown under Documents)"
+  - label: "EMA and MPA media release on the Jurong Island ammonia power project, 3 October 2025 (cited as reference 20 in the report)"
+    url: "https://www.mpa.gov.sg/media-centre/details/consortium-appointed-for-next-phase-of-study-on-low--or-zero-carbon-ammonia-power-generation-and-bunkering-solution"
+  - label: "IMDA Green Data Centre Roadmap (cited as reference 11 in the report)"
+    url: "https://www.imda.gov.sg/how-we-can-help/green-dc-roadmap"
+---
+
+import Figure from '../../components/case/Figure.astro';
+import Callout from '../../components/case/Callout.astro';
+
+## Overview
+
+This is the final report of a five-member team for the NUS course CN5303 Industrial Case Studies for Renewable Energy Systems (academic year 2026/27). It asks how far a grid-connected data centre in Singapore can reduce its annual electricity-related emissions by combining efficiency measures with low-carbon electricity supply, and at what cost. Its recommendations are addressed to data centre operators and to the regulators (IMDA and EMA) who set licence conditions.
+
+The reference facility is hypothetical. It sits in the low-carbon data centre park that JTC is developing on Jurong Island and has 100 MW of rated IT capacity, an 85% electrical load factor, an annual power usage effectiveness (PUE) of 1.25 and 8,760 operating hours a year. That gives 744,600 MWh of IT energy and 930,750 MWh of facility electricity a year (report Table 1.3, p. 9). Grid electricity is taken at 0.402 tCO₂/MWh and an all-in S$200/MWh. The report is coursework, completed in November 2026 and presented on 12 November 2026. It has not been peer reviewed.
+
+<Callout title="What kind of evidence this is" tone="limit">
+The study is a desk-based techno-economic assessment. Its inputs are published research, agency and standards documents, vendor and cost literature, and stated design assumptions. The cooling results come from a calibrated simulation of an NUS testbed plant, published by other researchers, and are transferred to the reference facility by assumption. Nothing was built or measured at the reference facility, and the hourly matching score is labelled illustrative in the report.
+</Callout>
+
+## Abstract
+
+The report concludes that Singapore can grow its data centre sector while cutting the sector's electricity-related emissions by about 90%. The route combines cooling optimisation with rooftop solar photovoltaics (PV), low-carbon ammonia generation and, in the longer term, small modular reactors (SMRs), because data centres already use more than a tenth of national electricity on a grid that is about 94% gas-fired.
+
+Rooftop PV supplies only 1.6 GWh a year but at S$85/MWh, below the grid price. A 60 MWe direct-ammonia combined-cycle plant supplies 446.8 GWh a year at S$342/MWh and, with certified renewable fuel, emits 0.111 tCO₂e/MWh on a life-cycle basis, 72% below the grid. One 77 MWe SMR module supplies 627.3 GWh a year of firm power at S$230/MWh. Efficiency is applied first so that each source serves the reduced demand. Physics-informed predictive control of the chilled-water plant and SS 697 temperature optimisation save 17.0 GWh a year and bring PUE to 1.227, at a net saving of S$2.9 to 3.4 million a year. Hybrid liquid cooling then reaches PUE 1.20.
+
+Six gaps in Singapore's present approach are turned into design requirements, and the measures are combined into six configurations. The integrated long-term portfolio cuts emissions to 37.0 ktCO₂e a year, avoiding about 337 ktCO₂e (90.1%) at S$145/tCO₂e. The ammonia price and its certified life-cycle intensity dominate the cost result (report p. 3).
+
+## The engineering challenge
+
+Singapore hosted about 70 data centres with a maximum IT load of around 1.6 GW by October 2026. They used about 6.5 TWh in 2024, more than a tenth of national consumption and up from about 7% in 2020, while natural gas supplied about 94% of generation at a grid emission factor of 0.402 kg CO₂/kWh. The national targets are net zero by 2050 and 45 to 50 MtCO₂e by 2035 (report p. 4).
+
+The report names four constraints (Section 1.5, p. 11).
+
+- **Low-carbon supply.** Singapore had 2.3 GWp of solar in October 2026 and targets 3 GWp by 2030 and 4 GWp by 2035, yet solar can meet only about a tenth of projected 2050 needs. Wind (average speeds of 2 to 3 m/s) and hydropower are ruled out in Section 2.2, p. 14.
+- **Reliability.** The load is flat over 24 hours, so it needs firm generation with grid balancing and backup. Singapore plans around a 27% reserve margin.
+- **Land and water.** Median water use of about 2.1 m³/MWh favours integrated sites such as the Jurong Island park.
+- **Cooling climate.** Heat and humidity make cooling up to 40% of a typical Singapore data centre's energy, and free cooling is unavailable. AI racks can draw up to 50 times the power of a conventional rack.
+
+The policy framework in Table 1.1 (p. 4) includes DC-CFA2 (PUE 1.25 or better at 100% IT load and at least 50% of new capacity on eligible green pathways), the SS 697:2023 tropical standard, SS 726:2026 for liquid cooling, and the Digital Infrastructure Bill passed on 7 October 2026. The reference facility alone equals about 1.6% of national consumption in 2025 (p. 10).
+
+## System design
+
+The proposal reduces demand first, allocates low-carbon generation to the reduced load, then verifies the result hour by hour (Section 5.1, pp. 53 to 54). The team's own architecture drawing has three layers: electricity supply, facility demand and cooling, and measurement and verification. I found no conventional process flow diagram in the report or the slides, so the architecture drawing below is the closest system diagram the team produced.
+
+<Figure src="research/cn5303/system-architecture.webp" alt="Block diagram in three layers. Left: five supply blocks (rooftop and facade PV, shared ammonia combined-cycle plant, a dashed SMR module, Singapore grid, and UPS with backup gensets) feed a central box for the 100 MW data centre, which holds an IT layer, a cooling layer and a power layer. Right: an annual assessment and hourly carbon-free verification block feeds a control and allocation loop that returns to the cooling controller and ammonia allocation." caption="Integrated architecture of the reference facility (report Figure 5.3, p. 54). Authors' design. The dashed box is the longer-term SMR option." width={1600} height={936} zoom />
+
+The six configurations (Table 5.2, p. 53) each add one measure to the last.
+
+| Configuration | PUE | Supply mix |
+|---|---|---|
+| Baseline | 1.25 | Grid |
+| Efficiency only | 1.227 | Grid |
+| Solar integration | 1.227 | PV and grid |
+| Ammonia integration | 1.20 | PV, full ammonia plant output and grid |
+| Nuclear integration | 1.20 | PV, one 77 MWe SMR and grid |
+| Integrated long term | 1.20 | PV, SMR and shared ammonia, grid for balancing only |
+
+Each MWh is allocated to one source and one consumer, with ammonia filling the demand left after PV and SMR output (Equation 5.2, p. 54). In the long-term configuration the shared ammonia plant serves the facility with 264,634 MWh a year and other Jurong Island users with the remaining 182,126 MWh.
+
+## Major equipment and systems
+
+| System | Stated capacity or basis | Report reference |
+|---|---|---|
+| Rooftop and facade PV | 1.14 MWp from 13,600 m² of roof at 60% utilisation and 0.14 kWp/m²; 1,582 MWh/yr | Table 1.4, p. 9; Section 2.3, p. 17 |
+| SMR | One 77 MWe module (from a six-module, 462 MWe design), 93% capacity factor; 627,304 MWh/yr | Table 1.4, p. 9 |
+| Ammonia combined-cycle plant | 60 MWe, direct liquid ammonia, 47.7% net, 85% capacity factor; 446,760 MWh/yr; fuel about 179,350 t/yr (about 490 t/day); seven-day tank about 3,400 t | Section 2.5, p. 21 |
+| Chilled-water plant control | Sub-metering and a data historian, plus a supervisory predictive controller on the building management system, with automatic fallback to fixed setpoints | Sections 3.5 and 5.6, pp. 40 and 59 |
+| Cooling energy of the reference plant | 0.175 of IT energy, 130.3 GWh/yr (a design assumption) | Table 3.7, p. 38 |
+| Hybrid air and direct-to-chip liquid cooling | Design target PUE 1.20; capital it can repay: up to S$36.8 million | Table 3.8, p. 39; Section 5.3, p. 55 |
+| Grid connection and backup | Sized for the full facility load, with UPS and generators for reliability; about 125 MW at full load, 106 MW on average | Sections 5.1 and 5.6, pp. 51 and 59 |
+
+The testbed plant that the controller was calibrated on has a 571 kW water-cooled centrifugal chiller (nominal COP 6.42) and a 35 L/s water flow (Table 3.3, p. 32). It is a research plant, not part of the reference facility.
+
+## Engineering analysis
+
+**Annual demand and emissions (Section 1.4, pp. 7 to 8).**
+
+E<sub>DC</sub> = P<sub>IT</sub> × LF × PUE × H
+
+CO<sub>2</sub> = Σ<sub>i</sub> E<sub>i</sub> EF<sub>i</sub>, with Σ<sub>i</sub> E<sub>i</sub> = E<sub>DC</sub>
+
+AC = ΔC / ΔCO<sub>2</sub>
+
+E<sub>DC</sub> is facility electricity (MWh/yr), P<sub>IT</sub> rated IT capacity (MW), LF the load factor, H operating hours (h/yr), E<sub>i</sub> the electricity allocated from source i (MWh/yr) and EF<sub>i</sub> its emission factor (tCO₂e/MWh). ΔC is the change in annual cost (S$/yr), ΔCO<sub>2</sub> the emissions avoided (tCO₂e/yr) and AC the abatement cost (S$/tCO₂e). Grid power is priced at its delivered price and the generation pathways at levelised cost.
+
+**Generation and levelised cost (Section 2.8, p. 24).**
+
+E<sub>i</sub> = P<sub>i</sub> × CF<sub>i</sub> × H
+
+LCOE = 1,000 × [CAPEX × CRF + FOM] / (H × CF) + VOM + Fuel
+
+CAPEX is S$/kW, FOM S$/kW-yr, VOM and Fuel S$/MWh, and CRF the capital recovery factor. The report uses a 7% discount rate, 25 years for PV and ammonia and 40 years for the SMR.
+
+**Ammonia emission factor (Section 2.5, pp. 21 to 22).**
+
+EF<sub>NH3</sub> = SFC<sub>NH3</sub> × I<sub>NH3</sub> + EF<sub>N2O</sub>, with SFC<sub>NH3</sub> = 3.6 / (η<sub>NH3</sub> × LHV<sub>NH3</sub>)
+
+SFC is fuel use (tNH₃/MWh), I<sub>NH3</sub> the delivered life-cycle intensity (tCO₂e/tNH₃), η the net efficiency and LHV the lower heating value (18.8 MJ/kg). The central intensity is 0.276 tCO₂e/tNH₃ (production 0.03, embodied renewable electricity 0.126, shipping 0.12), giving 0.111 tCO₂e/MWh.
+
+**Cooling and PUE (Section 3.5, pp. 37 to 38).**
+
+PUE = 1 + CSE + P<sub>other</sub> / P<sub>IT</sub>, with ΔE = E<sub>IT</sub> (PUE<sub>0</sub> − PUE<sub>1</sub>)
+
+ΔE<sub>1+2</sub> = ΔE<sub>1</sub> + s × (4 − 1.7) × (E<sub>cool,0</sub> − ΔE<sub>1</sub>)
+
+CSE is cooling-system efficiency, P<sub>cool</sub>/P<sub>IT</sub> (dimensionless). ΔE<sub>1</sub> is the plant-control saving, s the SS 697 saving per °C of temperature rise (2% central, 5% upper bound) and E<sub>cool,0</sub> the baseline cooling energy (MWh/yr). The second equation removes the overlap between plant control, which already raises supply water by 1.7 °C, and the 4 °C hall temperature rise of SS 697.
+
+**Physics-informed model and control (Sections 3.3 and 3.4, pp. 30 to 34).** Published NUS work supplies the thermal model T<sub>DH</sub>(k+1) = T<sub>DH</sub>(k) − a[T<sub>DH</sub>(k) − T<sub>SA</sub>(k)]v<sub>SA</sub>(k) + b P<sub>ITE</sub>(k) + D<sub>k</sub>, with a and b constrained positive. T<sub>DH</sub> is data hall temperature (°C), T<sub>SA</sub> and v<sub>SA</sub> are supply-air temperature and flow, P<sub>ITE</sub> is IT power and D<sub>k</sub> a learned outdoor term. A predictive controller built on it resets chiller supply-water temperature and pump and fan speeds every 15 minutes within a 17 to 19 °C band. The report adopts these published results and does not rebuild the model.
+
+**Allocation and decomposition (Section 5.2, p. 54).**
+
+ΔCO<sub>2</sub> = E<sub>IT</sub> (PUE<sub>0</sub> − PUE<sub>1</sub>) EF<sub>grid</sub> + E<sub>IT</sub> PUE<sub>1</sub> (EF<sub>grid</sub> − EF<sub>eff</sub>)
+
+The first term is the CO₂ removed by using less electricity and the second the CO₂ removed by cleaning the electricity still used, so no reduction is counted twice. EF<sub>eff</sub> is the effective emission factor of the proposal (tCO₂e/MWh).
+
+**Hourly matching (Section 4.5, p. 48).**
+
+CFE<sub>hourly</sub> = Σ<sub>h</sub> min(E<sub>CFE,h</sub>, E<sub>DC,h</sub>) / Σ<sub>h</sub> E<sub>DC,h</sub>
+
+E<sub>CFE,h</sub> is eligible carbon-free electricity in hour h and E<sub>DC,h</sub> metered consumption in that hour (MWh). Supply above the hour's demand earns no credit.
+
+**National scale (Section 3.6, p. 40).** Plant control alone is scaled to Singapore's 6.5 TWh at an assumed fleet PUE of 1.5. Full adoption would save 56 to 78 GWh a year, about 1% of the sector's 2.6 Mt CO₂.
+
+## Results
+
+**Supply scenarios at PUE 1.25** (Table 2.4, p. 24; S$M is S$ million).
+
+| Scenario | Low-carbon (GWh) | Emissions (tCO₂e) | Avoided (tCO₂e) | Cost (S$M) | AC (S$/tCO₂e) |
+|---|---|---|---|---|---|
+| Baseline, grid only | 0 | 374,162 | 0 | 186.15 | not applicable |
+| A: Rooftop PV | 1.6 | 373,590 | 571 | 185.97 | −319 (−371 to −259) |
+| B: SMR, 77 MWe | 627.3 | 129,513 | 244,648 | 204.97 | 77 (−221 to 208) |
+| C: Ammonia, 60 MWe | 446.8 | 244,260 | 129,901 | 249.52 | 488 (206 to 1,140) |
+| A + B + C portfolio | 930.8 | 41,171 | 332,990 | 247.60 | 184 |
+
+<Figure src="research/cn5303/abatement-cost.webp" alt="Bar chart of carbon abatement cost in S$ per tonne CO2e with range whiskers. Rooftop PV is about minus 319, the SMR is 77 with a range from minus 221 to 208, and ammonia is 488 with a range from 206 to 1,140. A dashed line marks the S$45 per tonne carbon tax for 2026 to 2027." caption="Carbon abatement cost by scenario (report Figure 2.11, p. 25). Authors' calculation; negative values are net savings." width={1385} height={819} zoom />
+
+**Efficiency measures** (Table 3.8, p. 39; baseline 930.8 GWh/yr, 374 kt CO₂/yr, S$186 million/yr).
+
+| Measure | PUE after | Electricity saved (GWh/yr) | Cost saved (S$M/yr) | CO₂ avoided (kt/yr) |
+|---|---|---|---|---|
+| 1. Plant control (PIML-MPC) | 1.232 to 1.237 | 9.7 to 13.4 | 1.9 to 2.7 | 3.9 to 5.4 |
+| 1 + 2 combined with SS 697, overlap removed | 1.227 | 17.0 (15.2 to 26.8) | 3.4 (3.0 to 5.4) | 6.8 (6.1 to 10.8) |
+| 3. Hybrid air and liquid cooling | 1.20 | 37.2 from baseline; 20.2 beyond 1 + 2 | 7.4 | 15.0 |
+
+The testbed simulation behind measure 1 saved 12.6% of cooling energy on seen load and 9.1% on unseen higher load over 30 days (Table 3.5, p. 34), which is 1.0% to 1.4% of facility electricity at the reference site.
+
+**Integrated configurations, new-build baseline at PUE 1.25** (Table 5.3, p. 55).
+
+| Configuration | E<sub>DC</sub> (GWh) | Low-carbon (GWh) | Emissions (kt CO₂e) | ΔCO₂e (kt) | ΔC (S$M) | AC (S$/t) |
+|---|---|---|---|---|---|---|
+| Baseline | 930.8 | 0 | 374.2 | 0 | 0 | not applicable |
+| Efficiency only | 913.7 | 0 | 367.3 | 6.8 | −3.40 | −497 |
+| Solar integration | 913.7 | 1.6 | 366.8 | 7.4 | −3.58 | −484 |
+| Ammonia integration | 893.5 | 448.3 | 228.7 | 145.4 | +55.74 | +383 |
+| Nuclear integration | 893.5 | 628.9 | 114.0 | 260.2 | +11.19 | +43 |
+| Integrated long term | 893.5 | 893.5 | 37.0 | 337.1 | +48.73 | +145 |
+
+The nuclear configuration costs S$43/tCO₂e, below the S$45/t carbon tax of 2026 and 2027. Charging hybrid liquid cooling at its S$36.8 million break-even capital raises the long-term abatement cost to S$157 to 159/tCO₂e (Table 5.4, p. 55). Low-carbon generation delivers 96% of the long-term reduction and efficiency all of the cost saving (Table 5.5, p. 56).
+
+<Figure src="research/cn5303/emissions-waterfall.webp" alt="Waterfall chart of annual emissions in kt CO2e per year. A 2026 baseline of 374.2 falls by 6.8 for plant control and setpoints, 8.1 for hybrid liquid cooling, 0.6 for rooftop PV, 244.6 for the SMR and 76.9 for shared ammonia, ending at 37.0 for the integrated long-term configuration." caption="Emissions of the reference facility by measure (report Figure 5.4, p. 56). Authors' calculation." width={1600} height={794} zoom />
+
+**Existing site** (Table 5.6, p. 57). The same 100 MW of IT at a baseline PUE of 1.50 emits 449.0 kt CO₂e a year. A retrofit to PUE 1.30 saves 148.9 GWh and 59.9 kt CO₂e a year at a net saving of S$29.8 million, and with PV, ammonia and an SMR added the site avoids 403.7 kt a year at S$92/t.
+
+**Sensitivity** (Section 5.5 and Table 5.7, pp. 57 to 58). From US$320 to 850 per tonne of delivered ammonia, the long-term abatement cost runs from S$80 to 293/tCO₂e, with grid parity at about US$203/t. At a grid price of S$250/MWh the long-term configuration is close to cost-neutral.
+
+<Figure src="research/cn5303/ammonia-sensitivity.webp" alt="Heat map of long-term abatement cost for four ammonia life-cycle intensities (0.15, 0.276, 0.78 and 1.03 tCO2e per tonne) against four delivered ammonia prices (US$320, 480, 650 and 850 per tonne). Costs range from S$77 per tonne at the lowest price and intensity to S$385 per tonne at the highest, and the central case is S$145 per tonne." caption="Long-term abatement cost by ammonia price and life-cycle intensity (report Figure 5.5, p. 58). Authors' calculation; each cell also lists emissions avoided and annual cost change." width={1600} height={851} zoom />
+
+**Hourly matching** (Section 4.5, p. 49). Solar sized to 100% of annual demand matches only 45% of consumption hour by hour. The long-term portfolio scores 100% on a normal day and an illustrative 97.1% over the year, allowing for SMR outages of 7% of the year.
+
+<Figure src="research/cn5303/hourly-matching.webp" alt="Two panels of power against hour of day for a flat data centre load. Left: a daytime solar curve sized to annual demand matches the load only around midday, scoring 45%. Right: SMR at 77 MW plus dispatched ammonia at about 25 MW cover the load in every hour, scoring 100% on a normal day and 97% over the year." caption="Hourly carbon-free electricity matching on a typical day (report Figure 4.6, p. 49). Authors' calculations." width={1600} height={619} zoom />
+
+**Recommended strategy** (Sections 5.6 and 5.7, pp. 60 to 61). The plan has five phases: cooling optimisation and rooftop PV (2026 to 2029), hybrid liquid cooling (2028 to 2032), contracting certified ammonia electricity (from about 2030), potential SMR supply (late 2030s onwards, subject to a national decision) and verified operation throughout. The report recommends that operators start with efficiency across the existing fleet.
+
+## Limitations
+
+The report states these limits itself.
+
+- Hourly dispatch, transmission and market modelling are outside the assessment, and sensitivity is tested one variable at a time with no multivariable uncertainty model (pp. 6 to 7).
+- The study covers electricity-related emissions, not a full Scope 1 to 3 inventory, and excludes financing and procurement (pp. 5 to 7).
+- The cooling result is a calibrated simulation of the NUS testbed plant, not a field measurement, and its transfer to a commercial plant is an engineering assumption (pp. 7 and 32).
+- Efficiency implementation cost is not published, so S$1 to 5 million is assumed, and hybrid liquid cooling gets only a break-even capital value (p. 40).
+- Singapore has not decided to deploy nuclear energy, the late-2030s SMR date is the report's own assumption, and the ammonia plant awaits a final investment decision (pp. 7, 17 and 21).
+- The 85% load factor, the PUE 1.20 target and the fleet PUE of 1.5 are assumptions, and the hourly score uses assumed availability and demand profiles (pp. 9, 38, 40 and 49).
+
+As a desk study it has further limits that I add here. No input was independently checked, so the results are only as reliable as the cited sources, and the ammonia cost depends on a fuel price that has no long-term market yet.
+
+## My contribution
+
+I wrote Chapter 2, the low-carbon electricity supply assessment, together with one teammate, and I wrote Chapter 5, the integrated proposal, implementation and conclusions. The team charter in Appendix B (p. 72) assigns me the screening of renewable and low-carbon options, the supply modelling and Scenarios A and B (rooftop PV and the SMR) in Chapter 2, while my teammate covered Scenario C and the carbon assessment. For Chapter 5 the charter lists my responsibilities as the integrated proposal, the electricity and emissions modelling, the techno-economic assessment, the sensitivity analysis, the implementation roadmap and the conclusions. The other chapters were written by other team members, and the charter built the whole study around one shared reference case so that the supply and demand chapters combine without double counting.

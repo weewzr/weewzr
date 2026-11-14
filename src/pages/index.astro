@@ -1,13 +1,20 @@
 ﻿---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
 import ResearchInterests from '../components/ResearchInterests.astro';
-import Skills from '../components/Skills.astro';
 import FeaturedProjects from '../components/FeaturedProjects.astro';
-import ResearchWriting from '../components/ResearchWriting.astro';
 import Contact from '../components/Contact.astro';
+import Icon from '../components/Icon.astro';
+import CollectionPreview from '../components/home/CollectionPreview.astro';
+import { getWork } from '../components/home/collections';
 import { site, social, education } from '../data/site';
+import { withBase } from '../lib/url';
+
+const [research, community, innovation] = await Promise.all([
+  getWork('research'),
+  getWork('community'),
+  getWork('innovation'),
+]);
 
 const personLd = {
   '@context': 'https://schema.org',
@@ -22,10 +29,33 @@ const personLd = {
 
 <BaseLayout path="" jsonLd={personLd}>
   <Hero />
-  <About />
-  <ResearchInterests />
-  <Skills />
-  <FeaturedProjects />
-  <ResearchWriting />
-  <Contact />
+  <ResearchInterests compact perry />
+  <FeaturedProjects showHead id="projects" />
+  <CollectionPreview section="research" entries={research}>
+    <p id="writing" class="notes-line reveal">
+      <a class="link-arrow" href={withBase('writing/')}>
+        Technical notes and computational studies
+        <Icon name="arrow-right" size={18} />
+      </a>
+    </p>
+  </CollectionPreview>
+  <CollectionPreview section="community" entries={community} />
+  <CollectionPreview section="innovation" entries={innovation} />
+  <Contact variant="strip" />
 </BaseLayout>
+
+<style>
+  .notes-line {
+    margin-top: clamp(1rem, 2.5vw, 1.5rem);
+  }
+</style>
+
+<script>
+  // Links made before the site had separate pages: #about and #skills now live on the About page.
+  const moved: Record<string, string> = { '#about': 'about/', '#skills': 'about/#skills' };
+  const target = moved[window.location.hash];
+  if (target) {
+    const base = document.querySelector<HTMLAnchorElement>('a.nav__brand')?.getAttribute('href') ?? '/';
+    window.location.replace(base.replace(/\/?$/, '/') + target);
+  }
+</script>

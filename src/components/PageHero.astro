@@ -1,0 +1,38 @@
+---
+/**
+ * Top of a section page: breadcrumb, eyebrow, the single h1, a lead and an optional slot for actions.
+ * `crumbs` runs from Home to the parent of this page; the page itself is added as the last item.
+ */
+import { withBase } from '../lib/url';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  id?: string;
+  /** Parents of this page, each with a path written without the base. Home is added first. */
+  crumbs?: { label: string; path: string }[];
+}
+const { eyebrow, title, lead, id = 'page-title', crumbs = [] } = Astro.props;
+const trail = [{ label: 'Home', path: '' }, ...crumbs];
+---
+
+<header class="page-hero container">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      {
+        trail.map((c) => (
+          <li>
+            <a href={withBase(c.path)}>{c.label}</a>
+          </li>
+        ))
+      }
+      <li aria-current="page">{title}</li>
+    </ol>
+  </nav>
+  <p class="eyebrow">{eyebrow}</p>
+  <h1 id={id} class="page-hero__title">{title}</h1>
+  {lead && <p class="page-hero__lead">{lead}</p>}
+  <span class="page-hero__rule" aria-hidden="true"></span>
+  <slot />
+</header>

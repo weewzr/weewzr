@@ -1,0 +1,155 @@
+---
+title: "Ammonia Cracking for Hydrogen Generation"
+shortTitle: "Ammonia Cracking for Hydrogen"
+summary: "The question is under what technological and economic conditions ammonia cracking can supply efficient, low-carbon and commercially viable hydrogen. The essay finds four conditions: an end use that needs molecular hydrogen, affordable low-carbon ammonia, low-temperature catalysts with heat integration, and purification matched to the required purity."
+kind: "Individual review essay, CN5190 Hydrogen Energy and Technology"
+period: "Completed November 2026"
+date: 2026-11-13
+status: "Completed"
+order: 2
+tags:
+  - Ammonia cracking
+  - Hydrogen carriers
+  - Catalysis
+  - Techno-economic assessment
+  - Literature review
+facts:
+  - label: "Conversion and efficiency"
+    value: "NH₃ conversion above 99% and process energy efficiency of 79-81% are reported [3], [8]"
+  - label: "Feedstock share of cost"
+    value: "Ammonia is 60-65% of hydrogen production cost [8]"
+  - label: "Reconversion cost"
+    value: "US$1.86-2.00 per kg H₂ for Ru and Ni processes [8]"
+  - label: "Singapore power plant"
+    value: "Direct ammonia combustion about 40% cheaper than cracking-based generation [1]"
+  - label: "Technology readiness"
+    value: "TRL 4-6 for integrated cracking and purification, against TRL 9 for fossil reforming [6]"
+  - label: "Course context"
+    value: "NUS CN5190, AY2026/27 Semester 1, coursework"
+documents:
+  - id: essay
+    title: "Essay: Ammonia Cracking for Hydrogen Generation"
+    kind: essay
+    description: "The essay as submitted, six pages."
+    published: true
+    pdf: "documents/cn5190-ammonia-cracking/essay.pdf"
+    pageDir: "documents/cn5190-ammonia-cracking/essay"
+    pages: 6
+    pageWidth: 990
+    pageHeight: 1400
+    note: "Public edition. My student number has been removed from the cover. Nothing else is changed."
+related:
+  - label: "AmCraX, the planned simulation platform this essay scopes"
+    href: "projects/amcrax/"
+  - label: "Low-carbon data centre study, which includes an ammonia-fired generation scenario"
+    href: "research/cn5303-low-carbon-data-centre/"
+sources:
+  - label: "Course essay for CN5190 Hydrogen Energy and Technology, NUS, AY2026/27 Semester 1 (coursework, shown in full under Documents)"
+---
+
+import Figure from '../../components/case/Figure.astro';
+
+## Abstract
+
+Singapore generates approximately 95% of its electricity from imported natural gas, while its National Hydrogen Strategy identifies low-carbon hydrogen as a potential source of up to half its power needs by 2050. This review evaluates the technological and economic conditions under which ammonia cracking can provide efficient, low-carbon and commercially viable hydrogen, drawing on mechanistic, catalytic, reactor, techno-economic and life-cycle studies.
+
+NH₃ conversion above 99% and process energy efficiencies near 80% are achievable, but ammonia feedstock accounts for 60-65% of hydrogen production costs, while reconversion adds approximately US$2/kg H₂. Cracking is most attractive when end uses require molecular hydrogen, low-carbon ammonia is affordable, low-temperature catalysts enable effective heat integration, and purification is matched to end-use purity requirements. For Singapore's power sector, direct ammonia combustion was approximately 40% cheaper than cracking-based power generation, so direct combustion or partial cracking suits power generation, while full cracking is better reserved for applications requiring high-purity hydrogen.
+
+## Motivation
+
+Singapore's natural gas is imported and supplies approximately 95% of its electricity [1]. The National Hydrogen Strategy announced in 2022 states that low-carbon hydrogen could supply up to half of Singapore's power needs by 2050 [2]. With limited land and renewable resources, Singapore could import ammonia as a hydrogen carrier. Its green ammonia market is projected to grow from 60 tonnes in 2021 to 18,000 tonnes by 2030 [1].
+
+Ammonia stores more hydrogen per unit volume than compressed or liquid hydrogen (Figure 1) and can be held at moderate pressure near ambient temperature or refrigerated at atmospheric pressure. A Korean case study estimated delivered hydrogen costs of US$3.5-5.5/kg via ammonia, against US$8-12/kg for hydrogen transport, delivery and dispensing in 2017 [6]. Toxicity, material compatibility and combustion-related NOₓ and N₂O emissions remain challenges [6].
+
+Cracking has to compete with direct use of ammonia. Recovering molecular hydrogen is justified mainly where the end use needs it, such as fuel cells and certain industrial processes. Commercial interest has historically been limited because over 80% of ammonia production serves fertiliser markets, and hydrogen from natural-gas reforming with carbon capture costs approximately US$1.2-2.0/kg [6]. No publicly documented single-train cracker has demonstrated hydrogen production at hundreds of tonnes per day [3].
+
+## Technical background
+
+### Reaction and thermodynamics
+
+Ammonia decomposition is endothermic and entropy-driven, with two moles of gaseous reactant giving four moles of gaseous products:
+
+2NH<sub>3</sub>(g) ⇌ N<sub>2</sub>(g) + 3H<sub>2</sub>(g), &nbsp; ΔH°<sub>298</sub> = +91.8 kJ (45.9 kJ per mol NH<sub>3</sub>) &nbsp; (1)
+
+Here ΔH°<sub>298</sub> is the standard reaction enthalpy at 298 K in kJ per 2 mol NH<sub>3</sub>. The enthalpy equals 30.6 kJ per mol H<sub>2</sub> [3], approximately 13% of the lower heating value (LHV) of hydrogen, 120 MJ kg<sup>−1</sup>. Overall cracking processes reach energy efficiencies of only 79-81% [8], because of feed vaporisation, heating and product separation. High temperature and low pressure favour decomposition. At 1 bar, equilibrium conversion exceeds 99% near 400 °C, whereas approximately 600 °C is required at 10 bar [3].
+
+### Catalysts
+
+On metal catalysts, ammonia adsorbs, loses hydrogen step by step (NH<sub>3</sub>* → NH<sub>2</sub>* → NH* → N*), and N<sub>2</sub> and H<sub>2</sub> desorb by recombination [9]. N-H bond cleavage limits the rate on Ru, Rh, Ir, Pt and Pd, whereas N<sub>2</sub> desorption can dominate on Fe, Co and Ni [9]. Nitrogen binding energy acts as an activity descriptor, giving a Sabatier volcano with Ru near the maximum [9]. Boisen et al. showed that the optimal decomposition catalyst differs from the optimal synthesis catalyst, and that the maximum shifts towards stronger nitrogen binding as NH<sub>3</sub> is depleted [10].
+
+In conventional reactors at 350-400 °C, NH<sub>3</sub> conversion reached only 8-65%, against equilibrium values of 92-99% [3]. The essay reads this as showing that low-temperature cracking is limited mainly by kinetics.
+
+### Reactors and separation
+
+Furnace-heated packed-bed tubes followed by ammonia removal and pressure-swing adsorption (PSA) form the conventional route, as in the Johnson Matthey ADEPT process, where PSA tail gas can be recycled as furnace fuel [5]. Fully cracked ammonia gives 75 mol% H<sub>2</sub> and 25 mol% N<sub>2</sub>, and ISO 14687 sets an NH<sub>3</sub> limit of 0.1 ppm for PEM fuel cells [3]. Pd-alloy membrane reactors remove H<sub>2</sub> from the catalyst bed, shifting equilibrium and reducing hydrogen inhibition [3].
+
+## Research methodology
+
+The essay is a literature review. It draws on twelve cited sources covering mechanistic, catalytic, reactor, techno-economic and life-cycle studies. It compares catalysts, reactor and separation configurations, and cost estimates reported by different studies, and it states that reported hydrogen costs differ because the studies use different system boundaries [8]. It also notes that catalyst results depend on conditions, space velocity and the metric used, and that testing protocols are not standardised [6]. One figure in the cost discussion is the author's own estimate and is labelled as such in the essay: about US$6 per kg H<sub>2</sub> of feedstock cost at ammonia prices above US$800/t, assuming 7.64 kg NH<sub>3</sub> per kg H<sub>2</sub>. The essay does not describe a formal search or screening protocol.
+
+## Main findings
+
+The essay concludes that cracking can be efficient, low-carbon and commercially viable when four conditions are met.
+
+1. **The end use needs molecular hydrogen.** Fuel cells and industrial uses qualify, whereas heat or power that ammonia can supply directly do not.
+2. **Ammonia is affordable and low-carbon.** Feedstock accounts for 61-65% of levelised cost of hydrogen (LCOH) and total operating costs for 86-88% [8]. Varying ammonia price by ±75% moved hydrogen cost from approximately US$3.60 to US$7.40/kg H<sub>2</sub> [6]. About 76% of emissions from conventional ammonia production arise from hydrogen generation [6].
+3. **Low-temperature catalysts are combined with heat integration.** A Ru reactor at 567 °C needed no supplementary fuel, whereas a Ni reactor at 736 °C consumed supplementary NH<sub>3</sub> [8]. The Ru process had a 7.0% lower reconversion cost, and untreated flue-gas NOₓ fell from 1,517 to 863 mg Nm<sup>−3</sup> [8]. Ru costs about US$542/kg against US$33.4/kg for Ni, yet the Ru-based process had the lower overall cost [8].
+4. **Purification matches the purity needed.** PSA suits bulk hydrogen. One study assumed 75.6% PSA recovery at 99.11 mol% H<sub>2</sub>, needing 7.6-8.0 kg NH<sub>3</sub> per kg H<sub>2</sub> against a stoichiometric 5.6 kg [8]. A Pd-Ag membrane reactor at 4 bar and 400 °C reached 99.3% conversion and 93.5% H<sub>2</sub> recovery, against 65.4% conversion for a conventional Ru/Al<sub>2</sub>O<sub>3</sub> reactor [3].
+
+Cost and catalyst results behind these conditions:
+
+- Reconversion cost (REC, excluding ammonia purchase) was US$1.86-2.00/kg H<sub>2</sub> for Ru and Ni processes [8], close to the US$2.0/kg H<sub>2</sub> estimated for Gulf-to-Europe delivery in 2020 [7]. Conversion and reconversion together were about 57% of the US$5.5/kg H<sub>2</sub> landed cost, and shipping and transmission about 5% [7].
+- Ru/CeO<sub>2</sub> reached 98% conversion at 450 °C against 63% for Ni/CeO<sub>2</sub> [12]. Ru turnover frequency at 400 °C was 1.8 s<sup>−1</sup> on CeO<sub>2</sub> and 1.0 s<sup>−1</sup> on Al<sub>2</sub>O<sub>3</sub> [12].
+
+For Singapore, Halim et al. estimated LCOH of US$15.1/kg H<sub>2</sub> for green and US$10.1/kg H<sub>2</sub> for blue ammonia cracking at a 60.1 MW plant [1]. Direct combustion was approximately 40% cheaper than the cracking pathway [1]. Turbines such as the Mitsubishi H-25 can run on NH<sub>3</sub>-H<sub>2</sub> blends of 30-60 vol% H<sub>2</sub> [1], so partial cracking without purification could sit between direct combustion and full cracking. Direct combustion or partial cracking therefore suits power generation, and full cracking suits applications that need high-purity hydrogen.
+
+## Supporting figures and tables
+
+<Figure src="research/cn5190/h2-storage-density.webp" alt="Bar chart of volumetric hydrogen density: compressed H2 at 690 bar 42.2 kg per cubic metre, liquid H2 at 1 bar and minus 253 degrees Celsius 70.8, liquid NH3 at 10 bar 107, liquid NH3 at 1 bar and minus 33 degrees Celsius 121." caption="Figure 1. Volumetric hydrogen storage density (kg m⁻³) of compressed H₂, liquid H₂ and liquid NH₃ under different storage conditions. Data from Cechetto et al. [3] and Makepeace et al. [4]. Chart drawn for the essay." width={1380} height={930} zoom />
+
+The essay also carries four further figures. Figure 2 shows turnover frequency and measured decomposition rate against dissociative N₂ adsorption energy [10]. Figure 3 shows NH₃ conversion against temperature for Ni, Ru and Ni-Ru on CeO₂ and Al₂O₃ [12]. Figure 4 is a process diagram of the Johnson Matthey ADEPT cracker [5]. Figure 5 shows the projected landed cost of green hydrogen shipped as ammonia from the GCC to Europe, 2020 to 2050 [7]. These come from the cited sources, so they are described here and not reproduced.
+
+**Table 1. Key challenges for commercial ammonia cracking.**
+
+| Challenge | Cause and evidence | Proposed solutions and remaining limitations |
+|---|---|---|
+| Energy penalty | Endothermic cracking at 550-750 °C; process efficiency of 79-81% [8]; supplementary NH₃ combustion generates NOₓ [8]. | Lower-temperature Ru catalysts, tail-gas heat recovery [5], [8] and membrane reactors near 400 °C [3]. Heat availability and integration remain limiting. |
+| Catalyst cost and durability | Ru is costly and scarce [9]; sintering on Al₂O₃ and reported volatilisation on CeO₂ [12]. | K promotion, suitable supports [11], [12] and stable Ni catalysts [12]. Long-duration testing and standardised protocols remain limited [6]. |
+| Purity and recovery | Cracked gas contains 25 mol% N₂; PEM applications require NH₃ below 0.1 ppm [3]; PSA recovery of 76-81% [6], [8]. | PSA with tail-gas utilisation [5] or Pd-Ag membrane separation [3]. Hydrogen recovery, Pd cost and membrane durability remain concerns. |
+| Scale and siting | No publicly documented single-train plant producing hundreds of tonnes of H₂ daily [3]; NH₃ toxicity creates siting constraints [6]. | Co-location with ammonia import and storage infrastructure [5]. Singapore's storage capacity and industrial siting requirements remain constraints [1]. |
+
+## Limitations
+
+The essay's own caveats are these. Large-scale cracking is commercially immature, with integrated cracking and purification assessed at TRL 4-6 against TRL 9 for fossil reforming [6]. Catalyst comparisons are hard because testing is not standardised [6]. Plant-scale techno-economic comparisons of membrane and packed-bed reactors are lacking [3]. Blue ammonia benefits depend on carbon capture performance and upstream methane emissions, and low-carbon imports would need credible emissions certification. Reported costs use different system boundaries, so they cannot be compared directly [8]. The essay calls for Singapore-specific techno-economic assessments with consistent boundaries.
+
+The following limits come from the kind of work this is, and are not statements made in the essay. It is a coursework literature review by one student. It reports numbers from other authors' studies and did not run its own experiments, process simulation or cost model, apart from the one labelled feedstock estimate. It has not had external review, and its conclusions are only as sound as the twelve sources it relies on.
+
+## Connection to AmCraX
+
+The essay identifies the modelling questions that a cracking simulator would need to address: equilibrium and kinetics, heat supply, separation, and cost accounting on consistent boundaries. [AmCraX](../../projects/amcrax/) is the platform I plan to build around those questions. It is at planning stage and no code exists.
+
+## References
+
+[1] I. Halim, N. S. Zain, and H. H. Khoo, “Assessing the feasibility of ammonia utilization for power generation: A techno-economic-environmental study,” Appl. Energy, vol. 386, Art. no. 125581, 2025, doi: 10.1016/j.apenergy.2025.125581.
+
+[2] Ministry of Trade and Industry Singapore, “Singapore launches National Hydrogen Strategy to accelerate transition to net zero emissions and strengthen energy security,” Press release, Oct. 25, 2022. [Online]. Available: https://www.meti.gov.sg/newsroom/singapore-launches-national-hydrogen-strategy-to-accelerate-transition-to-net-zero-emissions-and-strengthen-energy-security/
+
+[3] V. Cechetto, L. Di Felice, and F. Gallucci, “Advances and perspectives of H2 production from NH3 decomposition in membrane reactors,” Energy Fuels, vol. 37, no. 15, pp. 10775-10798, 2023, doi: 10.1021/acs.energyfuels.3c00760.
+
+[4] J. W. Makepeace et al., “Reversible ammonia-based and liquid organic hydrogen carriers for high-density hydrogen storage: Recent progress,” Int. J. Hydrogen Energy, vol. 44, no. 15, pp. 7746-7767, 2019, doi: 10.1016/j.ijhydene.2019.01.144.
+
+[5] P. Mistry, “Advanced ammonia cracking,” Hydrocarbon Eng., Sep. 2024. [Online]. Available: https://matthey.com/documents/d/guest/reprint-he-jm-advanced-ammonia-cracking-c2024- (accessed Nov. 8, 2026).
+
+[6] D. J. Deka, B. Boruah, G. Lee, and K. G. Rappé, “Recent advances in ammonia decomposition technologies for hydrogen production,” Energy Fuels, vol. 39, no. 23, pp. 10802-10852, 2025, doi: 10.1021/acs.energyfuels.5c01100.
+
+[7] Strategy& (PwC Middle East), “How the GCC can become a force in global green hydrogen: The green ammonia supply chain,” 2020. [Online]. Available: https://www.strategyand.pwc.com/m1/en/reports/2020/how-the-gcc-can-become-a-force-in-global-green-hydrogen/how-the-gcc-can-become-a-force-in-global-green-hydrogen.pdf
+
+[8] S. Cho, Y. Lee, and I. Lee, “Comparative assessment of ammonia decomposition processes based on nickel and ruthenium catalysts: A techno-economic perspective,” Energy Convers. Manage., vol. 348, Art. no. 120796, 2026, doi: 10.1016/j.enconman.2025.120796.
+
+[9] N. P. Maqunga, N. Opembe, M. Mathaba, and N. Bingwa, “Advances in catalysts development and catalytic activity trends of conventional metal oxides and inorganic perovskites for hydrogen production via ammonia decomposition: A review,” Discover Catal., vol. 3, no. 1, Art. no. 5, 2026, doi: 10.1007/s44344-026-00034-x.
+
+[10] A. Boisen, S. Dahl, J. K. Nørskov, and C. H. Christensen, “Why the optimal ammonia synthesis catalyst is not the optimal ammonia decomposition catalyst,” J. Catal., vol. 230, no. 2, pp. 309-312, 2005, doi: 10.1016/j.jcat.2004.12.013.
+
+[11] S. Sayas, N. Morlanés, S. P. Katikaneni, A. Harale, B. Solami, and J. Gascon, “High pressure ammonia decomposition on Ru-K/CaO catalysts,” Catal. Sci. Technol., vol. 10, no. 15, pp. 5027-5035, 2020, doi: 10.1039/d0cy00686f.
+
+[12] I. Lucentini, A. Casanovas, and J. Llorca, “Catalytic ammonia decomposition for hydrogen production on Ni, Ru and Ni-Ru supported on CeO2,” Int. J. Hydrogen Energy, vol. 44, no. 25, pp. 12693-12707, 2019, doi: 10.1016/j.ijhydene.2019.01.154.

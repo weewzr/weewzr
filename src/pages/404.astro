@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import { homeAnchor, withBase } from '../lib/url';
+import { withBase } from '../lib/url';
 ---
 
 <BaseLayout title="Page not found" description="The page you asked for does not exist on this site." noindex>
@@ -40,7 +40,7 @@ import { homeAnchor, withBase } from '../lib/url';
           Back to the home page
           <Icon name="arrow-right" size={18} />
         </a>
-        <a class="btn" href={homeAnchor('#projects')}>
+        <a class="btn" href={withBase('projects/')}>
           See the projects
           <Icon name="grid" size={18} />
         </a>

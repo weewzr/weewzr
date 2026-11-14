@@ -1,0 +1,271 @@
+---
+/**
+ * One photo gallery (a session).
+ * Props: gallery ({ id, title, date?, location?, note?, published, images[] }), headingLevel (2 to 4, default 3).
+ * Not published, or no images: the session card with a neutral message, and no image file is referenced.
+ * Published: a thumbnail grid and a lightbox on the native <dialog> (click or Enter opens, Escape closes,
+ * arrow keys and buttons move between images, focus returns to the thumbnail, text counter such as "3 of 8").
+ * Without JavaScript every thumbnail is a plain link to the full image.
+ */
+import type { CaseGallery } from '../../lib/case';
+import { slugify } from '../../lib/case';
+import { withBase } from '../../lib/url';
+
+interface Props {
+  gallery: CaseGallery;
+  headingLevel?: 2 | 3 | 4;
+}
+const { gallery, headingLevel = 3 } = Astro.props;
+const H = `h${headingLevel}` as 'h2' | 'h3' | 'h4';
+const images = gallery.images ?? [];
+const shown = gallery.published && images.length > 0;
+const gid = `gallery-${slugify(gallery.id)}`;
+const meta = [gallery.date, gallery.location].filter(Boolean) as string[];
+const first = images[0];
+---
+
+<section class="gal glass" aria-labelledby={`${gid}-title`} data-gallery={shown ? '' : undefined}>
+  <header class="gal-head">
+    <H id={`${gid}-title`}>{gallery.title}</H>
+    {
+      meta.length > 0 && (
+        <p class="gal-meta">
+          {gallery.date && <span>{gallery.date}</span>}
+          {gallery.location && <span>{gallery.location}</span>}
+        </p>
+      )
+    }
+  </header>
+
+  {
+    shown ? (
+      <>
+        <ul
+          class:list={['gal-grid', images.length <= 2 && 'gal-grid--few']}
+          aria-label={`${gallery.title}: ${images.length} ${images.length === 1 ? 'photograph' : 'photographs'}`}
+        >
+          {images.map((img, i) => (
+            <li>
+              <a
+                class="gal-thumb"
+                href={withBase(img.src)}
+                data-gal-thumb
+                data-index={i}
+                data-w={img.width}
+                data-h={img.height}
+                data-alt={img.alt}
+                data-caption={img.caption ?? ''}
+              >
+                <img
+                  src={withBase(img.thumb ?? img.src)}
+                  alt={img.alt}
+                  width={img.width}
+                  height={img.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+        {gallery.note && <p class="gal-note">{gallery.note}</p>}
+
+        <dialog class="gal-dialog" aria-label={`Photograph viewer: ${gallery.title}`} data-gal-dialog>
+          <div class="gal-bar">
+            <p class="gal-count" role="status" aria-live="polite" data-gal-count>
+              1 of {images.length}
+            </p>
+            <button type="button" class="gal-btn" data-gal-close>Close</button>
+          </div>
+          <figure class="gal-stage">
+            <img
+              src={withBase(first.src)}
+              alt={first.alt}
+              width={first.width}
+              height={first.height}
+              loading="lazy"
+              decoding="async"
+              data-gal-img
+            />
+            <figcaption data-gal-caption>{first.caption ?? ''}</figcaption>
+          </figure>
+          <div class="gal-nav">
+            <button type="button" class="gal-btn" data-gal-prev>Previous photograph</button>
+            <button type="button" class="gal-btn" data-gal-next>Next photograph</button>
+          </div>
+        </dialog>
+      </>
+    ) : (
+      <div class="gal-pending">
+        <p>Photographs are held until permission to publish is confirmed.</p>
+        {gallery.note && <p class="gal-note">{gallery.note}</p>}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .gal {
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    background: var(--glass-strong);
+  }
+  .gal-head :global(h2),
+  .gal-head :global(h3),
+  .gal-head :global(h4) {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .gal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin-top: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: #cbd5e1;
+  }
+  .gal-pending {
+    margin-top: 0.9rem;
+    padding: 0.9rem 1rem;
+    border: 1px dashed rgb(148 163 184 / 0.4);
+    border-radius: 12px;
+    color: #cbd5e1;
+  }
+  .gal-note {
+    margin-top: 0.7rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .gal-pending .gal-note {
+    margin-top: 0.5rem;
+  }
+
+  .gal-grid {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 10.5rem), 1fr));
+    gap: 0.6rem;
+  }
+  /* One or two photographs: show them large instead of as small thumbnails. */
+  .gal-grid--few {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 26rem));
+    gap: 0.9rem;
+  }
+  .gal-thumb {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+  }
+  .gal-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .gal-thumb:hover img {
+    transform: scale(1.04);
+  }
+
+  .gal-dialog {
+    width: min(96vw, 1100px);
+    max-width: none;
+    max-height: 94vh;
+    margin: auto;
+    padding: 0;
+    border: 1px solid rgb(167 139 250 / 0.5);
+    border-radius: 14px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .gal-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .gal-dialog::backdrop {
+    background: rgb(2 6 18 / 0.88);
+  }
+  .gal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0.75rem 0.4rem 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .gal-count {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+  }
+  .gal-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.06);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .gal-btn:hover {
+    border-color: rgb(167 139 250 / 0.7);
+    background: rgb(124 58 237 / 0.2);
+  }
+  .gal-stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    overflow: auto;
+  }
+  .gal-stage img {
+    display: block;
+    max-width: 100%;
+    max-height: 64vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  .gal-stage figcaption {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    text-align: center;
+  }
+  .gal-stage figcaption:empty {
+    display: none;
+  }
+  .gal-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem 0.75rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gal-thumb img {
+      transition: none;
+    }
+    .gal-thumb:hover img {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  import '../../scripts/case-gallery.ts';
+</script>

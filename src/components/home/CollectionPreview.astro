@@ -1,0 +1,43 @@
+---
+/**
+ * Home-page preview of one section: header with a "view all" link, then the cards.
+ * Props:
+ *   section   id of a section in site.ts: 'research' | 'community' | 'innovation'
+ *   entries   from getWork()
+ *   limit     maximum number of cards (default 3)
+ * The default slot is drawn under the cards (the research block puts the technical-notes line there).
+ */
+import SectionHeader from '../SectionHeader.astro';
+import WorkGrid from '../WorkGrid.astro';
+import { sections } from '../../data/site';
+import type { WorkEntry } from './collections';
+
+interface Props {
+  section: 'research' | 'community' | 'innovation';
+  entries: WorkEntry[];
+  limit?: number;
+}
+const { section: sectionId, entries, limit = 3 } = Astro.props;
+const section = sections.find((s) => s.id === sectionId)!;
+---
+
+<section id={sectionId} class="section preview" aria-labelledby={`${sectionId}-title`}>
+  <div class="container">
+    <SectionHeader
+      eyebrow={section.eyebrow}
+      title={section.title}
+      lead={section.lead}
+      id={`${sectionId}-title`}
+      href={section.path}
+      linkLabel={`All ${section.label.toLowerCase()} work`}
+    />
+    <WorkGrid entries={entries} basePath={section.path} limit={limit} headingLevel="h3" />
+    <slot />
+  </div>
+</section>
+
+<style>
+  .preview {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  }
+</style>

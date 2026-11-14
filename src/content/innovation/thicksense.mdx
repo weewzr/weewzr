@@ -1,0 +1,124 @@
+---
+title: "ThickSense: a vibration-sensing smart spoon for checking thickened drinks"
+shortTitle: "ThickSense"
+summary: "ThickSense is a spoon concept that estimates the thickness of a thickened drink in about three seconds by vibrating in the liquid and reading how strongly the liquid damps the vibration. Our five-person team, CATS, entered it in iDEATE 2026 and reached the semifinal."
+kind: "Product concept, iDEATE 2026 entry"
+role: "Member of a five-person team (CATS)"
+period: "September 2026"
+date: 2026-09-01
+status: "iDEATE 2026 Semifinalist"
+order: 1
+tags:
+  - "iDEATE 2026"
+  - "Dysphagia"
+  - "Sensing"
+  - "Product concept"
+facts:
+  - label: "Competition and result"
+    value: "iDEATE 2026, semifinalist"
+  - label: "Measurement time"
+    value: "about 3 s (design target stated on the poster)"
+  - label: "Target price"
+    value: "S$15 selling target (summary and poster)"
+  - label: "Team"
+    value: "5 people, team name CATS (Community Action Technological Solutions)"
+  - label: "Stage"
+    value: "Concept with prototype stages shown on the poster; no test results reported"
+documents:
+  - id: poster
+    title: "Competition poster"
+    kind: poster
+    description: "The poster the team presented at iDEATE 2026."
+    published: true
+    pdf: "documents/thicksense/poster.pdf"
+    pageDir: "documents/thicksense/poster"
+    pages: 1
+    pageWidth: 1695
+    pageHeight: 2400
+    note: "Public edition. The other four team members' names have been removed from the header. The rest of the poster is as presented."
+  - id: summary
+    title: "Submitted project summary"
+    kind: summary
+    description: "The project summary the team submitted, word for word."
+    published: true
+    pdf: "documents/thicksense/summary.pdf"
+    pageDir: "documents/thicksense/summary"
+    pages: 1
+    pageWidth: 1190
+    pageHeight: 1684
+    note: "The text is the submitted summary, unchanged. The page layout was added for this site."
+sources:
+  - label: "ThickSense competition poster (team document, shown under Documents)"
+  - label: "ThickSense submitted project summary, iDEATE 2026 (team document, shown under Documents)"
+  - label: "NUS College of Design and Engineering, news page describing iDEATE (2025 edition, organisers and format)"
+    url: "https://cde.nus.edu.sg/deans-message-112025-events-other-happenings/"
+---
+
+import SensingChain from '../../components/diagrams/SensingChain.astro';
+import Callout from '../../components/case/Callout.astro';
+
+ThickSense is a concept for a spoon that tells a caregiver whether a thickened drink is at the right consistency. I worked on it as one of five members of team CATS (Community Action Technological Solutions) for iDEATE 2026. iDEATE is an NUS innovation competition; the public NUS College of Design and Engineering page I consulted describes the 2025 edition as co-organised by the college's Office of Research and Technology, the Innovation and Design Programme Student Club and NUS Enterprise.
+
+## Problem statement
+
+Dysphagia is difficulty swallowing. People with it are often given drinks that have been thickened so that they flow more slowly. The team's two documents quantify how common the condition is in different words. The submitted summary says dysphagia "affects roughly half of residents" of Singapore's nursing homes and hospices. The poster says "2 in 5 elderly home residents experience dysphagia". I report both and name the document each comes from, and I have not reconciled them.
+
+The poster states two linked problems. Thickener preparation is inconsistent, because water, Milo and soup can each need a different amount. A drink that ends up too thin carries an aspiration risk, and one that ends up too thick can reduce fluid intake. The poster quotes "an HCA nurse": "We know how much to add for water. But how about for milo or soups?"
+
+## Target users
+
+The summary names the buyers as care homes, families caring for elderly parents and the elderly themselves, with nursing homes and hospices in Singapore as the first market. The poster frames the everyday user as the caregiver checking a drink before serving it. The poster also gives the share of Singapore residents aged 65 and over as 13.1% in 2015 and 20.7% in 2025, as evidence of a growing population.
+
+## Design motivation
+
+The team wanted a check that is quick and needs little training. The poster calls it "Dip. Press. Check.", three steps designed for everyday care. The summary adds reusability and a low price as aims, and lists lower choking and dehydration risk and less waste as intended benefits. These are intended benefits, and neither document reports that they were achieved.
+
+## Proposed solution
+
+The spoon is dipped in the drink, a button starts the measurement, and the result is read from a display. The poster gives a design target of about 3 s for the measurement. The summary says the display shows a viscosity value and then one of three labels: Too Thin, Just Right or Too Thick.
+
+The summary also describes a machine learning companion app that would record each result, learn each patient's preferred thickness and give doctors, therapists and caregivers real-time information. The app is part of the concept as the summary proposes it. The poster does not show an app, and I have not seen one demonstrated.
+
+## Engineering principles
+
+This section is general background and is not a result from the project.
+
+A body vibrating in a liquid loses energy to the liquid. The more viscous the liquid, the stronger the damping, so the amplitude of the response is smaller, or it dies away faster, than in a thinner liquid. A sensor that records the response therefore carries information about viscosity, and with a calibration it could in principle be turned into a consistency estimate.
+
+<Callout title="What the sources do not give" tone="limit">
+Neither document gives a transfer function, a calibration curve or an accuracy figure for the spoon. The poster does not say whether amplitude, decay or another feature of the signal is used.
+</Callout>
+
+## Sinusoidal vibration mechanism
+
+The summary describes the excitation as "sine-wave vibration technology". The poster describes the sensing chain in four stages, which the diagram below redraws.
+
+<SensingChain />
+
+A coin vibration motor excites the spoon. A piezo sensor detects the spoon's response after damping by the liquid. A microcontroller processes the sensor signal. A display shows an estimated result. The documents do not state the vibration frequency, the signal features used or how the estimate is calculated.
+
+## Product design
+
+The poster's prototype panel shows three stages, labelled Proof of Concept, Integrated PCB and Sensors, and Smart Spoon Concept. I describe them as the poster shows them: a sequence from a proof of concept, through a circuit board with sensors, to an image of the smart spoon concept. The last stage is a concept image. I do not claim a finished prototype.
+
+On cost, the poster puts the prototype parts at under S$100 and the selling target at S$15. It also lists a path to scale through an integrated PCB, fewer components and volume production.
+
+## Innovation and differentiation
+
+The summary frames the spoon against two existing options: syringe flow kits at about S$40 and viscometers at about S$200, against a ThickSense target of S$15. It calls the result an "unbeatable value proposition", which is the team's pitch and not an independent assessment. The comparison rests on the team's own figures.
+
+The poster plans to compare the spoon's readings with IDDSI flow tests. IDDSI is the International Dysphagia Diet Standardisation Initiative. The poster names its flow tests as the benchmark for the spoon's readings.
+
+## Competition recognition
+
+The team entered iDEATE 2026 in September 2026 and reached the semifinal, so the entry carries the status iDEATE 2026 Semifinalist. The poster carries the NUS, iDEATE and HCA Hospice Care logos. It quotes a nurse from HCA Hospice Care. I do not claim a partnership, endorsement or trial with HCA Hospice Care.
+
+## Evidence and limits
+
+<Callout title="Limits of the evidence" tone="limit">
+There are no experimental results in the summary or the poster. Nothing in them reports a clinical test, and the design has not been shown to reduce choking, aspiration or dehydration, which remain intended benefits. The prototype is shown only as the three stages on the poster. The market figures, including prevalence, prices and the 3 s target, are the team's own.
+</Callout>
+
+## Future development
+
+The poster sets out a path of prototype testing, signal analysis, design refinement and a caregiver pilot. Its validation plan has two parts: compare readings with IDDSI flow tests across benchmark consistencies, and repeat measurements to check repeatability. These are plans stated on the poster. I have no results from them to report.

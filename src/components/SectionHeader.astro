@@ -1,0 +1,37 @@
+---
+/**
+ * Header of a block on a page: eyebrow, title, optional lead and an optional "view all" link.
+ * `level` is the heading element (h2 for blocks under a page h1).
+ */
+import Icon from './Icon.astro';
+import { withBase } from '../lib/url';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  id?: string;
+  level?: 'h1' | 'h2' | 'h3';
+  /** Path without the base, for example "research/". */
+  href?: string;
+  linkLabel?: string;
+}
+const { eyebrow, title, lead, id, level = 'h2', href, linkLabel } = Astro.props;
+const Heading = level;
+---
+
+<header class="section-head reveal">
+  <div class="section-head__text">
+    <p class="eyebrow">{eyebrow}</p>
+    <Heading id={id} class="section-title">{title}</Heading>
+    {lead && <p class="section-lead">{lead}</p>}
+  </div>
+  {
+    href && (
+      <a class="link-arrow" href={withBase(href)}>
+        {linkLabel ?? 'View all'}
+        <Icon name="arrow-right" size={18} />
+      </a>
+    )
+  }
+</header>

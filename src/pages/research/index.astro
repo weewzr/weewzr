@@ -1,0 +1,33 @@
+---
+/**
+ * Research and academic work index: the case studies from the `research` collection, then the technical notes.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import WorkGrid from '../../components/WorkGrid.astro';
+import ResearchWriting from '../../components/ResearchWriting.astro';
+import { getWork } from '../../components/home/collections';
+import { sections } from '../../data/site';
+
+const section = sections.find((s) => s.id === 'research')!;
+const entries = await getWork('research');
+const crumbs = [
+  { label: 'Home', path: '' },
+  { label: section.label, path: section.path },
+];
+---
+
+<BaseLayout
+  title="Research and academic work"
+  description={section.lead}
+  path={section.path}
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow={section.eyebrow} title={section.title} lead={section.lead} />
+  <section class="block" aria-label="Research and academic work">
+    <div class="container">
+      <WorkGrid entries={entries} basePath={section.path} headingLevel="h2" />
+    </div>
+  </section>
+  <ResearchWriting heading="Technical notes" sectionId="technical-notes" />
+</BaseLayout>

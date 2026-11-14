@@ -1,0 +1,305 @@
+---
+/**
+ * Phased timeline, reused for the Grant A Wish phases and (through Roadmap.astro) the project roadmaps.
+ * Props:
+ *   items  Milestone[]  phases in order ({ id, title, period?, status, summary?, items[] })
+ *   label  string       accessible name of the whole timeline, for example "Project timeline"
+ *   noun   'phase' | 'step'  word used in the numbers and the progress text (default 'phase')
+ * Semantics: an ordered list. Each phase shows its number, title, period, a status badge in words, the
+ * summary and dated sub-items. Without JavaScript every phase is expanded in a vertical list. With
+ * JavaScript, on wide screens a progress rail of buttons (WAI-ARIA disclosure, aria-expanded, arrow keys)
+ * expands the matching phase. Progress is stated as text computed from the data, never as a percentage.
+ */
+import type { Milestone } from '../../lib/case';
+import { milestoneStatusText, progressText, slugify } from '../../lib/case';
+
+interface Props {
+  items: readonly Milestone[];
+  label: string;
+  noun?: 'phase' | 'step';
+}
+const { items, label, noun = 'phase' } = Astro.props;
+const Noun = `${noun[0].toUpperCase()}${noun.slice(1)}`;
+const base = `tl-${slugify(label)}`;
+const progress = progressText(items, noun);
+const firstOpen = (() => {
+  const active = items.findIndex((m) => m.status === 'active');
+  if (active >= 0) return active;
+  // Otherwise the most recent completed step, because that is the one with something to read.
+  const lastDone = items.map((m) => m.status).lastIndexOf('done');
+  return lastDone >= 0 ? lastDone : 0;
+})();
+---
+
+{
+  items.length > 0 && (
+    <div class="tl" data-timeline data-first-open={firstOpen}>
+      <p class="tl-progress">{progress}</p>
+
+      <div class="tl-rail" data-tl-rail style={`--n:${items.length}`} role="group" aria-label={`${label}: choose a ${noun} to expand`}>
+        {items.map((m, i) => (
+          <button
+            type="button"
+            class={`tl-step st-${m.status}`}
+            id={`${base}-btn-${m.id}`}
+            aria-controls={`${base}-${m.id}`}
+            aria-expanded="true"
+            data-tl-btn
+          >
+            <span class="tl-dot" aria-hidden="true">{m.status === 'done' ? '✓' : i + 1}</span>
+            <span class="tl-step-title">{m.title}</span>
+            <span class="tl-step-status">{milestoneStatusText[m.status]}</span>
+          </button>
+        ))}
+      </div>
+
+      <ol class="tl-list" aria-label={label}>
+        {items.map((m, i) => {
+          const hasDetail = Boolean(m.summary) || m.items.length > 0;
+          return (
+            <li class={`tl-item st-${m.status}`} id={`${base}-${m.id}`} data-tl-panel>
+              <div class="tl-head">
+                <span class="tl-num">{Noun} {i + 1}</span>
+                <h3>{m.title}</h3>
+                <p class="tl-meta">
+                  {m.period && <span class="tl-period">{m.period}</span>}
+                  <span class={`tl-badge st-${m.status}`}>{milestoneStatusText[m.status]}</span>
+                </p>
+              </div>
+              {m.summary && <p class="tl-summary">{m.summary}</p>}
+              {!hasDetail && m.status === 'upcoming' && (
+                <p class="tl-summary tl-neutral">Details will be added when confirmed.</p>
+              )}
+              {m.items.length > 0 && (
+                <ul class="tl-sub">
+                  {m.items.map((it) => (
+                    <li>
+                      {it.date && <span class="tl-date">{it.date}</span>}
+                      <span class="tl-label">{it.label}</span>
+                      {it.detail && <span class="tl-detail">{it.detail}</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  )
+}
+
+<style>
+  .tl-progress {
+    margin: 0 0 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: #dbe4f0;
+  }
+
+  /* Rail: only with JavaScript, only on wide screens. */
+  .tl-rail {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    :global(.js) .tl-rail {
+      display: grid;
+      grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
+      gap: 0.5rem;
+      margin: 0 0 1.5rem;
+      position: relative;
+    }
+    :global(.js) .tl-rail::before {
+      content: '';
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 1.35rem;
+      height: 2px;
+      background: var(--line);
+    }
+  }
+  .tl-step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.5rem 0.4rem 0.7rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text);
+    text-align: center;
+    font: inherit;
+    cursor: pointer;
+  }
+  .tl-step:hover {
+    background: rgb(148 163 184 / 0.1);
+  }
+  .tl-step[aria-expanded='true'] {
+    border-color: rgb(167 139 250 / 0.5);
+    background: rgb(124 58 237 / 0.14);
+  }
+  .tl-dot {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--bg-2);
+    border: 2px solid var(--muted);
+    z-index: 1;
+  }
+  .st-done .tl-dot {
+    background: #1d4ed8;
+    border-color: #93c5fd;
+  }
+  .st-active .tl-dot {
+    background: #6d28d9;
+    border-color: var(--lavender);
+    box-shadow: 0 0 14px rgb(167 139 250 / 0.6);
+  }
+  .tl-step-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    color: #fff;
+  }
+  .tl-step-status {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  /* Phase list */
+  .tl-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .tl-item {
+    padding: 1rem 1.15rem 1.1rem;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--muted);
+    border-radius: 12px;
+    background: rgb(6 11 27 / 0.45);
+  }
+  .tl-item.st-done {
+    border-left-color: #60a5fa;
+  }
+  .tl-item.st-active {
+    border-left-color: var(--lavender);
+  }
+  .tl-item[hidden] {
+    display: none;
+  }
+  .tl-num {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lavender);
+  }
+  .tl-head h3 {
+    margin-top: 0.2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .tl-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    margin-top: 0.45rem;
+  }
+  .tl-period {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: #cbd5e1;
+  }
+  .tl-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    border: 1px solid var(--line);
+    color: #e2e8f0;
+  }
+  .tl-badge.st-done {
+    background: rgb(37 99 235 / 0.22);
+    border-color: rgb(96 165 250 / 0.55);
+  }
+  .tl-badge.st-active {
+    background: rgb(124 58 237 / 0.25);
+    border-color: rgb(167 139 250 / 0.6);
+  }
+  .tl-badge.st-upcoming {
+    background: rgb(148 163 184 / 0.12);
+  }
+  .tl-summary {
+    margin-top: 0.7rem;
+    color: #d5deea;
+    line-height: 1.65;
+  }
+  .tl-neutral {
+    color: var(--muted);
+    font-style: italic;
+  }
+  .tl-sub {
+    list-style: none;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .tl-sub li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.1rem;
+    padding-left: 0.85rem;
+    border-left: 2px solid var(--line);
+  }
+  @media (min-width: 640px) {
+    .tl-sub li {
+      grid-template-columns: 9rem minmax(0, 1fr);
+      column-gap: 0.9rem;
+    }
+    .tl-sub .tl-detail {
+      grid-column: 2;
+    }
+  }
+  .tl-date {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: #cbd5e1;
+  }
+  .tl-label {
+    color: #fff;
+  }
+  .tl-detail {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  @media print {
+    .tl-rail {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  import '../../scripts/case-timeline.ts';
+</script>

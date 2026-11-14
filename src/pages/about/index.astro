@@ -1,0 +1,121 @@
+---
+/**
+ * About and contact. Built from site.ts (education, about paragraphs, affiliations, interests, skills) and the
+ * collections (counts on the selected-work cards). The CV switch is read from `cv` in site.ts; while it is off,
+ * nothing about it is rendered.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import About from '../../components/About.astro';
+import ResearchInterests from '../../components/ResearchInterests.astro';
+import Skills from '../../components/Skills.astro';
+import Contact from '../../components/Contact.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Icon from '../../components/Icon.astro';
+import { getWork } from '../../components/home/collections';
+import { sections, projects, cv, site, social, education } from '../../data/site';
+import { withBase } from '../../lib/url';
+
+const section = sections.find((s) => s.id === 'about')!;
+const [research, community, innovation] = await Promise.all([
+  getWork('research'),
+  getWork('community'),
+  getWork('innovation'),
+]);
+
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+const counts: Record<string, string> = {
+  projects: plural(projects.length, 'project', 'projects'),
+  research: plural(research.length, 'case study', 'case studies'),
+  community: plural(community.length, 'project', 'projects'),
+  innovation: plural(innovation.length, 'entry', 'entries'),
+};
+const work = sections.filter((s) => s.id !== 'about');
+
+// The download button exists only when the owner switches it on in site.ts.
+const download: { enabled: boolean; cvPath: string } = cv;
+const showDownload = download.enabled && download.cvPath !== '';
+
+const crumbs = [
+  { label: 'Home', path: '' },
+  { label: section.label, path: section.path },
+];
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  mainEntity: {
+    '@type': 'Person',
+    name: site.name,
+    url: site.url,
+    sameAs: [social.github, social.linkedin],
+    alumniOf: { '@type': 'CollegeOrUniversity', name: education.institution },
+  },
+};
+---
+
+<BaseLayout
+  title="About and contact"
+  description="Academic background, affiliations, research and engineering interests, technical skills and contact details for Wee Zhern Ray, Chemical Engineering student at the National University of Singapore."
+  path={section.path}
+  breadcrumbs={crumbs}
+  jsonLd={personLd}
+>
+  <PageHero eyebrow={section.eyebrow} title={section.title} lead={section.lead}>
+    {
+      showDownload && (
+        <p class="about-download">
+          <a class="btn" href={withBase(download.cvPath)} download>
+            Download CV
+          </a>
+        </p>
+      )
+    }
+  </PageHero>
+
+  <About heading={false} />
+  <ResearchInterests id="interests" />
+  <Skills />
+
+  <section id="selected-work" class="block" aria-labelledby="selected-work-title">
+    <div class="container">
+      <SectionHeader
+        eyebrow="Where to look next"
+        title="Selected work"
+        id="selected-work-title"
+        lead="Each section has its own page, with the full list of entries and the evidence behind them."
+      />
+      <ul class="card-grid" role="list">
+        {
+          work.map((s, i) => (
+            <li class="reveal" style={`--i:${i}`}>
+              <article class="card">
+                <p class="card__meta">{counts[s.id]}</p>
+                <h3 class="card__title">
+                  <a href={withBase(s.path)}>{s.title}</a>
+                </h3>
+                <p class="card__summary">{s.lead}</p>
+                <div class="card__foot">
+                  <span class="link-arrow" aria-hidden="true">
+                    Open section
+                    <Icon name="arrow-right" size={18} />
+                  </span>
+                </div>
+              </article>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Contact />
+</BaseLayout>
+
+<style>
+  .about-download {
+    margin-top: 1.25rem;
+  }
+  .card__foot .link-arrow {
+    min-height: 0;
+  }
+</style>

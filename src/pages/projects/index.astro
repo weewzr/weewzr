@@ -1,0 +1,26 @@
+---
+/**
+ * Projects index. The page hero comes from the `projects` entry of `sections` in site.ts; the cards come from
+ * `projects` in the same file, with the research-area filter chips.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FeaturedProjects from '../../components/FeaturedProjects.astro';
+import { sections } from '../../data/site';
+
+const section = sections.find((s) => s.id === 'projects')!;
+const crumbs = [
+  { label: 'Home', path: '' },
+  { label: section.label, path: section.path },
+];
+---
+
+<BaseLayout
+  title="Engineering projects"
+  description={section.lead}
+  path={section.path}
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow={section.eyebrow} title={section.title} lead={section.lead} />
+  <FeaturedProjects filter headingLevel="h2" />
+</BaseLayout>

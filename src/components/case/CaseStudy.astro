@@ -1,0 +1,435 @@
+---
+/**
+ * Body of a long-form case study in the Research, Community and Innovation sections.
+ * Props:
+ *   entry    a content entry from the research, community or innovation collection
+ *   section  the matching item of `sections` in src/data/site.ts
+ *   prev     previous entry in the same section, or null
+ *   next     next entry in the same section, or null
+ * Layout: breadcrumb, header, key facts, then a two-column body (sticky "On this page" list and the prose),
+ * followed by Timeline, Photographs, Documents, Related pages and Sources when the entry has them.
+ * Nothing is placed behind a tab. The wrapper of the prose has class `case-prose`.
+ */
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import ScrollTable from '../ScrollTable.astro';
+import Icon from '../Icon.astro';
+import Facts from './Facts.astro';
+import Figure from './Figure.astro';
+import Callout from './Callout.astro';
+import Toc from './Toc.astro';
+import Timeline from './Timeline.astro';
+import Gallery from './Gallery.astro';
+import DocumentViewer from './DocumentViewer.astro';
+import RelatedLinks from './RelatedLinks.astro';
+import SourceList from './SourceList.astro';
+import CaseProseStyles from './CaseProseStyles.astro';
+import type { Section } from '../../data/site';
+import type { CaseEntry } from '../../lib/case';
+import { withBase } from '../../lib/url';
+
+interface Props {
+  entry: CaseEntry;
+  section: Section;
+  prev?: CaseEntry | null;
+  next?: CaseEntry | null;
+}
+const { entry, section, prev = null, next = null } = Astro.props;
+const d = entry.data;
+const { Content, headings } = await render(entry as CollectionEntry<'research'>);
+
+const timelineHeading = section.id === 'community' ? 'Project timeline' : 'Timeline';
+const hasTimeline = d.timeline.length > 0;
+const hasGalleries = d.galleries.length > 0;
+const hasDocuments = d.documents.length > 0;
+const hasRelated = d.related.length > 0;
+const hasSources = d.sources.length > 0;
+
+const tocItems = [
+  ...headings.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, label: h.text })),
+  ...(hasTimeline ? [{ id: 'case-timeline', label: timelineHeading }] : []),
+  ...(hasGalleries ? [{ id: 'case-photographs', label: 'Photographs' }] : []),
+  ...(hasDocuments ? [{ id: 'case-documents', label: 'Documents' }] : []),
+  ...(hasRelated ? [{ id: 'case-related', label: 'Related pages' }] : []),
+  ...(hasSources ? [{ id: 'case-sources', label: 'Sources' }] : []),
+];
+const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
+---
+
+<article class="case" aria-labelledby="case-title">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href={withBase('')}>Home</a></li>
+        <li><a href={withBase(section.path)}>{section.label}</a></li>
+        <li aria-current="page">{d.shortTitle}</li>
+      </ol>
+    </nav>
+
+    <header class="case-head">
+      <p class="status">{d.status}</p>
+      <h1 id="case-title" class="grad-text">{d.title}</h1>
+      <dl class="meta">
+        <div><dt>Kind</dt><dd>{d.kind}</dd></div>
+        <div><dt>Period</dt><dd>{d.period}</dd></div>
+        {d.role && <div><dt>Role</dt><dd>{d.role}</dd></div>}
+      </dl>
+      <p class="summary">{d.summary}</p>
+      {
+        d.tags.length > 0 && (
+          <ul class="tags" aria-label="Topics">
+            {d.tags.map((t) => <li class="chip">{t}</li>)}
+          </ul>
+        )
+      }
+      {
+        d.hero && (
+          <figure class="hero">
+            <img
+              src={withBase(d.hero.src)}
+              alt={d.hero.alt}
+              width={d.hero.width}
+              height={d.hero.height}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+            {d.hero.caption && <figcaption>{d.hero.caption}</figcaption>}
+          </figure>
+        )
+      }
+    </header>
+
+    <Facts facts={d.facts} />
+
+    <div class="case-grid">
+      <aside class="case-side">
+        <Toc items={tocItems} />
+      </aside>
+
+      <div class="case-main">
+        <div class="case-body glass">
+          <div class="case-prose">
+            <Content components={{ table: ScrollTable, Figure, Callout }} />
+          </div>
+        </div>
+
+        {
+          hasTimeline && (
+            <section class="block glass" id="case-timeline" aria-labelledby="case-timeline-title">
+              <h2 id="case-timeline-title">{timelineHeading}</h2>
+              <Timeline items={d.timeline} label={timelineHeading} />
+            </section>
+          )
+        }
+
+        {
+          hasGalleries && (
+            <section class="block-plain" id="case-photographs" aria-labelledby="case-photographs-title">
+              <h2 id="case-photographs-title">Photographs</h2>
+              <div class="stack">
+                {d.galleries.map((g) => <Gallery gallery={g} />)}
+              </div>
+            </section>
+          )
+        }
+
+        {
+          hasDocuments && (
+            <section class="block-plain" id="case-documents" aria-labelledby="case-documents-title">
+              <h2 id="case-documents-title">Documents</h2>
+              <div class="stack">
+                {d.documents.map((doc) => <DocumentViewer doc={doc} />)}
+              </div>
+            </section>
+          )
+        }
+
+        {hasRelated && <RelatedLinks links={d.related} />}
+        {hasSources && <SourceList sources={d.sources} />}
+      </div>
+    </div>
+
+    {
+      (prev || next) && (
+        <nav class={`pager ${prev && next ? 'two' : ''}`} aria-label={`Other ${section.label.toLowerCase()} pages`}>
+          {prev && (
+            <a class="pager-link glass gradient-border" href={entryHref(prev)} rel="prev">
+              <span class="pager-dir">
+                <Icon name="arrow-right" size={16} class="flip" /> Previous
+              </span>
+              <span class="pager-name">{prev.data.shortTitle}</span>
+            </a>
+          )}
+          {next && (
+            <a class="pager-link next glass gradient-border" href={entryHref(next)} rel="next">
+              <span class="pager-dir">
+                Next <Icon name="arrow-right" size={16} />
+              </span>
+              <span class="pager-name">{next.data.shortTitle}</span>
+            </a>
+          )}
+        </nav>
+      )
+    }
+  </div>
+</article>
+
+<CaseProseStyles />
+
+<style>
+  .case {
+    padding-top: calc(var(--nav-h) + clamp(1.25rem, 4vw, 2.5rem));
+    padding-bottom: clamp(3.5rem, 8vw, 6rem);
+  }
+
+  /* Breadcrumb */
+  .crumbs ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .crumbs li {
+    display: flex;
+    align-items: center;
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 0.5rem;
+    color: rgb(148 163 184 / 0.55);
+  }
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: #c4b5fd;
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    text-decoration: underline;
+  }
+  .crumbs [aria-current='page'] {
+    padding-block: 0.4rem;
+    color: var(--text);
+  }
+
+  /* Header */
+  .case-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 62rem;
+    margin: 1.25rem 0 clamp(1.5rem, 4vw, 2.25rem);
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
+    color: #ddd6fe;
+    background: rgb(124 58 237 / 0.16);
+    border: 1px solid rgb(167 139 250 / 0.38);
+  }
+  .status::before {
+    content: '';
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--lavender);
+    box-shadow: 0 0 8px var(--lavender);
+  }
+  h1 {
+    margin-top: 0.9rem;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    padding-bottom: 0.08em;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.75rem;
+    margin: 1rem 0 0;
+    padding: 0;
+  }
+  .meta div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1rem 0.5rem;
+    min-width: 0;
+  }
+  .meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .meta dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: #e2e8f0;
+  }
+  .summary {
+    margin-top: 1.1rem;
+    max-width: 62ch;
+    font-size: 1.1rem;
+    color: #cbd5e1;
+  }
+  .tags {
+    list-style: none;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .hero {
+    margin: 1.75rem 0 0;
+    width: 100%;
+  }
+  .hero img {
+    display: block;
+    width: 100%;
+    max-height: 30rem;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 1px solid rgb(148 163 184 / 0.25);
+    background: var(--bg-2);
+  }
+  .hero figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* Two-column body */
+  .case-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: clamp(1.5rem, 4vw, 2.25rem);
+  }
+  @media (min-width: 1024px) {
+    .case-grid {
+      grid-template-columns: 15rem minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+  }
+  .case-side {
+    min-width: 0;
+  }
+  @media (min-width: 1024px) {
+    /* Stretch so the sticky list has room to travel alongside the whole column. */
+    .case-side {
+      align-self: stretch;
+    }
+  }
+  .case-main {
+    min-width: 0;
+    max-width: 54rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+  }
+  .case-body {
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+    background: var(--glass-strong);
+  }
+  .block {
+    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
+    background: var(--glass-strong);
+  }
+  .block > h2,
+  .block-plain > h2 {
+    font-size: clamp(1.35rem, 3vw, 1.7rem);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+  .block-plain {
+  }
+  .stack {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  /* Previous / next */
+  .pager {
+    max-width: 54rem;
+    margin: 2rem 0 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  @media (min-width: 1024px) {
+    .pager {
+      margin-left: calc(15rem + 2.5rem);
+    }
+  }
+  @media (min-width: 640px) {
+    .pager.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .pager-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-height: 44px;
+    padding: 1rem 1.25rem;
+    text-decoration: none;
+    color: var(--text);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .pager-link.next {
+    text-align: right;
+    align-items: flex-end;
+  }
+  .pager-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 36px rgb(124 58 237 / 0.28);
+  }
+  .pager-dir {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pager-dir :global(.flip) {
+    transform: scaleX(-1);
+  }
+  .pager-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #fff;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pager-link:hover {
+      transform: none;
+    }
+  }
+</style>

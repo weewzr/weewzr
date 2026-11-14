@@ -1,0 +1,31 @@
+---
+/**
+ * Community engagement index: the entries of the `community` collection.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import WorkGrid from '../../components/WorkGrid.astro';
+import { getWork } from '../../components/home/collections';
+import { sections } from '../../data/site';
+
+const section = sections.find((s) => s.id === 'community')!;
+const entries = await getWork('community');
+const crumbs = [
+  { label: 'Home', path: '' },
+  { label: section.label, path: section.path },
+];
+---
+
+<BaseLayout
+  title="Community engagement"
+  description={section.lead}
+  path={section.path}
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow={section.eyebrow} title={section.title} lead={section.lead} />
+  <section class="block" aria-label="Community engagement">
+    <div class="container">
+      <WorkGrid entries={entries} basePath={section.path} headingLevel="h2" />
+    </div>
+  </section>
+</BaseLayout>

@@ -2,6 +2,16 @@
 import Icon from './Icon.astro';
 import { education, aboutParagraphs, affiliations, researchInterests } from '../data/site';
 
+/**
+ * Profile block: about paragraphs, a fact strip, education and affiliations.
+ * `heading` false drops the block header (the About page has its own h1) and lifts the card titles to h2.
+ */
+interface Props {
+  heading?: boolean;
+}
+const { heading = true } = Astro.props;
+const CardTitle = heading ? 'h3' : 'h2';
+
 // Everything below is derived from src/data/site.ts at build time.
 const strip = (value: string, prefix: RegExp) => value.replace(prefix, '').trim();
 const institutionShort = education.institution.match(/\(([^)]+)\)/)?.[1] ?? education.institution;
@@ -17,12 +27,16 @@ const facts = [
 ];
 ---
 
-<section id="about" class="section" aria-labelledby="about-title">
+<section id={heading ? 'about' : 'profile'} class="block" aria-labelledby={heading ? 'about-title' : undefined} aria-label={heading ? undefined : 'Profile'}>
   <div class="ab-wrap">
-    <header class="reveal">
-      <p class="eyebrow">Profile</p>
-      <h2 id="about-title" class="section-title">About</h2>
-    </header>
+    {
+      heading && (
+        <header class="reveal">
+          <p class="eyebrow">Profile</p>
+          <h2 id="about-title" class="section-title">About</h2>
+        </header>
+      )
+    }
 
     <div class="ab-grid">
       <div class="ab-main">
@@ -52,7 +66,7 @@ const facts = [
         <article class="ab-card glass gradient-border reveal" style="--i:1">
           <header class="ab-card-head">
             <span class="ab-ico"><Icon name="book" size={20} /></span>
-            <h3>Education</h3>
+            <CardTitle>Education</CardTitle>
           </header>
           <p class="ab-inst">{education.institution}</p>
           <dl class="ab-edu">
@@ -74,7 +88,7 @@ const facts = [
         <article class="ab-card glass gradient-border reveal" style="--i:2">
           <header class="ab-card-head">
             <span class="ab-ico"><Icon name="atom" size={20} /></span>
-            <h3>Affiliations</h3>
+            <CardTitle>Affiliations</CardTitle>
           </header>
           <p class="ab-intro">Research involvement and affiliations at NUS</p>
           <ul class="ab-aff" role="list">
@@ -116,7 +130,7 @@ const facts = [
   .ab-grid {
     display: grid;
     gap: clamp(1.75rem, 4vw, 3rem);
-    margin-top: 2.25rem;
+    margin-top: 0;
   }
   @media (min-width: 900px) {
     .ab-grid {
@@ -209,7 +223,7 @@ const facts = [
     background: linear-gradient(145deg, rgb(59 130 246 / 0.18), rgb(124 58 237 / 0.22));
     border: 1px solid rgb(167 139 250 / 0.3);
   }
-  .ab-card h3 {
+  .ab-card :is(h2, h3) {
     font-size: 1.2rem;
     font-weight: 600;
   }

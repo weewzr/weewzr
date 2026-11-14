@@ -3,17 +3,32 @@ import Icon from './Icon.astro';
 import PerryConsole from './PerryConsole.astro';
 import { researchInterests } from '../data/site';
 
+/**
+ * Props:
+ *   compact  home-page version: icon, title and keywords only, in a tighter grid
+ *   perry    show the Perry research console under the grid (home page only; one placement per page)
+ *   id       section id (the home page uses "interests")
+ *   title    block heading
+ */
+interface Props {
+  compact?: boolean;
+  perry?: boolean;
+  id?: string;
+  title?: string;
+}
+const { compact = false, perry = false, id = 'interests', title = 'Research and engineering interests' } = Astro.props;
+
 const badgeText = {
   involvement: 'Research involvement',
   interest: 'Interest',
 } as const;
 ---
 
-<section id="research" class="section" aria-labelledby="research-title">
+<section id={id} class:list={['section', { 'is-compact': compact }]} aria-labelledby={`${id}-title`}>
   <div class="ri-wrap">
     <header class="reveal">
       <p class="eyebrow">Focus areas</p>
-      <h2 id="research-title" class="section-title">Research Interests</h2>
+      <h2 id={`${id}-title`} class="section-title">{title}</h2>
       <p class="section-lead">
         The badge on each card separates active research involvement from broader interests, which draw on my studies and public projects.
       </p>
@@ -31,7 +46,7 @@ const badgeText = {
                 <span class:list={['ri-badge', item.kind === 'involvement' ? 'is-fill' : 'is-outline']}>{badgeText[item.kind]}</span>
               </div>
               <h3 class="ri-title">{item.title}</h3>
-              <p class="ri-summary">{item.summary}</p>
+              {!compact && <p class="ri-summary">{item.summary}</p>}
               <ul class="ri-chips" role="list" aria-label={`Keywords for ${item.title}`}>
                 {item.keywords.map((kw) => (
                   <li class="chip">{kw}</li>
@@ -43,9 +58,13 @@ const badgeText = {
       }
     </ul>
 
-    <div class="ri-egg reveal">
-      <PerryConsole />
-    </div>
+    {
+      perry && (
+        <div class="ri-egg reveal">
+          <PerryConsole />
+        </div>
+      )
+    }
   </div>
 </section>
 
@@ -175,6 +194,32 @@ const badgeText = {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
+  }
+
+  /* Compact: smaller tiles, no summary, less vertical padding around the block. */
+  .is-compact.section {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  }
+  .is-compact .ri-grid {
+    margin-top: 1.75rem;
+    gap: 1rem;
+  }
+  .is-compact .ri-card {
+    padding: 1.1rem 1.2rem;
+  }
+  .is-compact .ri-ico {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .is-compact .ri-title {
+    margin-top: 0.8rem;
+    font-size: 1.08rem;
+  }
+  .is-compact .ri-chips {
+    padding-top: 0.8rem;
+  }
+  .is-compact .ri-title + .ri-chips {
+    margin-top: 0.8rem;
   }
 
   .ri-egg {

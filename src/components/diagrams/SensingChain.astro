@@ -1,0 +1,102 @@
+---
+/**
+ * Original diagram of the four-stage sensing chain described in the ThickSense summary and poster.
+ * The stages are stacked vertically at every screen width so the text stays readable at 320 px. No script, no animation.
+ */
+const stages = [
+  { n: '1', name: 'Vibration input', note: 'Coin motor excites the spoon' },
+  { n: '2', name: 'Piezo sensor', note: 'Reads the response after damping' },
+  { n: '3', name: 'Microcontroller', note: 'Processes the sensor signal' },
+  { n: '4', name: 'Consistency output', note: 'Display shows the estimate' },
+];
+const title = 'ThickSense sensing chain';
+const desc =
+  'Four stages in order. One: vibration input, a coin motor excites the spoon. Two: a piezo sensor reads the response after the liquid has damped it. Three: a microcontroller processes the sensor signal. Four: the display shows the consistency result.';
+
+// Vertical layout geometry (one layout at every width, narrow enough that text stays about 12 px or more at 320 px)
+const vw = 300, vh = 78, vgap = 30;
+---
+
+<figure class="sensing-chain">
+  <svg class="sc-narrow" viewBox={`0 0 ${vw + 8} ${stages.length * vh + (stages.length - 1) * vgap + 8}`} role="img" aria-labelledby="sc-n-title sc-n-desc" xmlns="http://www.w3.org/2000/svg">
+    <title id="sc-n-title">{title}</title>
+    <desc id="sc-n-desc">{desc}</desc>
+    {stages.map((s, i) => {
+      const y = 4 + i * (vh + vgap);
+      return (
+        <g>
+          <rect x="4" y={y} width={vw} height={vh} rx="14" class="sc-box" />
+          <circle cx="30" cy={y + 28} r="13" class="sc-badge" />
+          <text x="30" y={y + 34} text-anchor="middle" class="sc-num sc-num-n">{s.n}</text>
+          <text x="54" y={y + 34} class="sc-name sc-name-n">{s.name}</text>
+          <text x="20" y={y + 62} class="sc-note sc-note-n">{s.note}</text>
+          {i < stages.length - 1 && (
+            <path d={`M${4 + vw / 2} ${y + vh + 6} v${vgap - 14} m-6 -8 l6 8 l6 -8`} class="sc-arrow" />
+          )}
+        </g>
+      );
+    })}
+  </svg>
+  <figcaption>The sensing chain as the team's summary and poster describe it. Redrawn for this page.</figcaption>
+</figure>
+
+<style>
+  .sensing-chain {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--glass);
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-inline: auto;
+  }
+  .sc-narrow {
+    max-width: 380px;
+  }
+  .sc-box {
+    fill: var(--bg-2);
+    stroke: var(--blue-2);
+    stroke-width: 1.5;
+  }
+  .sc-badge {
+    fill: var(--purple);
+  }
+  .sc-num {
+    fill: #fff;
+    font: 700 14px var(--font-mono);
+  }
+  .sc-num-n {
+    font-size: 15px;
+  }
+  .sc-name {
+    fill: var(--text);
+    font: 600 17px var(--font-display);
+  }
+  .sc-name-n {
+    font-size: 17px;
+  }
+  .sc-note {
+    fill: var(--muted);
+    font: 400 13.5px var(--font-body);
+  }
+  .sc-note-n {
+    font-size: 14.5px;
+  }
+  .sc-arrow {
+    fill: none;
+    stroke: var(--lavender);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  figcaption {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+  }
+</style>

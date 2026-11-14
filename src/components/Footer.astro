@@ -3,8 +3,8 @@
  * Site footer. position:relative with no overflow clipping, because <PerryFooter /> peeks above the top edge.
  * The right-hand side is kept free on desktop and the top padding grows on phones so the mascot never covers copy.
  */
-import { site, social, nav, mascot } from '../data/site';
-import { withBase, homeAnchor } from '../lib/url';
+import { site, social, sections, mascot } from '../data/site';
+import { withBase } from '../lib/url';
 import Icon from './Icon.astro';
 import PerryFooter from './PerryFooter.astro';
 
@@ -28,14 +28,19 @@ const built = [
       <p class="footer__label">Explore</p>
       <ul class="footer__list">
         {
-          nav.map((item) => (
+          sections.map((item) => (
             <li>
-              <a class="footer__link" href={homeAnchor(item.href)}>
+              <a class="footer__link" href={withBase(item.path)}>
                 {item.label}
               </a>
             </li>
           ))
         }
+        <li>
+          <a class="footer__link" href={withBase('writing/')}>
+            Technical notes
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -59,7 +64,7 @@ const built = [
         {
           social.email && (
             <li>
-              <a class="footer__link" href={homeAnchor('#contact')}>
+              <a class="footer__link" href={withBase('about/#contact')}>
                 <Icon name="mail" size={17} />
                 Email (see Contact)
               </a>

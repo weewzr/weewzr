@@ -1,0 +1,31 @@
+---
+/**
+ * Development status and roadmap of a project: an optional status sentence above a Timeline that counts
+ * "steps". It shares its whole core with Timeline.astro.
+ * Props: items (Milestone[]), statusNote (optional text), label (default "Development roadmap").
+ */
+import Timeline from './Timeline.astro';
+import type { Milestone } from '../../lib/case';
+
+interface Props {
+  items: readonly Milestone[];
+  statusNote?: string;
+  label?: string;
+}
+const { items, statusNote, label = 'Development roadmap' } = Astro.props;
+---
+
+{statusNote && <p class="status-note">{statusNote}</p>}
+<Timeline items={items} label={label} noun="step" />
+
+<style>
+  .status-note {
+    margin: 0 0 1.25rem;
+    padding: 0.8rem 1.1rem;
+    border-left: 3px solid var(--purple);
+    border-radius: 0 12px 12px 0;
+    background: rgb(124 58 237 / 0.1);
+    color: #e2e8f0;
+    line-height: 1.65;
+  }
+</style>

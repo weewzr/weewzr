@@ -10,19 +10,62 @@ interface Props {
   noindex?: boolean;
   type?: 'website' | 'article';
   jsonLd?: Record<string, unknown>;
+  /** Trail from Home to this page, for BreadcrumbList structured data. `path` is written without the base. */
+  breadcrumbs?: { label: string; path: string }[];
 }
-const { title, description = site.description, image = site.ogImage, path = '', noindex = false, type = 'website', jsonLd } = Astro.props;
+const {
+  title,
+  description = site.description,
+  image = site.ogImage,
+  path = '',
+  noindex = false,
+  type = 'website',
+  jsonLd,
+  breadcrumbs,
+} = Astro.props;
 
 const fullTitle = title ? `${title} | ${site.name}` : site.title;
+
+/** Search engines show about 160 characters. Cut at a sentence end if one falls in range, else at a word. */
+function clip(text: string, max = 180): string {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  const head = clean.slice(0, max);
+  const stop = head.lastIndexOf('. ');
+  if (stop >= 80) return head.slice(0, stop + 1);
+  return `${head.slice(0, head.lastIndexOf(' '))}...`;
+}
+const metaDescription = clip(description);
 const base = site.url.endsWith('/') ? site.url : `${site.url}/`;
 const canonical = new URL(path.replace(/^\//, ''), base).href;
 const ogImage = new URL(image, base).href;
+const ogImageAlt = "Celestial blue and purple banner for Wee Zhern Ray's engineering portfolio.";
+
+// Structured data: the page's own object, plus a BreadcrumbList when a trail is given.
+let structured: Record<string, unknown> | undefined = jsonLd;
+if (breadcrumbs && breadcrumbs.length > 0) {
+  const trail = {
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((crumb, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: crumb.label,
+      item: new URL(crumb.path.replace(/^\//, ''), base).href,
+    })),
+  };
+  if (jsonLd) {
+    const { '@context': _context, ...own } = jsonLd;
+    structured = { '@context': 'https://schema.org', '@graph': [own, trail] };
+  } else {
+    structured = { '@context': 'https://schema.org', ...trail };
+  }
+}
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{fullTitle}</title>
-<meta name="description" content={description} />
+<meta name="description" content={metaDescription} />
 {!noindex && <link rel="canonical" href={canonical} />}
 <meta name="author" content={site.name} />
 <meta name="theme-color" content="#060B1B" />
@@ -33,13 +76,14 @@ const ogImage = new URL(image, base).href;
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={site.name} />
 <meta property="og:title" content={fullTitle} />
-<meta property="og:description" content={description} />
+<meta property="og:description" content={metaDescription} />
 <meta property="og:url" content={canonical} />
 <meta property="og:image" content={ogImage} />
-<meta property="og:image:alt" content="Celestial blue and purple banner for Wee Zhern Ray's engineering portfolio." />
+<meta property="og:image:alt" content={ogImageAlt} />
 <meta property="og:locale" content="en_SG" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />
-<meta name="twitter:description" content={description} />
+<meta name="twitter:description" content={metaDescription} />
 <meta name="twitter:image" content={ogImage} />
-{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+<meta name="twitter:image:alt" content={ogImageAlt} />
+{structured && <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')} />}

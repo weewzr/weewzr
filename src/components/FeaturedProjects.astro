@@ -1,33 +1,48 @@
 ---
 /**
- * Featured projects section. Loops over `projects` in src/data/site.ts, so adding a
- * project there (plus a preview image under public/projects) needs no change here.
+ * Engineering projects. Loops over `projects` in src/data/site.ts, so adding a project there (plus a preview image
+ * under public/projects) needs no change here.
+ * Props:
+ *   showHead   draw the block header with the Perry mascot (home page). The projects index page has its own page hero.
+ *   filter     show the research-area filter chips (projects index page)
+ *   headingLevel  heading element for the card titles ('h3' under a block h2, 'h2' under a page h1)
+ *   id         section id (home keeps "projects" for old links)
  */
 import ProjectCard from './ProjectCard.astro';
 import PerryAgent from './PerryAgent.astro';
-import { projects, researchInterests } from '../data/site';
+import { projects, researchInterests, sections } from '../data/site';
+import { withBase } from '../lib/url';
+import Icon from './Icon.astro';
+
+interface Props {
+  showHead?: boolean;
+  filter?: boolean;
+  headingLevel?: 'h2' | 'h3';
+  id?: string;
+}
+const { showHead = false, filter = false, headingLevel = 'h3', id } = Astro.props;
+const section = sections.find((s) => s.id === 'projects');
 
 // Chips come from the research areas that at least one project uses, in researchInterests order.
 // Adding a project (with its `areas` ids) in src/data/site.ts needs no change here.
 const areaChips = researchInterests.filter((area) => projects.some((p) => p.areas.includes(area.id)));
 ---
 
-<section id="projects" class="section" aria-labelledby="projects-title">
+<section id={id} class:list={['projects-block', { section: showHead, block: !showHead }]} aria-labelledby={showHead ? 'projects-title' : undefined} aria-label={showHead ? undefined : 'Projects'}>
   <div class="container">
-    {/* position: relative (see styles) so PerryAgent can anchor itself to the top-right corner of this header. */}
-    <header class="proj-head reveal">
-      <p class="eyebrow">Featured projects</p>
-      <h2 id="projects-title" class="section-title">Projects</h2>
-      <p class="section-lead">
-        Public computational projects with open-source code. Each card links to the repository and, where one exists,
-        to the live tool. The case studies set out the assumptions and limits of each model. Each also records the
-        checks run on it.
-      </p>
-      <PerryAgent />
-    </header>
+    {
+      showHead && (
+        <header class="proj-head reveal">
+          <p class="eyebrow">Engineering projects</p>
+          <h2 id="projects-title" class="section-title">Featured engineering projects</h2>
+          <p class="section-lead">{section?.lead}</p>
+          <PerryAgent />
+        </header>
+      )
+    }
 
     {
-      areaChips.length > 1 && (
+      filter && areaChips.length > 1 && (
         <div class="proj-filter" data-project-filter>
           <div class="chips" role="group" aria-label="Filter projects by research area">
             <button type="button" class="filter-chip" data-area="all" aria-pressed="true">
@@ -48,11 +63,22 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
       {
         projects.map((project, i) => (
           <li class="reveal" style={`--i:${i}`} data-areas={project.areas.join(' ')}>
-            <ProjectCard project={project} index={i} />
+            <ProjectCard project={project} index={i} headingLevel={headingLevel} />
           </li>
         ))
       }
     </ol>
+
+    {
+      showHead && (
+        <p class="proj-more reveal">
+          <a class="link-arrow" href={withBase('projects/')}>
+            All projects, with filters by research area
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </p>
+      )
+    }
   </div>
 </section>
 
@@ -72,7 +98,7 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
   /* The filter needs JavaScript, so it stays hidden until the `js` class from BaseLayout is present. */
   .proj-filter {
     display: none;
-    margin: -0.75rem 0 clamp(1.5rem, 4vw, 2.25rem);
+    margin: 0 0 clamp(1.5rem, 4vw, 2.25rem);
   }
   :global(.js) .proj-filter {
     display: block;
@@ -119,6 +145,12 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
     display: grid;
     gap: clamp(1.75rem, 4vw, 2.75rem);
   }
+  .project-list > li[hidden] {
+    display: none;
+  }
+  .proj-more {
+    margin-top: clamp(1.25rem, 3vw, 2rem);
+  }
 </style>
 
 <script>
@@ -137,7 +169,7 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
         item.hidden = !match;
         if (match) {
           // Keep the left/right image alternation correct for the cards that remain.
-          item.querySelector('.card')?.setAttribute('data-flip', shown % 2 === 1 ? 'true' : 'false');
+          item.querySelector('.pcard')?.setAttribute('data-flip', shown % 2 === 1 ? 'true' : 'false');
           shown += 1;
         }
       }
