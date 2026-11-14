@@ -8,12 +8,18 @@ Reads the built HTML (no browser, no JavaScript) and fails when:
   * a button has no text,
   * a case-study page has a tab bar whose tabs do not all point at ids that exist, or whose configuration
     names no heading present on the page (the enhancement script would then leave the bar hidden),
-  * the home page project filter has a chip no project uses, or a project area with no chip.
+  * the home page project filter has a chip no project uses, or a project area with no chip,
+  * any href or src is empty, "null", "undefined" or contains the text "undefined",
+  * an <a> that has an href has no accessible name, or a <dialog> has no accessible name,
+  * a page under research/, community/ or innovation/ (other than the section index) has no element with
+    class case-prose,
+  * a link is labelled CV or resume, or offers a PDF named cv or resume for download (the owner publishes no CV).
 
 It checks the static HTML, which is what a visitor without JavaScript receives. Behaviour with JavaScript
 (arrow keys, tab switching, filtering) is covered by the browser checks described in docs/MAINTAINING.md.
 """
 import json
+import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -37,12 +43,36 @@ class Page(HTMLParser):
         self._button_text = None
         self._h2_text = None
         self._prose_depth = 0
+        self.has_case_prose = False
+        self._link = None  # the open <a href>: {"href", "name", "text"}
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
         cls = (a.get("class") or "").split()
         if tag == "html":
             self.lang = a.get("lang")
+        if "case-prose" in cls:
+            self.has_case_prose = True
+        for key in ("href", "src"):
+            if key in a:
+                v = (a[key] or "").strip()
+                if v == "" or v.lower() in ("null", "undefined") or "undefined" in v.lower():
+                    self.problems.append(f"empty or invalid {key} on <{tag}>: {a[key]!r}")
+        if tag == "a" and "href" in a:
+            self._link = {"href": a["href"] or "", "name": (a.get("aria-label") or a.get("aria-labelledby") or "").strip(), "text": ""}
+            dl = a.get("download")
+            href_name = (a["href"] or "").split("?")[0].split("/")[-1]
+            for candidate in (dl, href_name):
+                if candidate and candidate.lower().endswith(".pdf") and re.search(r"(^|[^a-z])(cv|resume|curriculum)", candidate.lower()):
+                    self.problems.append(f"CV or resume PDF offered as a link or download: {candidate}")
+        elif self._link is not None:
+            # Descendants can name the link: an image alt text or an aria-label on an inline svg.
+            if tag == "img" and a.get("alt"):
+                self._link["text"] += " " + a["alt"]
+            if a.get("aria-label"):
+                self._link["name"] += " " + a["aria-label"]
+        if tag == "dialog" and not ((a.get("aria-label") or "").strip() or (a.get("aria-labelledby") or "").strip()):
+            self.problems.append("dialog without an accessible name")
         if tag == "h1":
             self.h1 += 1
         if a.get("id"):
@@ -75,6 +105,13 @@ class Page(HTMLParser):
             self._h2_text = ""
 
     def handle_endtag(self, tag):
+        if tag == "a" and self._link is not None:
+            label = (self._link["name"] + " " + self._link["text"]).strip()
+            if not label:
+                self.problems.append(f"link without an accessible name: {self._link['href']}")
+            if re.search(r"\bCV\b", self._link["text"]) or re.fullmatch(r"\s*(résumé|resume|curriculum vitae)\s*", self._link["text"], re.I):
+                self.problems.append(f"link labelled as a CV or resume: {self._link['text'].strip()!r}")
+            self._link = None
         if tag == "button" and self._button_text is not None:
             if not self._button_text.strip() and not getattr(self, "_aria_label", None):
                 self.problems.append("button without text")
@@ -86,6 +123,8 @@ class Page(HTMLParser):
             self._prose_depth -= 1
 
     def handle_data(self, data):
+        if self._link is not None:
+            self._link["text"] += data
         if self._button_text is not None:
             self._button_text += data
         if self._h2_text is not None:
@@ -103,6 +142,10 @@ def check_page(path: Path, rel: str):
     dup = sorted({i for i in p.ids if p.ids.count(i) > 1})
     if dup:
         errs.append(f"duplicate ids: {dup}")
+
+    parts = rel.split("/")
+    if parts[0] in ("research", "community", "innovation") and len(parts) > 2 and not p.has_case_prose:
+        errs.append("case-study page has no element with class case-prose")
 
     if p.tab_buttons:
         cfg = p.tab_config or {}

@@ -1,0 +1,67 @@
+---
+/**
+ * Key facts strip: a definition list laid out as a responsive grid with monospace values.
+ * Props: facts ({ label, value }[]), label (accessible name, default "Key facts").
+ */
+interface Props {
+  facts: readonly { label: string; value: string }[];
+  label?: string;
+}
+const { facts, label = 'Key facts' } = Astro.props;
+---
+
+{
+  facts.length > 0 && (
+    <dl class="facts glass" aria-label={label}>
+      {facts.map((f) => (
+        <div class="fact">
+          <dt>{f.label}</dt>
+          <dd>{f.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+<style>
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 0;
+    margin: 0;
+    padding: 0.35rem;
+    background: var(--glass-strong);
+  }
+  .fact {
+    min-width: 0;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .fact:last-child {
+    border-bottom: 0;
+  }
+  @media (min-width: 640px) {
+    .fact {
+      border-bottom: 0;
+      border-right: 1px solid var(--line);
+    }
+    .fact:last-child {
+      border-right: 0;
+    }
+  }
+  dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  dd {
+    margin: 0.3rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: #fff;
+    overflow-wrap: anywhere;
+  }
+</style>

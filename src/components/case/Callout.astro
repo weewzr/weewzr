@@ -1,0 +1,79 @@
+---
+/**
+ * A boxed remark inside a case-study body.
+ * Props: tone ('note' | 'limit' | 'source', default 'note'), title (optional heading line).
+ * Each tone prints a text label so colour is never the only signal.
+ */
+interface Props {
+  tone?: 'note' | 'limit' | 'source';
+  title?: string;
+}
+const { tone = 'note', title } = Astro.props;
+const label = { note: 'Note', limit: 'Limit', source: 'Source' }[tone];
+---
+
+<div class={`callout tone-${tone}`} role="note" aria-label={title ? `${label}: ${title}` : label}>
+  <p class="callout-label">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      {tone === 'note' && <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8v.01" /></>}
+      {tone === 'limit' && <><path d="M12 3l10 18H2L12 3z" /><path d="M12 10v5M12 18v.01" /></>}
+      {tone === 'source' && <><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5z" /><path d="M8 7h6" /></>}
+    </svg>
+    <span>{label}</span>
+  </p>
+  {title && <p class="callout-title">{title}</p>}
+  <div class="callout-body"><slot /></div>
+</div>
+
+<style>
+  .callout {
+    --tone: #93c5fd;
+    --tone-bg: rgb(59 130 246 / 0.1);
+    --tone-line: rgb(96 165 250 / 0.45);
+    margin: 1.6rem 0;
+    padding: 0.85rem 1.1rem 0.95rem;
+    border: 1px solid var(--tone-line);
+    border-left-width: 4px;
+    border-radius: 12px;
+    background: var(--tone-bg);
+  }
+  .tone-limit {
+    --tone: #fcd34d;
+    --tone-bg: rgb(245 158 11 / 0.1);
+    --tone-line: rgb(251 191 36 / 0.5);
+  }
+  .tone-source {
+    --tone: #c4b5fd;
+    --tone-bg: rgb(124 58 237 / 0.12);
+    --tone-line: rgb(167 139 250 / 0.5);
+  }
+  .callout-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0 0 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tone);
+  }
+  .callout-title {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #fff;
+  }
+  .callout-body {
+    color: #dbe4f0;
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+  .callout-body > :global(:last-child) {
+    margin-bottom: 0;
+  }
+  .callout-body :global(p) {
+    margin: 0 0 0.7rem;
+  }
+</style>

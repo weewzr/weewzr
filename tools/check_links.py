@@ -24,12 +24,18 @@ class Collector(HTMLParser):
     def __init__(self):
         super().__init__()
         self.links, self.ids = [], set()
+        self.bad = []  # empty or "undefined" href/src values
+        self.viewers = []  # (page image directory, page count) of each document viewer
 
     def handle_starttag(self, tag, attrs):
         d = dict(attrs)
         if d.get("id"):
             self.ids.add(d["id"])
+        if "data-docviewer" in d and d.get("data-dir") and d.get("data-pages", "").isdigit():
+            self.viewers.append((d["data-dir"], int(d["data-pages"])))
         for key in ("href", "src", "poster"):
+            if key in d and (not (d[key] or "").strip() or "undefined" in d[key].lower() or d[key].strip().lower() == "null"):
+                self.bad.append(f"<{tag} {key}={d[key]!r}>")
             if d.get(key):
                 self.links.append((tag, key, d[key]))
         if d.get("srcset"):
@@ -65,6 +71,13 @@ def resolve(url_path: str):
 
 for f, c in pages.items():
     rel = f.relative_to(dist)
+    for bad in c.bad:
+        errors.append(f"{rel}: empty or invalid attribute {bad}")
+    # Every page image of a document viewer must exist, not only page 1.
+    for vdir, count in c.viewers:
+        for n in range(1, count + 1):
+            if not resolve(f"{vdir}/p-{n:03d}.webp").exists():
+                errors.append(f"{rel}: missing document page {vdir}/p-{n:03d}.webp")
     for tag, key, url in c.links:
         if url.startswith(("mailto:", "tel:", "data:", "javascript:")):
             continue

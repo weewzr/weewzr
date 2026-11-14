@@ -1,0 +1,73 @@
+---
+/**
+ * Links to other pages of this site, as a titled panel. Renders nothing when `links` is empty.
+ * Props: links ({ label, href }[], href is a path without the base), heading (default "Related pages"),
+ * id (heading id, default "case-related").
+ */
+import Icon from '../Icon.astro';
+import { withBase } from '../../lib/url';
+
+interface Props {
+  links: readonly { label: string; href: string }[];
+  heading?: string;
+  id?: string;
+}
+const { links, heading = 'Related pages', id = 'case-related' } = Astro.props;
+const valid = links.filter((l) => l.href && l.href.trim() && l.label.trim());
+---
+
+{
+  valid.length > 0 && (
+    <section class="related glass" aria-labelledby={id}>
+      <h2 id={id}>{heading}</h2>
+      <ul>
+        {valid.map((l) => (
+          <li>
+            <a href={withBase(l.href)}>
+              <span>{l.label}</span>
+              <Icon name="arrow-right" size={16} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .related {
+    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
+    background: var(--glass-strong);
+  }
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  ul {
+    list-style: none;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 44px;
+    padding: 0.3rem 0;
+    color: #c4b5fd;
+    text-decoration: none;
+  }
+  a span {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    color: #fff;
+  }
+  a :global(svg) {
+    flex: none;
+  }
+</style>

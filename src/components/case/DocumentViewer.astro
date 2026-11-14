@@ -1,0 +1,304 @@
+---
+/**
+ * One document (report, slides, poster, essay or summary).
+ * Props: doc ({ id, title, kind, description?, published, pdf?, pageDir?, pages?, pageWidth?, pageHeight?, note? }),
+ *        headingLevel (2 to 4, default 3).
+ * Not published: a neutral card, "This document is held for review before publication.", and no file is referenced.
+ * Published with pageDir and pages: a page-image viewer (p-001.webp, p-002.webp, ... in pageDir) with previous,
+ * next, a page number box, fit width, zoom in and out inside a scrollable frame, fullscreen where the browser
+ * supports it, and Open PDF / Download PDF when `pdf` is set. Keys when the viewer has focus: left and right
+ * arrows, Page Up and Page Down, Home and End. Page changes are announced through an aria-live status.
+ * Without JavaScript: page 1 and the PDF links, plus a note. Several viewers can share a page.
+ */
+import type { CaseDocument } from '../../lib/case';
+import { pagePath, slugify } from '../../lib/case';
+import { withBase } from '../../lib/url';
+
+interface Props {
+  doc: CaseDocument;
+  headingLevel?: 2 | 3 | 4;
+}
+const { doc, headingLevel = 3 } = Astro.props;
+const H = `h${headingLevel}` as 'h2' | 'h3' | 'h4';
+const kindLabel = { report: 'Report', slides: 'Slides', poster: 'Poster', essay: 'Essay', summary: 'Summary' }[doc.kind];
+const did = `doc-${slugify(doc.id)}`;
+const viewable = doc.published && Boolean(doc.pageDir) && (doc.pages ?? 0) > 0;
+const pages = doc.pages ?? 0;
+const pdf = doc.published && doc.pdf ? withBase(doc.pdf) : null;
+const pdfName = doc.pdf ? doc.pdf.split('/').pop() : undefined;
+
+// Layout hints only: real dimensions come from the data when they are known.
+const fallback = { slides: [1600, 900], poster: [1240, 1754], report: [1240, 1754], essay: [1240, 1754], summary: [1240, 1754] }[doc.kind];
+const pw = doc.pageWidth ?? fallback[0];
+const ph = doc.pageHeight ?? fallback[1];
+const dir = viewable ? withBase(doc.pageDir!.replace(/\/+$/, '')) : '';
+const firstPage = viewable ? withBase(pagePath(doc.pageDir!, 1)) : '';
+---
+
+<section
+  class={`dv glass kind-${doc.kind}`}
+  aria-labelledby={`${did}-title`}
+  data-docviewer={viewable ? '' : undefined}
+  data-dir={viewable ? dir : undefined}
+  data-pages={viewable ? pages : undefined}
+  data-title={viewable ? doc.title : undefined}
+>
+  <header class="dv-head">
+    <H id={`${did}-title`}>{doc.title}</H>
+    <p class="dv-meta">
+      <span>{kindLabel}</span>
+      {pages > 0 && <span>{pages} {pages === 1 ? 'page' : 'pages'}</span>}
+    </p>
+    {doc.description && <p class="dv-desc">{doc.description}</p>}
+  </header>
+
+  {
+    viewable ? (
+      <>
+        <div
+          class="dv-toolbar"
+          role="toolbar"
+          aria-label={`Controls for ${doc.title}`}
+          data-dv-toolbar
+        >
+          {pages > 1 && (
+            <div class="dv-group">
+              <button type="button" class="dv-btn" data-dv-prev>Previous</button>
+              <label class="dv-page">
+                <span>Page</span>
+                <input type="number" inputmode="numeric" min="1" max={pages} value="1" data-dv-input aria-label={`Page number, 1 to ${pages}`} />
+                <span>of {pages}</span>
+              </label>
+              <button type="button" class="dv-btn" data-dv-next>Next</button>
+            </div>
+          )}
+          <div class="dv-group">
+            <button type="button" class="dv-btn" data-dv-fit>Fit width</button>
+            <button type="button" class="dv-btn" data-dv-zoom-out aria-label="Zoom out">Zoom out</button>
+            <button type="button" class="dv-btn" data-dv-zoom-in aria-label="Zoom in">Zoom in</button>
+            <span class="dv-zoom" data-dv-zoom-label>100%</span>
+            <button type="button" class="dv-btn" data-dv-full hidden>Fullscreen</button>
+          </div>
+        </div>
+
+        <div
+          class="dv-frame"
+          data-dv-frame
+          tabindex="0"
+          role="group"
+          aria-label={`${doc.title}: page viewer. Scroll to pan when zoomed.`}
+          style={doc.kind === 'slides' ? `aspect-ratio:${pw} / ${ph}` : undefined}
+        >
+          <img
+            class="dv-img"
+            src={firstPage}
+            alt={`${doc.title}, page 1 of ${pages}`}
+            width={pw}
+            height={ph}
+            loading="lazy"
+            decoding="async"
+            data-dv-img
+          />
+        </div>
+
+        <p class="dv-status" role="status" aria-live="polite" data-dv-status>
+          Page 1 of {pages}
+        </p>
+      </>
+    ) : (
+      <p class="dv-pending">This document is held for review before publication.</p>
+    )
+  }
+
+  {
+    pdf && (
+      <p class="dv-links">
+        <a class="dv-link" href={pdf} target="_blank" rel="noopener noreferrer">
+          Open PDF<span class="sr-only"> (opens in a new tab)</span>
+        </a>
+        <a class="dv-link" href={pdf} download={pdfName}>Download PDF</a>
+      </p>
+    )
+  }
+  {viewable && (
+    <noscript>
+      <p class="dv-noscript">
+        Page navigation needs JavaScript. Page 1 is shown{pdf ? '; open the PDF to read every page' : ''}.
+      </p>
+    </noscript>
+  )}
+  {doc.note && <p class="dv-note">{doc.note}</p>}
+</section>
+
+<style>
+  .dv {
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    background: var(--glass-strong);
+  }
+  .dv-head :global(h2),
+  .dv-head :global(h3),
+  .dv-head :global(h4) {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .dv-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin-top: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: #cbd5e1;
+  }
+  .dv-desc {
+    margin-top: 0.6rem;
+    color: #d5deea;
+  }
+  .dv-pending {
+    margin-top: 0.9rem;
+    padding: 0.9rem 1rem;
+    border: 1px dashed rgb(148 163 184 / 0.4);
+    border-radius: 12px;
+    color: #cbd5e1;
+  }
+  .dv-note,
+  .dv-noscript {
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-size: 0.93rem;
+  }
+
+  /* Toolbar: needs JavaScript. */
+  .dv-toolbar {
+    display: none;
+  }
+  :global(.js) .dv-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-top: 1rem;
+  }
+  .dv-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .dv-btn,
+  .dv-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.05);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .dv-btn:hover:not(:disabled),
+  .dv-link:hover {
+    border-color: rgb(167 139 250 / 0.7);
+    background: rgb(124 58 237 / 0.2);
+    color: #fff;
+  }
+  .dv-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .dv-btn[hidden] {
+    display: none;
+  }
+  .dv-page {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: #e2e8f0;
+  }
+  .dv-page input {
+    width: 4.2rem;
+    min-height: 44px;
+    padding: 0.2rem 0.4rem;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: rgb(6 11 27 / 0.7);
+    color: #fff;
+    font: inherit;
+    text-align: center;
+  }
+  .dv-zoom {
+    min-width: 3.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    text-align: center;
+  }
+
+  /* Page frame. Slides take the aspect ratio of their pages (set inline); other kinds are tall and scroll. */
+  .dv-frame {
+    margin-top: 1rem;
+    overflow: auto;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: #0a1226;
+    overscroll-behavior: contain;
+  }
+  .kind-report .dv-frame,
+  .kind-essay .dv-frame,
+  .kind-summary .dv-frame,
+  .kind-poster .dv-frame {
+    max-height: min(82vh, 70rem);
+  }
+  .dv-img {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    margin: 0 auto;
+    background: #fff;
+  }
+  .dv-status {
+    margin-top: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #cbd5e1;
+  }
+  .dv-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+  }
+
+  .dv:fullscreen {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 1rem;
+    border-radius: 0;
+    background: var(--bg);
+    overflow: auto;
+  }
+  .dv:fullscreen .dv-frame {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    aspect-ratio: auto !important;
+  }
+  .dv:fullscreen .dv-img {
+    width: 100%;
+  }
+</style>
+
+<script>
+  import '../../scripts/case-docviewer.ts';
+</script>
