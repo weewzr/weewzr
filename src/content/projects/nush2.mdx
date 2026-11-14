@@ -2,11 +2,69 @@
 title: "NUS-H2: Nuclear-Upgraded Steam Methane Reforming with Carbon Capture for Low-Carbon Hydrogen in Singapore"
 summary: "An open Rust engine and browser simulator for nuclear-upgraded steam methane reforming with carbon capture in Singapore. It reports a base full cost of S$189.7 per tonne of CO2 abated. The S$100 per tonne target is missed in every central case."
 order: 2
+statusNote: "The repository was last changed on 10 November 2026 and has no tagged releases. The study, the engine and the simulator are published, no crate carries the author's sign-off yet, and 32 of the 650 validation rows fail."
+roadmap:
+  - id: study
+    title: "Engine, derivations and simulator"
+    period: "November 2026"
+    status: done
+    summary: "The repository was created on 1 November 2026. Its history places the engine, results, derivations and simulator site on 3 November. There are no tags or releases, so the dates below come from the commit history."
+    items:
+      - date: "3 November 2026"
+        label: "Rust engine, results tables, derivations and equation register"
+        detail: "Followed the same day by the WebAssembly simulator site with its build scripts and site workflow, the README and the third-party notices."
+      - date: "3 November 2026"
+        label: "Guided process tour on the Interactive PFD"
+        detail: "Merged into the main branch on 6 November as pull request 1."
+  - id: deliverables
+    title: "Report and presentation"
+    period: "5 November 2026"
+    status: done
+    summary: "The final report and the presentation were added to the repository on 5 November 2026. The README lists them with the derivations and the design record."
+  - id: accessibility
+    title: "Accessibility pass and interface evaluation"
+    period: "10 November 2026"
+    status: done
+    summary: "Accessible names that hold the printed label of each unit on the process flow diagram, tab stops for scrolling boxes and a list alternative to the drawing. The evaluation of the Astryx component library, with measurements, concluded that no component is adopted (docs/UI_UX_ASSESSMENT.md, section 8)."
+  - id: open
+    title: "Items the repository leaves open"
+    status: upcoming
+    summary: "No dates are given. The README and the design record state the following as not yet done."
+    items:
+      - label: "Author sign-off of each crate"
+        detail: "docs/VALIDATION_MATRIX.md, section 21, records every crate as not yet checked by the author."
+      - label: "Failed benchmark rows"
+        detail: "The 32 failed rows stay recorded as failed. The reboiler duty stays at an assumed value until the column gate passes."
+      - label: "Sources not held"
+        detail: "docs/FINAL_DESIGN_DECISIONS.md, section 10, lists documents not held, among them the TEV-961 Case 6 stream sheets, in order of their effect on the results."
+figures:
+  - src: "projects/nush2/process-flow.webp"
+    alt: "Process flow diagram: a helium-cooled reactor transfers heat through an intermediate heat exchanger to a helium-heated steam methane reformer, followed by water-gas shift, a cooler and condensate separator, an MEA absorber and stripper, CO2 compression and ship storage, with the pressure swing adsorption unit drawn outside the boundary."
+    caption: "The NUS-H2 process flow figure, rendered from docs/figures/NUSH2_process_flow.svg in the repository. The dashed line is the boundary used for the carbon accounting, and the PSA is an external block that the engine does not simulate."
+    width: 1600
+    height: 773
+  - src: "projects/nush2/app-dashboard.webp"
+    alt: "The Dashboard tab of the NUS-H2 simulator showing the Case B headline values: HTGR rating 210.0 MWth, reactor heat needed 178.5 MWth, purified hydrogen 66,925 tonnes per year, natural gas feed 23.23 MMSCFD, net abatement 578,052 tonnes per year, abatement cost 189.7 S$ per tonne on the L5 ledger and 190.1 on the discounted cash flow."
+    caption: "Dashboard tab of the live simulator, base result, headline preset. Captured on 15 November 2026 at engine commit b4817b3, the commit the page itself reports."
+    width: 1440
+    height: 900
+  - src: "projects/nush2/app-pfd.webp"
+    alt: "The Interactive PFD tab: a unit selector, a button to play the process tour, a list of equipment and streams, the process flow drawing and a side panel for the selected helium reactor loop."
+    caption: "Interactive PFD tab. Selecting a unit opens a panel of its inputs and outputs, taken from the engine running in the browser. Captured on 15 November 2026."
+    width: 1440
+    height: 900
+  - src: "projects/nush2/app-validation.webp"
+    alt: "The Validation tab: a summary of 650 checks with 325 passed, 32 failed, 42 not run and 251 reported with no literature value, followed by the failures listed by name."
+    caption: "Validation tab. It counts the 650 rows of results/Validation_Results.csv and lists the failures by name, so the failed benchmarks are visible in the application. Captured on 15 November 2026."
+    width: 1440
+    height: 900
 sources:
   - label: "README: what NUS-H2 is"
     url: "https://github.com/weewzr/NUSH2/blob/main/README.md#what-nus-h2-is"
   - label: "README: headline results"
     url: "https://github.com/weewzr/NUSH2/blob/main/README.md#headline-results"
+  - label: "README: repository layout"
+    url: "https://github.com/weewzr/NUSH2/blob/main/README.md#repository-layout"
   - label: "README: validation"
     url: "https://github.com/weewzr/NUSH2/blob/main/README.md#validation"
   - label: "README: limitations"
@@ -17,10 +75,28 @@ sources:
     url: "https://github.com/weewzr/NUSH2/blob/main/docs/FINAL_DESIGN_DECISIONS.md"
   - label: "Validation matrix (docs/VALIDATION_MATRIX.md)"
     url: "https://github.com/weewzr/NUSH2/blob/main/docs/VALIDATION_MATRIX.md"
+  - label: "Interface review (docs/UI_UX_ASSESSMENT.md)"
+    url: "https://github.com/weewzr/NUSH2/blob/main/docs/UI_UX_ASSESSMENT.md"
   - label: "Reference list (references/README.md)"
     url: "https://github.com/weewzr/NUSH2/blob/main/references/README.md"
+  - label: "Parameter register (engine/data/parameters.toml)"
+    url: "https://github.com/weewzr/NUSH2/blob/main/engine/data/parameters.toml"
+  - label: "Reforming equilibrium (engine/props/src/equilibrium.rs)"
+    url: "https://github.com/weewzr/NUSH2/blob/main/engine/props/src/equilibrium.rs"
+  - label: "Economics ledger (engine/plant/src/economics.rs)"
+    url: "https://github.com/weewzr/NUSH2/blob/main/engine/plant/src/economics.rs"
+  - label: "Discounted cash flow (engine/plant/src/dcf.rs)"
+    url: "https://github.com/weewzr/NUSH2/blob/main/engine/plant/src/dcf.rs"
+  - label: "Benchmark results (results/Validation_Results.csv)"
+    url: "https://github.com/weewzr/NUSH2/blob/main/results/Validation_Results.csv"
+  - label: "First-principles derivations (math/)"
+    url: "https://github.com/weewzr/NUSH2/tree/main/math"
+  - label: "Process flow figure (docs/figures/NUSH2_process_flow.svg)"
+    url: "https://github.com/weewzr/NUSH2/blob/main/docs/figures/NUSH2_process_flow.svg"
   - label: "Site build and deploy workflow"
     url: "https://github.com/weewzr/NUSH2/blob/main/.github/workflows/site.yml"
+  - label: "Code checks workflow"
+    url: "https://github.com/weewzr/NUSH2/blob/main/.github/workflows/ci.yml"
 ---
 
 ## The problem
@@ -29,17 +105,112 @@ Conventional steam methane reforming (SMR) makes hydrogen from natural gas and r
 
 The headline plant, Case B, makes 100,000 Nm3/h of purified hydrogen, or 66,925 t/y at 85% availability. It is sized to the SOXAL hydrogen plant on Jurong Island and sited on the proposed Western Island reclamation. Placing the plant there is the project's own proposal and has no official approval. The 130 million standard cubic feet per day (MMSCFD) plant of Idaho National Laboratory (INL) stays as Case A, a reference that is never presented as a 210 MWth plant.
 
+## Objectives
+
+The README and the design record set out four aims.
+
+- Size a plant that meets an abatement target of 250,000 t/y of CO2, and test it against a cost target of S$100 per tonne abated.
+- Report the cost by two independent methods on one cost set, so that arithmetic errors in either show up as a gap between them.
+- Keep every input in one sourced register, labelled published, assumed, calculated or author decision, so that a reader can see which numbers rest on evidence.
+- Keep code tests apart from literature benchmarks, record every failed benchmark and carry the consequences into the results.
+
+The simulator is a live demonstration of the engine: it runs the same Rust code in the browser, lets a visitor change the parameters and shows the validation record beside the results.
+
+## Architecture
+
+The engine is a Rust workspace under `engine/`, one crate per layer. Each crate depends only on the ones below it, and only the command-line crate touches the disk.
+
+| Crate | Directory | Role |
+|---|---|---|
+| `nush2_numerics` | `engine/numerics/` | Shared error type and small numerical helpers. |
+| `nush2_props` | `engine/props/` | Ideal-gas thermochemistry, mixtures, reforming equilibrium, IF97 water, helium and syngas transport. |
+| `nush2_mea` | `engine/mea/` | MEA solvent thermodynamics (extended UNIQUAC after Aronu et al., 2011) and solvent properties. |
+| `nush2_units` | `engine/units/` | Unit operations: reformer tube, shift, flash, absorber, stripper and regeneration train, IHX, helium circulators. |
+| `nush2_plant` | `engine/plant/` | Anchored plant balance, Level 3 flowsheet, heat recovery, term gates, annual ledger, discounted cash flow and the exporter. |
+| `nush2_vv` | `engine/vv/` | Benchmark harness that writes `results/Validation_Results.csv`, with the benchmark data in `engine/vv/data/`. |
+| `nush2_cli` | `engine/cli/` | The `nush2` command line, including the export and drift commands. |
+| `nush2_wasm` | `engine/wasm/` | Browser build, a plain cdylib with no imports. |
+
+The data flow has one direction. `engine/data/parameters.toml` is the only file that holds a project input, and it is embedded in both the native and the WebAssembly build. The exporter is the only writer of `results/`, which holds seven CSV files: design basis, mass and energy balances, emissions and economic ledgers, sensitivities and validation. `scripts/build_numbers.py` turns the CSV files into `build/numbers.json`, and the README, the report, the presentation and the derivations take their numbers from it. The simulator in `frontend/` is static HTML, CSS and JavaScript. Its page shell (`app.js`) routes by address hash to six views (Dashboard, Interactive PFD, Parameters, Results, Export and Validation) and calls the engine through a web worker (`worker.js`). The WebAssembly module exports `alloc`, `dealloc`, `call` and `abi_version`, and takes JSON requests for three commands: registry, solve and sweep.
+
+Two workflows run on GitHub. `ci.yml` runs a text guard, formatting, lint and the tests. `site.yml` runs the tests, compiles the WebAssembly, regenerates the results and compares them with the committed files, builds the site, runs a content guard and a browser self test (also under reduced motion), and deploys GitHub Pages from `main`. The first-principles derivations are LaTeX under `math/`, and `math/eq_register.csv` links each equation card to its engine item and test.
+
 ## Approach
 
 A 210 MWth reactor supplies 120.8 MWth of process heat to the reformer through 900 °C secondary helium. The plant needs 178.5 MWth in all, so 31.5 MWth is held as margin that earns nothing. Fresh natural gas is 23.2 MMSCFD, which is 12.6 MMSCFD below an unabated SMR, and the MEA unit captures 90.4% of the plant carbon. The pressure swing adsorption unit sits outside the boundary, and the engine does not simulate it.
 
-The engine is a Rust workspace with one crate per layer, from gas properties and MEA thermodynamics up to the plant model. Every input sits in `engine/data/parameters.toml`, labelled published, assumed, calculated or author decision, with its source and locator. The exporter is the only writer of `results/`. Two independent methods price one cost set: an annual incremental ledger whose level L5 is the full cost, and a discounted cash flow (DCF) at 8% real.
+Every input sits in `engine/data/parameters.toml`, labelled published, assumed, calculated or author decision, with its source and locator. The exporter is the only writer of `results/`. Two independent methods price one cost set: an annual incremental ledger whose level L5 is the full cost, and a discounted cash flow (DCF) at 8% real.
+
+The engine has three presets. The Anchored preset is a screening balance anchored on published INL cases and uses no engine model. The Headline preset can replace four named terms (T04, T05, T07 and T08) by their engine models, and only when the benchmark rows that test the model pass. The Modelled preset uses every model whose gate passed and which has a path into the balance. The headline results use the Headline preset, where only term T05 (the syngas heat above 130 °C) runs on its model, and the drift between the three presets is exported so that it can be inspected.
+
+## Algorithms and models
+
+### Reforming and shift equilibrium
+
+File: `engine/props/src/equilibrium.rs`; Zhang et al. (2021), Table 1.
+
+The reformer outlet is an ideal-gas equilibrium of two reactions with two extents, after higher hydrocarbons are converted fully to CO and H<sub>2</sub>:
+
+CH<sub>4</sub> + H<sub>2</sub>O ⇌ CO + 3 H<sub>2</sub>, K<sub>1</sub> = 1.198 × 10<sup>13</sup> exp( −26830 / T ) bar<sup>2</sup>
+
+CO + H<sub>2</sub>O ⇌ CO<sub>2</sub> + H<sub>2</sub>, K<sub>2</sub> = 1.767 × 10<sup>-2</sup> exp( 4400 / T ), dimensionless
+
+with T in K. The two extents are found by Newton iteration (at most 100 iterations) with nested bisection (at most 200 bisections), to a residual of 10<sup>-10</sup> on the pair ln K<sub>1</sub>, ln K<sub>2</sub>. The module notes that the printed equations of Zhang et al. carry errors, so only the table is used, and that the constants differ from a route built on NIST Gibbs energies by up to 6% between 680 K and 1144 K and by 17 to 20% on K<sub>2</sub> at the low-temperature shift.
+
+### Reformer tube and shift
+
+Files: `engine/units/src/smr_tube.rs`, `wgs.rs`.
+
+The reformer tube is a one-dimensional pseudo-homogeneous model with helium in counterflow. The state at each node holds the extent of CH<sub>4</sub> consumed, the extent of CO<sub>2</sub> formed, the bed gas, helium and return gas temperatures and the pressure. Each step uses the implicit trapezoid rule, which holds the discrete enthalpy balance of each stream exactly, and a step is halved until it agrees with two half steps. The rate law follows Xu and Froment (1989) and is extrapolated about 300 K in temperature and a factor of 2 in pressure beyond the range of the data, so the unit is classed reduced order. The high-temperature shift is an empirical adiabatic plug flow with dp<sub>CO</sub>/dt = k ( p<sub>CO</sub> − p<sub>CO,eq</sub> ), where p is partial pressure (bar), t is residence time (s) and k is a rate constant (s<sup>-1</sup>) from Chinchen et al. (1984).
+
+### Heat exchangers
+
+File: `engine/units/src/ihx.rs`; derivation cards C.8 to C.12.
+
+The helium-to-helium intermediate heat exchanger is rated by effectiveness and NTU and sized by the log mean temperature difference:
+
+ε = Q / ( C<sub>min</sub> ( T<sub>h,in</sub> − T<sub>c,in</sub> ) ), NTU = UA / C<sub>min</sub>, ε = ( 1 − e<sup>−NTU(1 − C*)</sup> ) / ( 1 − C* e<sup>−NTU(1 − C*)</sup> ), ΔT<sub>lm</sub> = ( ΔT<sub>1</sub> − ΔT<sub>2</sub> ) / ln( ΔT<sub>1</sub> / ΔT<sub>2</sub> )
+
+where Q is duty (W), C<sub>min</sub> is the smaller heat capacity rate (W K<sup>-1</sup>), UA is the overall conductance (W K<sup>-1</sup>), C* is the ratio of the capacity rates and the T terms are inlet temperatures (K). No Nusselt correlation is evaluated, since the source prints the shell-side form without its constant. The approach temperature and the loss fraction are assumed, so the unit is classed reduced order.
+
+### MEA capture
+
+Files: `engine/mea/src/aronu.rs`, `speciate.rs`, `engine/units/src/absorber.rs`, `stripper.rs`, `newton.rs`.
+
+Solvent equilibrium uses the extended UNIQUAC model of Aronu et al. (2011) for nine species in H<sub>2</sub>O, MEA and CO<sub>2</sub>. The module reproduces 104 published model values as a port check. The absorber is a rate-based packed column that uses the closure of Khan et al. (2011): Hikita k<sub>2</sub>, the Danckwerts Henry constant, the Versteeg CO<sub>2</sub> diffusivity and the Wellek enhancement factor, read as E = Ha / tanh(Ha), where Ha is the Hatta number (dimensionless). Free MEA follows C<sub>B</sub> = C<sub>MEA</sub> ( 1 − 2α ), with α the CO<sub>2</sub> loading (mol per mol MEA) and C in mol m<sup>-3</sup>, so the reaction term stops at α = 0.50. The stripper is an equilibrium-stage column with a partial condenser and a kettle reboiler. Each stage sits at its bubble point, p*<sub>CO2</sub> + p*<sub>H2O</sub> = p, with a Murphree efficiency on the CO<sub>2</sub> fraction, and the efficiency is an assumption because no local source measures it for MEA. The column models are solved by damped Newton with a backtracking line search, then pseudo-transient continuation, using a forward-difference Jacobian and dense LU with partial pivoting. A failure of both returns an error and no best-guess state.
+
+### Plant flowsheet and heat recovery
+
+Files: `engine/plant/src/flowsheet.rs`, `heatrec.rs`, `gates.rs`, `anchored.rs`.
+
+The Level 3 flowsheet connects streams S01 to S21 around the reformer, the shift train, capture, CO<sub>2</sub> compression and the tail-gas loop. Two tears, the recycle gas S03 and the lean loading of S18, are solved together by Wegstein acceleration to a scaled tolerance of 10<sup>-11</sup>, with damped direct substitution as the fallback. Reboiler heat is taken in a fixed order: freed Selexol steam, export steam, syngas above 130 °C and then reactor steam. The reboiler is an isothermal sink, so a source can serve it only from above the reboiler temperature. A term leaves its anchored value only when the validation rows that test the replacing model pass (`gates.rs`), and the exporter refuses to write tables that disagree with the rows it has just produced.
+
+### Cost ledger and discounted cash flow
+
+Files: `engine/plant/src/economics.rs`, `anchored.rs` (cards L.1 and L.3), `dcf.rs`.
+
+Capital is annualised with the capital recovery factor, and decommissioning with a sinking fund:
+
+CRF(i, n) = i / ( 1 − (1 + i)<sup>−n</sup> ), SFF(i, n) = i / ( (1 + i)<sup>n</sup> − 1 )
+
+where i is the real discount rate (8%) and n is the life in years. For example, the reactor capital of S$742.8M annualises to S$69.58M per year over 25 years. The ledger lines L0 to L5 are annual differences against the same-size unabated SMR, in S$M per year. The levelised abatement cost is the L5 total divided by the net abatement, A = 578,052 t/y, so 109.69 S$M/y gives 189.75 S$/t. The DCF method runs real cash flows year by year for the unabated SMR and for NUS-H2 over the reactor life, with 5.5 years of uniform reactor spend, and reports LAC<sub>DCF</sub> = ( NPV of the cost difference ) / ( NPV of tonnes abated ) in S$/t, with the tonnes discounted at the same rate. The two methods differ by 0.47% of L5 at most over 72 DCF points.
 
 ## Verification
 
 Code tests and literature benchmarks are kept apart. `results/Validation_Results.csv` holds 650 rows: 325 pass, 32 fail, 251 are reported with no limit and 42 did not run. Of the passes, 92 use data that played no part in building or tuning the term under test. The rest are calibration or share a dataset with an engine input, so they earn no validation credit. Failed benchmarks stay recorded, and no constant was tuned and no tolerance changed to make a row pass.
 
 The failures carry through to the headline. The failed column gate keeps the reboiler duty at an assumed 3.8 GJ/t, and the failed Level 3 carbon gate keeps several terms on INL-anchored values. The two cost methods agree to within 0.20% of L5 on the 12-point headline grid and 0.47% at worst over 72 DCF points. No crate carries the project owner's sign-off yet. The site workflow regenerates the results, compares them with the committed files and runs a browser self test.
+
+The evidence state of each crate is recorded apart from its model class (docs/VALIDATION_MATRIX.md, section 21).
+
+| Crate | Evidence state in the validation matrix |
+|---|---|
+| `nush2_props` | Benchmark pass on most rows, one fail (PROPS-SHOMATE-CP). Helium transport against an independent source not run. |
+| `nush2_mea` | Port of the Aronu model verified. Benchmark pass on AR-2 to AR-4, HA-1 and HA-2. Benchmark fail on HA-3 and VER-2-298K-PennyRitter1983. |
+| `nush2_units` | Equilibrium reformer and coolers rigorous. The JAERI conversions A-2, A-3 and A-5 fail, and so do the column rows SA-1, DICE-SRD, KW-SRD, MO-K16-TOUT, VI-3-SS2 and VI-3-SS3. MEA on H<sub>2</sub>-rich syngas not run. |
+| `nush2_plant` | Verification only for the 59 plant rows, all passing. The flowsheet carbon rows against the anchor fail (FS_GATE_M7). |
+
+The browser self test also checks that every unit on the process flow diagram has an accessible name containing its printed label, and that the equipment and stream list selects the same item as the drawing.
 
 ## Results
 
@@ -55,17 +226,37 @@ Costs are S$ per tonne of CO2 abated, with the reactor charged at 210 MWth and a
 | Central cases reaching S$100 per tonne | 0 of 8 | README, Headline results |
 | Lowest L5 at n = 1.0 | 108.5 (tenth of a kind, 60 years, reactor charged at 178.5 MWth) | README, Headline results |
 | Named scenario MATURE_60Y | L5 95.6, DCF 95.9 | README, Headline results |
+| Levelised cost of hydrogen, BOAK, 25 years | S$5.26/kg for NUS-H2 against S$3.62/kg for the unabated SMR | README, Headline results |
 
 The S$100 per tonne target is missed in every central case. The one named scenario below it, MATURE_60Y, stacks a tenth-of-a-kind reactor on INL's learning route with a 60-year life, then raises natural gas to S$20.7 per GJ. That takes L5 from 189.7 through 146.3 and 128.2 to 95.6. The gas price is the engine's solve for the project's own mature-scenario target of S$96 per tonne, and S$20.7 per GJ lies above the S$10 to S$20 per GJ range the engine holds. At S$20 per GJ, the top of that range, the same scenario gives S$99.6 per tonne on L5, which is under the S$100 per tonne target by S$0.4. The scenario therefore meets the target at the edge of the tested gas range, but its S$95.6 figure rests on a price beyond the evidence in the inputs. It is not a central case, so the base full cost stays the reference result.
+
+The base ledger shows where the cost comes from. These are the central lines in S$M per year for BOAK, n = 1.0, with the reactor charged at 210 MWth, from docs/FINAL_DESIGN_DECISIONS.md, section 6.1.
+
+| Line | 25 years | 60 years |
+|---|---|---|
+| L0 gas saved (12.6 MMSCFD at S$15/GJ) | -64.80 | -64.80 |
+| L0 reactor capital (S$742.8M) | 69.58 | 60.01 |
+| L0 capture capital and fixed O&M | 11.92 | 11.92 |
+| L0 CO2 transport and storage (S$60/t on 359,777 t/y) | 21.59 | 21.59 |
+| L1 reactor O&M and fuel | 25.32 | 25.32 |
+| L2 IHX and secondary loop | 8.36 | 8.36 |
+| L3 extra licensing and decommissioning | 7.62 | 5.37 |
+| **L3 total** | **79.60** | **67.77** |
+| L4 interest during construction, power island add-back, recycle and cryogenic train | 21.26 | 19.15 |
+| L5 lost steam export less grid power avoided | 8.82 | 8.82 |
+| **L5 total** | **109.69** | **95.75** |
+| L5 in S$ per tonne | 189.75 | 165.64 |
 
 ## What it does not cover
 
 - The reboiler duty of 3.8 GJ/t (range 3.4 to 4.2) is an assumption with no measurement on syngas, and the modelled stripper misses the pilot and design benchmarks it is judged on.
 - The reformer exit of 871 °C is INL's equilibrium assumption. The engine's tube model reaches 782.1 °C at 199 tubes.
-- Liquefaction for ship transport is not modelled, and the transport and storage tariff of S$60 per tonne (range S$23.2 to S$112 per tonne) is assumed.
+- Liquefaction for ship transport is not modelled and the transport and storage tariff of S$60 per tonne (range S$23.2 to S$112 per tonne) is assumed.
 - Reactor capital comes from INL's literature review, and no vendor quote is held for this plant.
 - At the high corner of the heat balance the plant needs 214.1 MWth, above the 210 MWth rating.
+- The PSA is an unsimulated external block, and the TEV-961 Case 6 stream sheets are not held.
+- The repository has no tagged release, and no crate has the author's sign-off.
 
 ## Technology
 
-The engine is Rust, with the toolchain pinned to 1.96.0, and the browser simulator is static HTML, CSS and JavaScript around a WebAssembly build of the engine. Python scripts that use only the standard library build and check the site. The first-principles derivations are LaTeX built with Tectonic, and GitHub Actions runs the checks and deploys GitHub Pages. The project's own work is MIT licensed.
+The engine is Rust, with the toolchain pinned to 1.96.0, and the browser simulator is static HTML, CSS and JavaScript around a WebAssembly build of the engine. Python scripts that use only the standard library build and check the site. The first-principles derivations are LaTeX built with Tectonic, and GitHub Actions runs the checks and deploys GitHub Pages. The project's own work is MIT licensed, and third-party images and crates keep their own terms (THIRD_PARTY_NOTICES.md).

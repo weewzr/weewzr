@@ -1,0 +1,55 @@
+---
+title: "AmCraX: ammonia cracking and hydrogen production simulation platform"
+summary: "AmCraX is my planned ammonia cracking and hydrogen production simulation platform. It is at planning stage: no code and no repository exist yet. Its scientific starting point is my CN5190 literature review."
+order: 4
+statusNote: "Planning stage. There is no code and there is no repository."
+roadmap:
+  - id: scoping
+    title: "Literature review of ammonia cracking"
+    period: "November 2026"
+    status: done
+    summary: "The CN5190 essay reviews the reaction, catalysts, reactors, separation and costs of ammonia cracking, and sets the scientific starting point."
+  - id: scope-architecture
+    title: "Model scope and architecture"
+    status: upcoming
+    summary: "Decide what the platform would model and how it would be structured."
+  - id: first-code
+    title: "First simulation code"
+    status: upcoming
+  - id: aspen-link
+    title: "Possible Aspen Plus link"
+    status: upcoming
+    summary: "A link to Aspen Plus is a possible future integration and has not been decided."
+figures: []
+sources: []
+---
+
+## The problem
+
+My CN5190 essay found that the viability of ammonia cracking depends on several linked quantities at once: equilibrium conversion, catalyst activity at low temperature, the heat available to the endothermic reaction, hydrogen recovery and purity, and the cost basis used. Reported costs differ partly because studies draw their system boundaries differently. A simulation platform could let those quantities be varied together on one stated basis. The full argument is in the [essay](../../research/cn5190-ammonia-cracking/).
+
+## Objectives
+
+AmCraX is planned to help answer questions of the kind the essay raises. How do operating temperature and pressure change conversion and the heat duty? What does a given purification route cost in recovered hydrogen? How do feedstock price and plant scale change the cost of hydrogen on a consistent boundary?
+
+## Architecture
+
+No architecture has been built or fixed. The intended scope is a model of an ammonia cracking train that would cover the reaction, the heat supply, the separation and the resulting energy and cost balances.
+
+## Approach
+
+The essay points to four modelling areas that a simulator would need to cover.
+
+- **Reaction equilibrium and kinetics.** Equilibrium conversion falls as pressure rises, and low-temperature cracking is limited by kinetics (essay section 3).
+- **Heat supply.** Cracking is endothermic, and the choice between Ru and Ni catalysts changes the temperature and the supplementary fuel needed (sections 5 and 6).
+- **Separation and purification.** Packed-bed cracking with PSA and membrane reactors differ in hydrogen recovery and purity (section 5).
+- **Energy and cost accounting.** Reconversion cost, levelised cost of hydrogen and landed cost use different boundaries (section 6).
+
+## What it does not cover
+
+- No code.
+- No results.
+- No validation.
+- No repository.
+- No release date.
+- No decision yet on a link to Aspen Plus, which is a possible future integration.

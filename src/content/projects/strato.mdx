@@ -1,7 +1,63 @@
 ---
 title: "STRATO: Spherical TRISO Analysis and Transport Operations"
-summary: "A verified numerical model of fission-product diffusion out of a single TRISO fuel particle, solved two independent ways in its Phase 1 release, which uses synthetic example parameters."
+summary: "A verified numerical model of fission-product diffusion out of a single TRISO fuel particle, solved two independent ways in its v1.0 release, which uses synthetic example parameters. Phase 2 (decay, generation, temperature-dependent diffusivity) exists as checked mathematics and pseudocode, with no Phase 2 code yet."
 order: 3
+statusNote: "The latest release is v1.0.1 (6 to 7 November 2026) and it is the only released code. Phase 2 has derivations, pseudocode and a literature data register in the repository, checked by scripts, and no Phase 2 Rust code has been written."
+roadmap:
+  - id: phase1
+    title: "Phase 1: multilayer diffusion model (v1.0)"
+    period: "Developed June to October 2026, released November 2026"
+    status: done
+    summary: "Constant temperature, constant diffusivity in each layer, initial inventory in the kernel. Solved by a finite-volume method and by an eigenfunction series."
+    items:
+      - date: "6 November 2026"
+        label: "v1.0.0"
+        detail: "The Phase 1 baseline was established as a clean project: finite-volume solver (Code B), eigenfunction series (Code C), command-line driver (Code A), tests, a verification example and CI. Source: CHANGELOG.md, release v1.0.0."
+      - date: "7 November 2026"
+        label: "v1.0.1, documentation release"
+        detail: "Adds the Full Mathematical Derivation, the Final Deliverable, four figures and the PDF workflow. No change to the code or to any numerical result. The GitHub release is dated 7 November; the changelog heading says 6 November."
+  - id: phase2-maths
+    title: "Phase 2 (v2.0): mathematics and pseudocode first"
+    period: "November 2026"
+    status: active
+    summary: "The development table in the README lists Phase 2 as in development, with mathematics and pseudocode before any code. The scope is radioactive decay, fission-product generation, inventory accounting, Arrhenius diffusivity and temperature histories."
+    items:
+      - date: "7 November 2026"
+        label: "Review package, derivations, pseudocode and parameter register committed"
+        detail: "docs/development/phase2_review_package.md, docs/mathematics/STRATO_Phase2_Derivations.md, docs/mathematics/STRATO_Phase2_Pseudocode.md and the register under data/."
+      - date: "13 November 2026"
+        label: "Open mathematics items worked on, PDFs added"
+        detail: "Items O4, O10, O11, O12, R2.4 and P2 were derived and checked, and PDFs of the Phase 2 derivation and pseudocode were added. No file under src/, tests/ or examples/ changed."
+      - label: "Owner decisions pending"
+        detail: "The review package lists decisions D1 to D16 that the owner must make before implementation. D15 and D16 are marked pending there, and the owner-choice column for D1 to D14 in prompt/PROGRESS.md reads PENDING."
+  - id: phase2-code
+    title: "Phase 2 implementation"
+    status: upcoming
+    summary: "The review package states that implementation starts only after the decisions are made. The README plans a comparison with measured AGR-1 release data for v2.0."
+  - id: web-demo
+    title: "Interactive web demonstration"
+    status: upcoming
+    summary: "The repository holds an instruction package for an interactive web demo in prompt/. Its progress file lists build phases 0 to 8 as not started."
+  - id: v3
+    title: "v3.0"
+    status: upcoming
+    summary: "The README lists partition coefficients, matrix transport, inverse modelling, uncertainty quantification and particle populations as planned, with no date."
+figures:
+  - src: "projects/strato/triso-cross-section.webp"
+    alt: "Cross-section of a TRISO particle drawn to scale: orange kernel, yellow buffer, blue inner pyrolytic carbon, green silicon carbide and pink outer pyrolytic carbon, with a radial axis below marking R1 to R5."
+    caption: "The five layers drawn to scale, from the v1.0.0 derivation figures (scripts/figures/v1_0_0_triso_cross_section.py). The radii are the AGR-1 Baseline averages, R1 = 175.0 µm to R5 = 394.2 µm. The bundled synthetic example uses different radii."
+    width: 996
+    height: 878
+  - src: "projects/strato/finite-volume-cell.webp"
+    alt: "Left: a slice through a sphere with one spherical-shell cell highlighted, its inner and outer faces and its centroid sphere. Right: the same cells along the radius with face conductances and the distances from each centroid to the shared face."
+    caption: "One finite-volume cell. The flow across a face equals the face conductance G times the difference of the two cell values, and the volume centroid lies outward of the cell midpoint (scripts/figures/v1_0_0_control_volume.py)."
+    width: 1600
+    height: 756
+  - src: "projects/strato/eigenfunctions.webp"
+    alt: "Two stacked plots against radius from 0 to 450 micrometres: the shape of the first three eigenfunctions of the five-layer sphere, and the transformed eigenfunctions u = r times phi, with dotted lines at the four interfaces."
+    caption: "The first three modes of the synthetic five-layer input, with eigenvalues 3.2733 × 10⁻⁶, 7.7919 × 10⁻⁵ and 2.5835 × 10⁻⁴ per second as printed in the figure (scripts/figures/v1_0_0_eigenfunctions.py). Synthetic input, not literature data."
+    width: 1050
+    height: 960
 sources:
   - label: "README: status and scientific objective"
     url: "https://github.com/weewzr/STRATO/blob/main/README.md#scientific-objective"
@@ -13,37 +69,135 @@ sources:
     url: "https://github.com/weewzr/STRATO/blob/main/README.md#development-status"
   - label: "README: known limitations of v1.0"
     url: "https://github.com/weewzr/STRATO/blob/main/README.md#known-limitations-of-v10"
+  - label: "README: licence"
+    url: "https://github.com/weewzr/STRATO/blob/main/README.md#license"
   - label: "Full Mathematical Derivation, v1.0.0 (docs/mathematics/v1.0.0)"
     url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/v1.0.0/STRATO_Full_Mathematical_Derivation.md"
   - label: "Final Deliverable, v1.0.0 (docs/mathematics/v1.0.0)"
     url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/v1.0.0/STRATO_Final_Deliverable.md"
+  - label: "Phase 2 review package (docs/development)"
+    url: "https://github.com/weewzr/STRATO/blob/main/docs/development/phase2_review_package.md"
+  - label: "Changes from v1.0 to v2.0 (docs/development)"
+    url: "https://github.com/weewzr/STRATO/blob/main/docs/development/v1_to_v2_changes.md"
+  - label: "Phase 2 derivations (docs/mathematics)"
+    url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/STRATO_Phase2_Derivations.md"
+  - label: "Phase 2 pseudocode (docs/mathematics)"
+    url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/STRATO_Phase2_Pseudocode.md"
+  - label: "Provenance of v1.0 (docs/development/provenance.md)"
+    url: "https://github.com/weewzr/STRATO/blob/main/docs/development/provenance.md"
+  - label: "Literature data register (data/reference/README.md)"
+    url: "https://github.com/weewzr/STRATO/blob/main/data/reference/README.md"
   - label: "Synthetic five-layer input"
     url: "https://github.com/weewzr/STRATO/blob/main/inputs/synthetic/synthetic_five_layer.toml"
+  - label: "Finite-volume solver (src/numerical/finite_volume.rs)"
+    url: "https://github.com/weewzr/STRATO/blob/main/src/numerical/finite_volume.rs"
+  - label: "Eigenfunction series (src/analytical/sturm_liouville.rs)"
+    url: "https://github.com/weewzr/STRATO/blob/main/src/analytical/sturm_liouville.rs"
+  - label: "Verification example (examples/verify.rs)"
+    url: "https://github.com/weewzr/STRATO/blob/main/examples/verify.rs"
   - label: "Golden run output (tests/golden/v1.0/main_run_stdout.txt)"
     url: "https://github.com/weewzr/STRATO/blob/main/tests/golden/v1.0/main_run_stdout.txt"
   - label: "Golden verification output (tests/golden/v1.0/verify_stdout.txt)"
     url: "https://github.com/weewzr/STRATO/blob/main/tests/golden/v1.0/verify_stdout.txt"
   - label: "Continuous integration workflow"
     url: "https://github.com/weewzr/STRATO/blob/main/.github/workflows/ci.yml"
+  - label: "Documentation PDF workflow"
+    url: "https://github.com/weewzr/STRATO/blob/main/.github/workflows/docs-pdf.yml"
   - label: "Changelog"
     url: "https://github.com/weewzr/STRATO/blob/main/CHANGELOG.md"
+  - label: "Release v1.0.1"
+    url: "https://github.com/weewzr/STRATO/releases/tag/v1.0.1"
 ---
 
 ## The problem
 
 A TRISO (tristructural isotropic) fuel particle is a small kernel wrapped in coating layers. STRATO asks how fast fission products such as silver, caesium and strontium diffuse out through those layers, and it tracks the release fraction, the share of the initial inventory that has left through the outer surface. The aim is a model in which every equation, numerical method and parameter can be traced to a derivation or a published source.
 
-Version 1.0 is Phase 1 of that plan. It provides the verified numerical foundation, and physical inputs from the literature are added in later versions. Its bundled example uses synthetic parameters chosen for verification. They are not measured TRISO properties. The model holds temperature constant and gives each layer a constant diffusivity. The whole initial inventory starts in the kernel. Radioactive decay and fission-product generation are excluded, and so is temperature-dependent diffusivity. These belong to the v2.0 scope.
+Version 1.0 is Phase 1 of that plan. It provides the verified numerical foundation, and physical inputs from the literature are added in later versions. Its bundled example uses synthetic parameters chosen for verification. They are not measured TRISO properties. A register of literature parameters with sources now sits in `data/`, but the program does not read it yet. The model holds temperature constant and gives each layer a constant diffusivity. The whole initial inventory starts in the kernel. Radioactive decay and fission-product generation are excluded, and so is temperature-dependent diffusivity. These belong to the v2.0 scope.
+
+## Objectives
+
+The README states the objective as a transparent and verifiable model of fission-product release from a single TRISO particle. The aims that follow from it are these.
+
+- Solve the same multilayer diffusion problem by two independent methods, a conservative finite-volume method and an exact eigenfunction series, so that each checks the other.
+- Document every equation from its physical basis to the Rust line that implements it, in the Full Mathematical Derivation and the Final Deliverable.
+- Keep verification apart from validation. Phase 1 shows that the code solves its equations correctly. Whether the equations and inputs match real particles is a separate question, which the README assigns to a comparison with measured AGR-1 release data planned for v2.0.
+- Extend the model in Phase 2 with first-order decay, a kernel source from fission, an inventory account that includes decay, Arrhenius diffusivities and temperature histories. The review package fixes the mathematics and the checks before any code is written.
+
+## Architecture
+
+STRATO is a Rust library with a command-line program on top of it. The two solvers do not call each other. The comparison module is the only place where both results meet.
+
+| Component | Path | Role |
+|---|---|---|
+| Driver (Code A) | `src/main.rs` | Reads the input, runs both solvers, writes the outputs and prints a key=value summary. Options `--fv-only` and `--no-convergence`. |
+| Input | `src/config.rs` | Parses the TOML input, requires five regions, checks radii and diffusivities, and refuses to run while any `INSERT_VALUE_HERE` placeholder is left. |
+| Finite volume (Code B) | `src/numerical/finite_volume.rs` | Mesh, face conductances, Backward Euler step, tridiagonal solve, inventory and release tracking. |
+| Eigenfunction series (Code C) | `src/analytical/sturm_liouville.rs` | Shooting, Sturm count, eigenvalue bisection, modal weights and the release series. |
+| Comparison and figures | `src/postprocessing/comparison.rs`, `plots.rs` | Finite volume against series, spatial and temporal refinement study, SVG plots. |
+| Verification | `examples/verify.rs`, `tests/` | The verification example, cross-method tests and a regression test against `tests/golden/v1.0/`. |
+| Inputs and data | `inputs/`, `data/` | The synthetic benchmark and a literature input template. `data/` holds the literature register, which the program does not read yet. |
+| Derivation checks | `scripts/derivation_checks/`, `scripts/figures/` | Python scripts that check the equations and draw the documentation figures. |
+| Documents | `docs/mathematics/`, `docs/development/` | Derivations, pseudocode, the Phase 2 review package and the provenance record. |
+| CI | `.github/workflows/ci.yml`, `docs-pdf.yml` | Format, lint, tests, verification and audit; PDF build of the documents. |
+
+The data flow in a run is: TOML input, validation, mesh and finite-volume time stepping, the exact series on the same input, the comparison and the refinement study, and then the CSV and SVG outputs (`timeseries.csv`, `final_profile.csv`, `comparison_fv_vs_analytical.csv`, `convergence_study.csv` and three SVG figures). There is no WebAssembly build and no front end yet. The repository holds an instruction package for an interactive web demonstration in `prompt/`, and its progress file records the build phases as not started.
 
 ## Approach
 
 The particle has five concentric spherical layers: kernel, buffer, inner pyrolytic carbon, silicon carbide and outer pyrolytic carbon. Each obeys spherical diffusion with its own diffusivity. The centre is a symmetry point, interfaces are in perfect contact so that concentration and flux are continuous, and the outer surface absorbs everything that arrives.
 
-The same problem is solved twice. The analytical solver is an exact multilayer Sturm-Liouville eigenfunction series, with eigenvalues isolated by a Sturm count and refined by bisection. It reports its mode count, the time from which the series is valid and its round-off floor. The finite-volume solver is a conservative scheme with exact shell volumes and wall areas, series-resistance interface conductances and Backward Euler stepping. Each step is one tridiagonal solve by subtraction-free elimination, and inventory, cumulative release and their balance are tracked throughout. Two written documents derive both methods. The Full Mathematical Derivation builds them one step at a time, and the Final Deliverable links each final equation to its pseudocode and to the Rust code with file and line references.
+The same problem is solved twice. The analytical solver is an exact multilayer Sturm-Liouville eigenfunction series. The finite-volume solver is a conservative scheme that tracks inventory, cumulative release and their balance throughout. Two written documents derive both methods. The Full Mathematical Derivation builds them one step at a time, and the Final Deliverable links each final equation to its pseudocode and to the Rust code with file and line references. Phase 1 was developed from June to October 2026 in earlier repositories and moved into this one as a clean project on 6 November 2026, and `docs/development/provenance.md` maps every file to its source.
+
+Phase 2 follows a fixed order, which the changelog gives as mathematics, then pseudocode, then a review, then code. The change document lists 25 modelling changes from v1.0 to v2.0, and each is labelled implemented, derived but not implemented, or future.
+
+## Algorithms and models
+
+### Governing equation
+
+Inside layer i the concentration c(r, t) obeys
+
+∂c/∂t = (1 / r<sup>2</sup>) ∂/∂r ( r<sup>2</sup> D<sub>i</sub> ∂c/∂r ), for R<sub>i-1</sub> < r < R<sub>i</sub>
+
+where c is concentration (mol m<sup>-3</sup>), r is radius (m), t is time (s), D<sub>i</sub> is the constant diffusivity of layer i (m<sup>2</sup> s<sup>-1</sup>) and R<sub>i</sub> is the outer radius of layer i, with R<sub>0</sub> = 0. The centre has ∂c/∂r = 0, the interfaces keep c and the flux D ∂c/∂r continuous, and the outer surface has c(R<sub>5</sub>, t) = 0. The initial state is a uniform c<sub>0</sub> in the kernel and zero elsewhere. The release fraction is F(t) = M<sub>rel</sub>(t) / M<sub>0</sub>, with M<sub>0</sub> = (4π/3) R<sub>1</sub><sup>3</sup> c<sub>0</sub> in mol. Source: README, Mathematical model; Final Deliverable, Table 1.1.
+
+### Finite-volume solver (Code B)
+
+File: `src/numerical/finite_volume.rs`; Final Deliverable, section 3 (operations B.1 to B.22).
+
+Each spherical shell j holds one concentration C<sub>j</sub> and exchanges material with its neighbours through the shared face with the series conductance
+
+G<sub>j+1/2</sub> = A<sub>j+1/2</sub> / ( δ<sup>L</sup><sub>j+1/2</sub> / D<sub>j</sub> + δ<sup>R</sup><sub>j+1/2</sub> / D<sub>j+1</sub> )
+
+where A is the face area 4π r<sup>2</sup> (m<sup>2</sup>), δ<sup>L</sup> and δ<sup>R</sup> are the distances from the two neighbouring cell centroids to the face (m) and G is in m<sup>3</sup> s<sup>-1</sup>. Shell volumes V<sub>j</sub> are exact. The outer face connects the last half cell to c = 0 through a single resistor. Backward Euler gives, for every cell,
+
+−g<sup>W</sup><sub>j</sub> C<sup>n+1</sup><sub>j-1</sub> + ( v<sub>j</sub> + g<sup>W</sup><sub>j</sub> + g<sup>E</sup><sub>j</sub> ) C<sup>n+1</sup><sub>j</sub> − g<sup>E</sup><sub>j</sub> C<sup>n+1</sup><sub>j+1</sub> = v<sub>j</sub> C<sup>n</sup><sub>j</sub>, with v<sub>j</sub> = V<sub>j</sub> / Δt
+
+where g<sup>W</sup> and g<sup>E</sup> are the conductances on the inner and outer side of the cell (m<sup>3</sup> s<sup>-1</sup>), Δt is the time step (s) and n is the time level. The system is tridiagonal and is solved by forward elimination without subtraction,
+
+e<sub>j</sub> = v<sub>j</sub> + g<sup>W</sup><sub>j</sub> e<sub>j-1</sub> / ( e<sub>j-1</sub> + g<sup>W</sup><sub>j</sub> ), d<sub>j</sub> = e<sub>j</sub> + g<sup>E</sup><sub>j</sub>
+
+followed by back substitution. Every operation is a sum, product or quotient of positive numbers. The release through the outer face is summed with Kahan compensation, and the balance residual M<sup>n</sup> + M<sup>n</sup><sub>rel</sub> − M<sub>0</sub> (mol) is reported at every step. Source: Final Deliverable, Table 3.1 rows B.6, B.12, B.13 and B.14 and the Notation table.
+
+### Eigenfunction series (Code C)
+
+File: `src/analytical/sturm_liouville.rs`; Full Mathematical Derivation, Part IV.
+
+Separation of variables with u = r φ turns each layer into u'' + k<sub>ℓ</sub><sup>2</sup> u = 0 with k<sub>ℓ</sub> = √(Λ / D<sub>ℓ</sub>) (m<sup>-1</sup>), where Λ is the eigenvalue, a decay constant in s<sup>-1</sup>. The function u is continuous across interfaces, D (u' − u/r) is continuous, and u(0) = 0 and u(R) = 0. The code starts at the centre and propagates u and the flux-like state q = D u' through the layers by a transfer matrix. The eigenvalues are the zeros of u(R; Λ). A Sturm count N(Λ), the number of eigenvalues at or below Λ, isolates each root, and bisection refines it to a relative width of 4 × 10<sup>-15</sup>. The release is
+
+F(t) = 1 − Σ<sub>n</sub> w<sub>n</sub> exp( −Λ<sub>n</sub> t ), with w<sub>n</sub> = 3 I<sub>1,n</sub> I<sub>n</sub> / ( R<sub>1</sub><sup>3</sup> N<sub>n</sub> )
+
+where I<sub>1,n</sub> = ∫<sub>0</sub><sup>R<sub>1</sub></sup> r u<sub>n</sub> dr, I<sub>n</sub> = ∫<sub>0</sub><sup>R</sup> r u<sub>n</sub> dr and N<sub>n</sub> = ∫<sub>0</sub><sup>R</sup> u<sub>n</sub><sup>2</sup> dr. The weights w<sub>n</sub> are dimensionless and do not depend on how u is scaled. The code keeps at most 20,000 modes, reports the number used, uses the series only from t<sub>valid</sub> = 40 / Λ<sub>cov</sub> (s) and reports an accuracy floor from the cancellation of the flux. Source: module comment of `sturm_liouville.rs`; Final Deliverable, Table 2.1 and operations C.5 to C.16.
+
+### Phase 2 models (derived, not implemented)
+
+The Phase 2 derivations add a first-order loss −λ c with λ = ln 2 / t<sub>1/2</sub> (s<sup>-1</sup>), a volumetric kernel source, an inventory closure M<sub>0</sub> + M<sub>gen</sub> = M + M<sub>dec</sub> + M<sub>rel</sub> (mol), and an Arrhenius diffusivity D<sub>i</sub> = Σ<sub>m</sub> D<sub>0,i,m</sub> exp( −Q<sub>i,m</sub> / (R<sub>g</sub> T) ), where D<sub>0</sub> is in m<sup>2</sup> s<sup>-1</sup>, Q in J mol<sup>-1</sup>, R<sub>g</sub> in J mol<sup>-1</sup> K<sup>-1</sup> and T in K. The review package marks each as derived and independently checked, and none of them is in the Rust code. Source: `docs/development/phase2_review_package.md`, section 3, equations (P21.1), (P21.7), (P21.42) and (P22.1).
 
 ## Verification
 
-The two methods check each other, and a regression test compares the build with the delivered v1.0 outputs. The verification example asserts every claim it prints. The CI workflow checks formatting, lints with warnings denied, runs the tests and the documentation build, runs the verification example and audits dependencies. The Full Derivation records that the 20 Rust tests passed under `cargo test --release` in an acceptance check of the v1.0.0 release. The Final Deliverable marks each numerical property with an evidence status that runs from proved down to claimed only. It also lists 44 known inconsistencies between the earlier documents, code comments, tests and code, items I1 to I26 and K1 to K18, with a recommended correction for each.
+The two methods check each other, and a regression test compares the build with the delivered v1.0 outputs. The verification example asserts every claim it prints. It covers a homogeneous sphere, a two-layer case with an exact modal reference and the five-layer case, and it ends with the line `FV_VERIFICATION PASS`. The CI workflow checks formatting, lints with warnings denied, runs the tests and the documentation build, runs the verification example and audits dependencies. The Full Derivation records that the 20 Rust tests passed under `cargo test --release` in an acceptance check of the v1.0.0 release. The Final Deliverable marks each numerical property with an evidence status that runs from proved down to claimed only. It also lists 44 known inconsistencies between the earlier documents, code comments, tests and code, items I1 to I26 and K1 to K18, with a recommended correction for each.
+
+Python scripts under `scripts/derivation_checks/` re-implement the equations and numbers quoted in the documents and check them. They confirm the algebra and the numbers they contain, and they do not prove the Rust code correct, because they re-implement the arithmetic in Python. The Phase 2 review package records that its 17 section scripts exit cleanly with 251 passes and no failure line. Every Phase 2 number in the change document comes from such a Python transcription, since no Phase 2 Rust exists.
 
 These checks show that the code solves its equations correctly. They say nothing about whether the equations or the inputs match real particles, because two methods can agree and still rest on the same wrong physics. Comparison with release data measured in AGR-1, the first irradiation test of the Advanced Gas Reactor Fuel Development and Qualification Program, is planned for v2.0.
 
@@ -64,15 +218,31 @@ Every figure below comes from the synthetic five-layer case, so it describes the
 
 The printed temporal orders fall below one because the spatial error of the 200-cell mesh enters the comparison. The gap of 1.27 × 10<sup>-4</sup> between the single run and the exact series is mostly time-step error, since Backward Euler is first order, and the verification output (tests/golden/v1.0/verify_stdout.txt) puts the spatial error at 200 cells at 5.5 × 10<sup>-6</sup>.
 
+The spatial refinement in the same verification output gives the following absolute error of the time-extrapolated finite-volume release against the exact series at 2 × 10<sup>5</sup> s.
+
+| Cells | Absolute error |
+|---|---|
+| 100 | 2.19 × 10<sup>-5</sup> |
+| 200 | 5.48 × 10<sup>-6</sup> |
+| 400 | 1.37 × 10<sup>-6</sup> |
+| 800 | 3.42 × 10<sup>-7</sup> |
+| 1600 | 8.56 × 10<sup>-8</sup> |
+
+Each doubling of the cell count divides the error by four, which is second-order convergence, and the printed spatial orders are 2.000 at every level (tests/golden/v1.0/verify_stdout.txt).
+
 ## What it does not cover
 
-- The inputs are synthetic, and no literature parameters are bundled yet.
+- The inputs are synthetic. A register of literature parameters sits in `data/` and the program does not read it yet.
 - Temperature is constant and diffusivity does not depend on it. The input temperature is recorded only.
 - There is no radioactive decay and no fission-product generation, so all inventory starts in the kernel.
 - Interfaces are in perfect contact with no partition coefficients, and the outer surface is a perfect sink.
 - The model covers a single intact particle. Matrix transport, failed particles and particle populations are not modelled.
 - Backward Euler is first order in time, so the time step controls accuracy at early times.
+- Phase 2 exists as mathematics and pseudocode. No Phase 2 equation has been run in STRATO, and the review package lists unresolved items, among them the gas constant used by the CRP-6 benchmark participants and the convergence of the joined scheme.
+- There is no interactive demonstration and no website of its own. The Pages address of the repository shows the README only.
 
 ## Technology
 
-STRATO is a Rust program built with Cargo, reading TOML input and writing CSV and SVG output. Python scripts under `scripts/` check the derivations and draw the figures. GitHub Actions runs the CI workflow and a documentation workflow, and the PDF documents are built with pandoc and XeLaTeX. The project is MIT licensed.
+STRATO is a Rust program (edition 2021) built with Cargo, reading TOML input and writing CSV and SVG output. Its dependencies are `anyhow`, `csv`, `plotters` (SVG backend only), `serde` and `toml`. Python scripts under `scripts/` check the derivations and draw the figures, with the Python packages pinned in `requirements.lock.txt`. GitHub Actions runs the CI workflow and a documentation workflow, and the PDF documents are built with pandoc and XeLaTeX. `CITATION.cff` gives the citation metadata.
+
+The licence changed on 10 November 2026. Releases v1.0.0 and v1.0.1 were published under the MIT licence and remain available under it. Later versions, including the current main branch, are AGPL-3.0-only, which the README gives as matching the Outram Park project that the planned web demo builds on.
