@@ -10,3 +10,19 @@ Thumbs.db
 .venv/
 __pycache__/
 _work/
+
+# Raw source materials never enter this repository. They live outside it, in ../portfolio-materials.
+# Only checked public editions go under public/ (see docs/CONTENT_GUIDE.md).
+portfolio-materials/
+source-materials/
+_private/
+_fixture/
+*.docx
+*.pptx
+*.dng
+*.DNG
+*.heic
+*.HEIC
+*.mov
+*.MOV
+*.mp4

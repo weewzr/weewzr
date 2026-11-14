@@ -30,15 +30,79 @@ export const social = {
   website: 'https://weewzr.github.io/weewzr/',
 } as const;
 
-/** Top navigation. `href` is an anchor on the home page. */
-export const nav = [
-  { label: 'About', href: '#about' },
-  { label: 'Research', href: '#research' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Writing', href: '#writing' },
-  { label: 'Contact', href: '#contact' },
+/**
+ * The principal sections of the site. Each one is a page under its `path` (written without the base).
+ * The top navigation, the home page previews and the footer are all built from this list, so adding a
+ * section here is enough to make it appear in all three.
+ * `collection` names the content collection in src/content.config.ts that feeds the section, if any.
+ */
+export type Section = {
+  id: 'projects' | 'research' | 'community' | 'innovation' | 'about';
+  label: string;
+  path: string;
+  eyebrow: string;
+  title: string;
+  lead: string;
+  collection: 'projects' | 'research' | 'community' | 'innovation' | null;
+};
+
+export const sections: readonly Section[] = [
+  {
+    id: 'projects',
+    label: 'Projects',
+    path: 'projects/',
+    eyebrow: 'Engineering projects',
+    title: 'Computational engineering projects',
+    lead: 'Open models of nuclear fuel, low-carbon hydrogen and fuel supply networks, each with its assumptions and checks written down.',
+    collection: 'projects',
+  },
+  {
+    id: 'research',
+    label: 'Research',
+    path: 'research/',
+    eyebrow: 'Research and academic work',
+    title: 'Research and academic work',
+    lead: 'Coursework case studies and review essays, presented with their methods, findings and limits.',
+    collection: 'research',
+  },
+  {
+    id: 'community',
+    label: 'Community',
+    path: 'community/',
+    eyebrow: 'Community engagement and impact',
+    title: 'Community engagement',
+    lead: 'Volunteer projects I lead or take part in, with progress reported as it happens.',
+    collection: 'community',
+  },
+  {
+    id: 'innovation',
+    label: 'Innovation',
+    path: 'innovation/',
+    eyebrow: 'Innovation and competitions',
+    title: 'Innovation and competitions',
+    lead: 'Product concepts and competition entries, described as far as the submitted material supports.',
+    collection: 'innovation',
+  },
+  {
+    id: 'about',
+    label: 'About',
+    path: 'about/',
+    eyebrow: 'About and contact',
+    title: 'About',
+    lead: 'Academic background, research interests, skills and how to reach me.',
+    collection: null,
+  },
 ] as const;
+
+/** Top navigation, derived from `sections`. Home is the brand link. */
+export const nav = sections.map((s) => ({ label: s.label, path: s.path, id: s.id }));
+
+/**
+ * CV switch. The CV is not ready, so this stays false and `cvPath` stays empty.
+ * No component may render a CV link, button or placeholder while `enabled` is false.
+ * To publish later: put the PDF under /public, set `cvPath` to its path and `enabled` to true.
+ */
+export const cv = { enabled: false, cvPath: '' } as const;
 
 export const education = {
   institution: 'National University of Singapore (NUS)',
@@ -178,18 +242,21 @@ export type Project = {
   /** Verified summary, based on the repository README. */
   description: string;
   status: string;
+  /** `planned` projects have no code yet: they show no repository or site button and no screenshot. */
+  stage: 'live' | 'released' | 'planned';
   tech: readonly string[];
   /** Ids from `researchInterests`. They drive the filter chips and the area badges on each card. */
   areas: readonly string[];
   features: readonly string[];
-  repoUrl: string;
+  /** Public repository, or null when none exists yet. */
+  repoUrl: string | null;
   /** Verified live site, or null if none exists yet. */
   siteUrl: string | null;
   /** Where a site will live once it exists. Update `siteUrl` to publish the button. */
   futureSiteUrl?: string;
   comingSoon?: boolean;
-  /** Path under /public. */
-  image: string;
+  /** Path under /public, or null when there is nothing real to show yet (the card draws a neutral panel). */
+  image: string | null;
   imageAlt: string;
   imageCaption: string;
 };
@@ -207,6 +274,7 @@ export const projects: readonly Project[] = [
     description:
       'A working planning tool for a Sustainable Aviation Fuel network across Kalimantan. It chooses refinery and depot sites and sizes and routes biomass and fuel to four international airports. It also shows the evidence behind each number. The Rust solver is compiled to WebAssembly, so the whole product runs in the browser with no server. Built for Airbus Challenge 3, Autonomous SG 2026.',
     status: 'Live prototype',
+    stage: 'live',
     tech: ['Rust', 'WebAssembly', 'HiGHS', 'Python', 'GitHub Pages'],
     areas: ['hydrogen', 'scicomp'],
     features: [
@@ -227,6 +295,7 @@ export const projects: readonly Project[] = [
     description:
       'A low-carbon hydrogen study with an open engine and a browser simulator. A high-temperature gas-cooled reactor supplies process heat to steam methane reforming, and an amine unit captures the carbon dioxide. The headline Case B plant makes 100,000 Nm3/h of purified hydrogen, and the study reports levelised abatement cost against a stated target, including where the target is missed.',
     status: 'Study with live simulator',
+    stage: 'live',
     tech: ['Rust', 'WebAssembly', 'JavaScript', 'Python', 'LaTeX', 'GitHub Actions'],
     areas: ['nuclear', 'hydrogen', 'process', 'tea'],
     features: [
@@ -245,8 +314,9 @@ export const projects: readonly Project[] = [
     name: 'STRATO',
     tagline: 'Spherical TRISO Analysis and Transport Operations',
     description:
-      'A transparent, verifiable model of fission-product release from a single TRISO coated fuel particle. It solves the same multilayer spherical diffusion problem two independent ways, a conservative finite-volume method and an exact eigenfunction series, so each method checks the other. Version 1.0 covers constant temperature and constant diffusivity per layer.',
-    status: 'v1.0, Phase 1',
+      'A transparent, verifiable model of fission-product release from a single TRISO coated fuel particle. It solves the same multilayer spherical diffusion problem two independent ways, a conservative finite-volume method and an exact eigenfunction series, so each method checks the other. Version 1.0 covers constant temperature and constant diffusivity per layer. Phase 2 (decay, generation, Arrhenius diffusivity and temperature histories) exists as checked mathematics and pseudocode, with no code yet.',
+    status: 'v1.0.1, Phase 2 in design',
+    stage: 'released',
     tech: ['Rust', 'Python', 'Finite volume', 'Sturm-Liouville expansion', 'GitHub Actions'],
     areas: ['nuclear', 'scicomp'],
     features: [
@@ -263,6 +333,23 @@ export const projects: readonly Project[] = [
     imageCaption:
       'TRISO cross-section from the STRATO documentation, drawn to scale with AGR-1 baseline dimensions. The bundled v1.0 example uses different, synthetic radii.',
   },
+  {
+    slug: 'amcrax',
+    name: 'AmCraX',
+    tagline: 'Ammonia cracking and hydrogen production simulation platform',
+    description:
+      'A planned simulation platform for ammonia cracking and hydrogen production. No code has been written and no repository exists yet. The scientific basis is a review essay on the conditions under which ammonia cracking can supply low-carbon hydrogen. A link to Aspen Plus is a possible later step.',
+    status: 'Planned',
+    stage: 'planned',
+    tech: [],
+    areas: ['hydrogen', 'process'],
+    features: [],
+    repoUrl: null,
+    siteUrl: null,
+    image: null,
+    imageAlt: '',
+    imageCaption: '',
+  },
 ] as const;
 
 /**
@@ -272,8 +359,8 @@ export const projects: readonly Project[] = [
  * With JavaScript off every section is shown in this same order.
  */
 export const caseStudyTabs = [
-  { id: 'overview', label: 'Overview', headings: ['The problem'] },
-  { id: 'methods', label: 'Methods', headings: ['Approach', 'Technology'] },
+  { id: 'overview', label: 'Overview', headings: ['The problem', 'Objectives'] },
+  { id: 'methods', label: 'Methods', headings: ['Architecture', 'Approach', 'Algorithms and models', 'Technology'] },
   { id: 'results', label: 'Results', headings: ['Results'] },
   { id: 'verification', label: 'Verification', headings: ['Verification'] },
 ] as const;
