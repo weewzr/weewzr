@@ -13,8 +13,13 @@ import { withBase } from '../lib/url';
 
 interface Props {
   standalone?: boolean;
+  /** Block heading when not standalone. The research index page uses "Technical notes". */
+  heading?: string;
+  /** Section id when not standalone; "writing" keeps the old anchor working. */
+  sectionId?: string;
+
 }
-const { standalone = false } = Astro.props;
+const { standalone = false, heading, sectionId = 'writing' } = Astro.props;
 
 const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || a.data.title.localeCompare(b.data.title),
@@ -36,7 +41,7 @@ const CardTitle = standalone ? 'h3' : 'h4';
 const titleId = standalone ? 'writing-index-title' : 'writing-title';
 ---
 
-<section id={standalone ? undefined : 'writing'} class:list={['section', 'writing', { standalone }]} aria-labelledby={titleId}>
+<section id={standalone ? undefined : sectionId} class:list={['section', 'writing', { standalone }]} aria-labelledby={titleId}>
   <div class="container">
     {
       standalone && (
@@ -44,6 +49,9 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
           <ol>
             <li>
               <a href={withBase('')}>Home</a>
+            </li>
+            <li>
+              <a href={withBase('research/')}>Research</a>
             </li>
             <li aria-current="page">Notes and studies</li>
           </ol>
@@ -53,7 +61,7 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
 
     <header class="head reveal">
       <p class="eyebrow">Research &amp; Writing</p>
-      <Title id={titleId} class="section-title">Notes and studies</Title>
+      <Title id={titleId} class="section-title">{standalone ? 'Notes and studies' : (heading ?? 'Notes and studies')}</Title>
       <p class="section-lead">
         Technical notes and computational studies appear here, grouped by topic. Each entry links to the public source it
         is based on.
@@ -102,7 +110,7 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
                   const { title, description, kind, date, sourceUrl, sourceLabel } = note.data;
                   return (
                     <li>
-                      <article class="card glass gradient-border">
+                      <article class="note-card glass gradient-border">
                         <div class="meta">
                           <span class="chip">{kind}</span>
                           <time datetime={date.toISOString().slice(0, 10)}>{dateFormat.format(date)}</time>
@@ -300,7 +308,7 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
   }
 
   /* Note card. The title link is stretched over the whole card; the source link sits above it. */
-  .card {
+  .note-card {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -312,8 +320,8 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
     box-shadow: 0 22px 50px -34px rgb(0 0 0 / 0.85);
     transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s ease;
   }
-  .card:hover,
-  .card:focus-within {
+  .note-card:hover,
+  .note-card:focus-within {
     transform: translateY(-4px);
     box-shadow:
       0 28px 56px -32px rgb(0 0 0 / 0.9),
@@ -347,14 +355,14 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
     inset: 0;
     border-radius: var(--radius);
   }
-  .card:hover .card-title a {
+  .note-card:hover .card-title a {
     color: #fff;
   }
   @supports selector(:has(*)) {
     .card-title a:focus-visible {
       outline: none;
     }
-    .card:has(.card-title a:focus-visible) {
+    .note-card:has(.card-title a:focus-visible) {
       outline: 2px solid var(--lavender);
       outline-offset: 3px;
     }
@@ -385,7 +393,7 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
   .read :global(svg) {
     transition: transform 0.3s ease;
   }
-  .card:hover .read :global(svg) {
+  .note-card:hover .read :global(svg) {
     transform: translateX(4px);
   }
   .source {
@@ -408,20 +416,20 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
   }
 
   @media (max-width: 480px) {
-    .card {
+    .note-card {
       padding: 1.1rem 1.1rem 0.8rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .card,
-    .card:hover,
-    .card:focus-within {
+    .note-card,
+    .note-card:hover,
+    .note-card:focus-within {
       transform: none;
       transition: none;
     }
     .read :global(svg),
-    .card:hover .read :global(svg) {
+    .note-card:hover .read :global(svg) {
       transform: none;
       transition: none;
     }

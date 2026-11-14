@@ -1,6 +1,23 @@
 ---
 import Icon from './Icon.astro';
 import { social } from '../data/site';
+import { withBase } from '../lib/url';
+
+/**
+ * Props:
+ *   variant  'panel' (About page: heading, lead and a column of links) or 'strip' (home page: one compact row
+ *            with a link to the About page)
+ *   id       section id; both pages keep "contact" so old links still land here
+ *   level    heading element ('h2' under a page h1)
+ */
+interface Props {
+  variant?: 'panel' | 'strip';
+  id?: string;
+  level?: 'h2' | 'h3';
+}
+const { variant = 'panel', id = 'contact', level = 'h2' } = Astro.props;
+const Heading = level;
+const strip = variant === 'strip';
 
 /** Readable form of a URL: no scheme, no www, no trailing slash. */
 const shortUrl = (url: string) => {
@@ -11,7 +28,6 @@ const shortUrl = (url: string) => {
 const links = [
   { label: 'GitHub', href: social.github, icon: 'github' },
   { label: 'LinkedIn', href: social.linkedin, icon: 'linkedin' },
-  { label: 'Personal website', href: social.website, icon: 'globe' },
 ]
   .filter((link) => link.href)
   .map((link) => ({ ...link, text: shortUrl(link.href) }));
@@ -22,15 +38,23 @@ const [emailUser = '', emailDomain = ''] = email.split('@');
 const emailFallback = email ? email.replace('@', ' [at] ').replace(/\./g, ' [dot] ') : '';
 ---
 
-<section id="contact" class="section" aria-labelledby="contact-title">
+<section id={id} class:list={[strip ? 'block' : 'section', { 'is-strip': strip }]} aria-labelledby={`${id}-title`}>
   <div class="ct-wrap">
     <div class="ct-panel glass gradient-border">
       <div class="ct-copy reveal">
         <p class="eyebrow">Get in touch</p>
-        <h2 id="contact-title" class="section-title">Contact</h2>
+        <Heading id={`${id}-title`} class="section-title">Contact</Heading>
         <p class="section-lead">
           I welcome questions about the projects and research topics on this site. The links here are the quickest way to reach me.
         </p>
+        {
+          strip && (
+            <a class="link-arrow ct-more" href={withBase('about/')}>
+              More about me
+              <Icon name="arrow-right" size={18} />
+            </a>
+          )
+        }
       </div>
 
       <ul class="ct-list" role="list" aria-label="Contact links">
@@ -222,6 +246,25 @@ const emailFallback = email ? email.replace('@', ' [at] ').replace(/\./g, ' [dot
   }
   a.ct-link:hover :global(.ct-go) {
     transform: translateX(2px);
+  }
+
+  .ct-more {
+    margin-top: 0.75rem;
+  }
+  /* Strip: a shorter panel with the links side by side where there is room. */
+  .is-strip .ct-panel {
+    padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  }
+  .is-strip .section-title {
+    font-size: var(--fs-section-title);
+  }
+  @media (min-width: 900px) {
+    .is-strip .ct-panel {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    }
+    .is-strip .ct-list {
+      grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    }
   }
 
   @media (max-width: 420px) {

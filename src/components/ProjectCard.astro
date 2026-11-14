@@ -1,9 +1,15 @@
 ---
 /**
  * One featured-project card. All text comes from the Project object in src/data/site.ts.
- * Even indexes put the preview image on the left on wide screens, odd indexes on the right.
+ * Props:
+ *   project       a Project from site.ts
+ *   index         position in the list; odd indexes put the preview on the right on wide screens
+ *   headingLevel  'h2' | 'h3' (default 'h3')
+ * A planned project (no repository, no image) shows a labelled planned panel in place of the screenshot and no
+ * repository or site button.
  */
 import Icon from './Icon.astro';
+import StatusPill from './StatusPill.astro';
 import { withBase } from '../lib/url';
 import { researchInterests } from '../data/site';
 import type { Project } from '../data/site';
@@ -11,11 +17,14 @@ import type { Project } from '../data/site';
 interface Props {
   project: Project;
   index?: number;
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { project, index = 0 } = Astro.props;
+const { project, index = 0, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
 const flip = index % 2 === 1;
 const titleId = `project-${project.slug}-title`;
+const planned = project.stage === 'planned';
 // Research-area badges: short labels from researchInterests, in the order the project lists them.
 const areaLabels = project.areas
   .map((id) => researchInterests.find((r) => r.id === id)?.short)
@@ -23,45 +32,69 @@ const areaLabels = project.areas
 const caseHref = withBase(`projects/${project.slug}/`);
 
 // Preview images ship as name.webp (1280 wide) and name-640.webp (640 wide).
-const full = withBase(project.image);
-const small = project.image.endsWith('.webp') ? withBase(project.image.replace(/\.webp$/, '-640.webp')) : null;
-const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
+const full = project.image ? withBase(project.image) : null;
+const small = project.image && project.image.endsWith('.webp') ? withBase(project.image.replace(/\.webp$/, '-640.webp')) : null;
+const srcset = small && full ? `${small} 640w, ${full} 1280w` : undefined;
+const tone = planned ? 'planned' : project.stage === 'live' ? 'live' : 'released';
 ---
 
-<article class="card glass gradient-border" data-flip={flip ? 'true' : 'false'} aria-labelledby={titleId}>
+<article class="pcard glass gradient-border" data-flip={flip ? 'true' : 'false'} aria-labelledby={titleId}>
   <figure class="media">
-    <div class="frame">
-      <img
-        src={full}
-        srcset={srcset}
-        sizes="(min-width: 1180px) 570px, (min-width: 900px) 48vw, 100vw"
-        width="1280"
-        height="800"
-        loading="lazy"
-        decoding="async"
-        alt={project.imageAlt}
-      />
-    </div>
-    <figcaption>{project.imageCaption}</figcaption>
+    {
+      full ? (
+        <div class="frame">
+          <img
+            src={full}
+            srcset={srcset}
+            sizes="(min-width: 1180px) 570px, (min-width: 900px) 48vw, 100vw"
+            width="1280"
+            height="800"
+            loading="lazy"
+            decoding="async"
+            alt={project.imageAlt}
+          />
+        </div>
+      ) : (
+        <div class="frame frame--planned">
+          <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+            <defs>
+              <pattern id={`grid-${project.slug}`} width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M20 0H0V20" fill="none" stroke="#94a3b8" stroke-opacity="0.18" stroke-width="0.6" />
+              </pattern>
+            </defs>
+            <rect width="320" height="200" fill={`url(#grid-${project.slug})`} />
+            <ellipse cx="160" cy="100" rx="86" ry="30" fill="none" stroke="#a78bfa" stroke-opacity="0.55" stroke-width="1.2" stroke-dasharray="4 6" />
+            <ellipse cx="160" cy="100" rx="86" ry="30" transform="rotate(60 160 100)" fill="none" stroke="#3b82f6" stroke-opacity="0.5" stroke-width="1.2" stroke-dasharray="4 6" />
+            <circle cx="160" cy="100" r="4" fill="#c4b5fd" fill-opacity="0.8" />
+          </svg>
+          <span class="frame__label">Planned. No code or screenshot yet.</span>
+        </div>
+      )
+    }
+    {project.imageCaption && <figcaption>{project.imageCaption}</figcaption>}
   </figure>
 
   <div class="body">
-    <p class="status">{project.status}</p>
-    <h3 id={titleId}>{project.name}</h3>
+    <StatusPill label={project.status} tone={tone} />
+    <Heading id={titleId}>{project.name}</Heading>
     <p class="tagline">{project.tagline}</p>
     <p class="desc">{project.description}</p>
 
-    <h4 class="mini-title">Main features</h4>
-    <ul class="features">
-      {
-        project.features.map((feature) => (
-          <li>
-            <span class="tick"><Icon name="check" size={16} stroke={2.2} /></span>
-            <span>{feature}</span>
-          </li>
-        ))
-      }
-    </ul>
+    {
+      project.features.length > 0 && (
+        <>
+          <p class="mini-title">Main features</p>
+          <ul class="features">
+            {project.features.map((feature) => (
+              <li>
+                <span class="tick"><Icon name="check" size={16} stroke={2.2} /></span>
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
 
     {
       areaLabels.length > 0 && (
@@ -73,57 +106,62 @@ const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
       )
     }
 
-    <ul class="tech" aria-label={`${project.name} technologies`}>
-      {project.tech.map((t) => <li class="chip">{t}</li>)}
-    </ul>
+    {
+      project.tech.length > 0 && (
+        <ul class="tech" aria-label={`${project.name} technologies`}>
+          {project.tech.map((t) => <li class="chip">{t}</li>)}
+        </ul>
+      )
+    }
 
-    <div class="actions">
-      {
-        project.siteUrl && (
-          <a
-            class="btn btn-primary"
-            href={project.siteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Visit Website for ${project.name} (opens in a new tab)`}
-          >
-            Visit Website
-            <Icon name="external" size={18} />
-          </a>
-        )
-      }
-      <a
-        class="btn"
-        href={project.repoUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`View GitHub Repository for ${project.name} (opens in a new tab)`}
-      >
-        <Icon name="github" size={18} />
-        View GitHub Repository
-      </a>
-    </div>
+    {
+      (project.siteUrl || project.repoUrl) && (
+        <div class="actions">
+          {project.siteUrl && (
+            <a
+              class="btn btn-primary"
+              href={project.siteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Visit Website for ${project.name} (opens in a new tab)`}
+            >
+              Visit Website
+              <Icon name="external" size={18} />
+            </a>
+          )}
+          {project.repoUrl && (
+            <a
+              class="btn"
+              href={project.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View GitHub Repository for ${project.name} (opens in a new tab)`}
+            >
+              <Icon name="github" size={18} />
+              View GitHub Repository
+            </a>
+          )}
+        </div>
+      )
+    }
 
     {
       !project.siteUrl && project.comingSoon && (
-        <>
-          {/* Developer note: the site URL is configurable in src/data/site.ts (siteUrl). Never link futureSiteUrl here. */}
-          <p class="soon">
-            <span class="soon-label">Website Coming Soon</span>
-          </p>
-        </>
+        <p class="soon">
+          <span class="soon-label">Website Coming Soon</span>
+        </p>
       )
     }
 
     <a class="case-link" href={caseHref}>
-      Read case study<span class="sr-only"> for {project.name}</span>
+      {planned ? 'Read the plan' : 'Read case study'}<span class="sr-only"> for {project.name}</span>
       <Icon name="arrow-right" size={18} />
     </a>
   </div>
 </article>
 
 <style>
-  .card {
+  .pcard {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
     gap: clamp(1.25rem, 3vw, 2.75rem);
@@ -139,8 +177,8 @@ const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
       transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
       box-shadow 0.35s ease;
   }
-  .card:hover,
-  .card:focus-within {
+  .pcard:hover,
+  .pcard:focus-within {
     transform: translateY(-5px);
     box-shadow:
       0 34px 70px -34px rgb(0 0 0 / 0.9),
@@ -153,7 +191,7 @@ const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
     margin: 0;
     min-width: 0;
   }
-  .card[data-flip='true'] .media {
+  .pcard[data-flip='true'] .media {
     order: 2;
   }
   .frame {
@@ -172,8 +210,33 @@ const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
     object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  .card:hover .frame img {
+  .pcard:hover .frame img {
     transform: scale(1.02);
+  }
+  /* Neutral drawn panel for a project with no screenshot yet. */
+  .frame--planned {
+    display: grid;
+    place-items: center;
+    border-style: dashed;
+    background: linear-gradient(155deg, rgb(17 36 76 / 0.5), rgb(9 20 44 / 0.7));
+  }
+  .frame--planned svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .frame__label {
+    position: relative;
+    max-width: 90%;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-align: center;
+    color: #fcd34d;
+    background: rgb(6 11 27 / 0.75);
+    border: 1px dashed rgb(252 211 77 / 0.5);
   }
   figcaption {
     margin-top: 0.6rem;
@@ -190,31 +253,7 @@ const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
     flex-direction: column;
     align-items: flex-start;
   }
-  .status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    max-width: 100%;
-    margin: 0;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    line-height: 1.4;
-    letter-spacing: 0.04em;
-    color: #ddd6fe;
-    background: rgb(124 58 237 / 0.16);
-    border: 1px solid rgb(167 139 250 / 0.38);
-  }
-  .status::before {
-    content: '';
-    flex: none;
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 50%;
-    background: var(--lavender);
-    box-shadow: 0 0 8px var(--lavender);
-  }
+  h2,
   h3 {
     margin-top: 0.85rem;
     font-size: clamp(1.7rem, 3.2vw, 2.25rem);
@@ -337,21 +376,22 @@ const srcset = small ? `${small} 640w, ${full} 1280w` : undefined;
   }
 
   @media (max-width: 899px) {
-    .card {
+    .pcard {
       grid-template-columns: minmax(0, 1fr);
       gap: 1.25rem;
     }
-    .card[data-flip='true'] .media {
+    .pcard[data-flip='true'] .media {
       order: 0;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .card:hover,
-    .card:focus-within {
+    .pcard:hover,
+    .pcard:focus-within {
       transform: none;
     }
-    .card:hover .frame img {
+    .pcard:hover .frame img,
+    .case-link:hover :global(svg) {
       transform: none;
     }
   }

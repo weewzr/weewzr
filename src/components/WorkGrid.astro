@@ -1,0 +1,48 @@
+---
+/**
+ * A grid of WorkCards for entries of the research, community or innovation collections.
+ * Props:
+ *   entries       entries from getWork() in ./home/collections.ts (already filtered and sorted)
+ *   basePath      section path with a trailing slash and no base, for example "research/"
+ *   headingLevel  heading element for the card titles (default 'h3')
+ *   limit         optional maximum number of cards
+ *   emptyText     line shown when there are no entries
+ * An empty list renders a neutral line instead of a grid.
+ */
+import WorkCard from './WorkCard.astro';
+import type { WorkEntry } from './home/collections';
+
+interface Props {
+  entries: WorkEntry[];
+  basePath: string;
+  headingLevel?: 'h2' | 'h3' | 'h4';
+  limit?: number;
+  emptyText?: string;
+}
+const { entries, basePath, headingLevel = 'h3', limit, emptyText = 'Nothing published here yet.' } = Astro.props;
+const shown = limit ? entries.slice(0, limit) : entries;
+---
+
+{
+  shown.length === 0 ? (
+    <p class="empty-note">{emptyText}</p>
+  ) : (
+    <ul class="card-grid" role="list">
+      {shown.map((entry, i) => (
+        <li class="reveal" style={`--i:${i}`}>
+          <WorkCard
+            href={`${basePath}${entry.id}/`}
+            title={entry.data.shortTitle}
+            kind={entry.data.kind}
+            period={entry.data.period}
+            status={entry.data.status}
+            summary={entry.data.summary}
+            tags={entry.data.tags}
+            role={entry.data.role}
+            headingLevel={headingLevel}
+          />
+        </li>
+      ))}
+    </ul>
+  )
+}

@@ -1,0 +1,31 @@
+---
+/**
+ * Innovation and competitions index: the entries of the `innovation` collection.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import WorkGrid from '../../components/WorkGrid.astro';
+import { getWork } from '../../components/home/collections';
+import { sections } from '../../data/site';
+
+const section = sections.find((s) => s.id === 'innovation')!;
+const entries = await getWork('innovation');
+const crumbs = [
+  { label: 'Home', path: '' },
+  { label: section.label, path: section.path },
+];
+---
+
+<BaseLayout
+  title="Innovation and competitions"
+  description={section.lead}
+  path={section.path}
+  breadcrumbs={crumbs}
+>
+  <PageHero eyebrow={section.eyebrow} title={section.title} lead={section.lead} />
+  <section class="block" aria-label="Innovation and competitions">
+    <div class="container">
+      <WorkGrid entries={entries} basePath={section.path} headingLevel="h2" />
+    </div>
+  </section>
+</BaseLayout>

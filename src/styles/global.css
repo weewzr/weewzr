@@ -26,6 +26,33 @@
   --radius-sm: 10px;
   --maxw: 1180px;
   --nav-h: 68px;
+
+  /* Spacing scale (4px base). Use these in new components instead of ad hoc rem values. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 7rem;
+
+  /* Type scale for page heroes, section titles and cards. */
+  --fs-page-title: clamp(2.2rem, 1.4rem + 3.6vw, 3.75rem);
+  --fs-section-title: clamp(1.75rem, 1.2rem + 2.4vw, 2.6rem);
+  --fs-lead: clamp(1.05rem, 0.98rem + 0.4vw, 1.22rem);
+  --fs-card-title: clamp(1.18rem, 1.1rem + 0.35vw, 1.4rem);
+  --fs-body: 1rem;
+  --fs-small: 0.9rem;
+  --fs-label: 0.76rem;
+
+  /* Status colours (text on a tinted fill, each at least 4.5:1 against the card background). */
+  --st-live: #6ee7b7;
+  --st-released: #93c5fd;
+  --st-planned: #fcd34d;
+  --st-progress: #c4b5fd;
+  --st-completed: #cbd5e1;
   color-scheme: dark;
 }
 
@@ -241,6 +268,276 @@
   }
 }
 
+/* ---------------------------------------------------------------------------------------------
+   Shared patterns for the multi-page site: cards, status pills, page heroes, link-with-arrow.
+   Unlayered like .container so they win over Tailwind utilities on the same element.
+   --------------------------------------------------------------------------------------------- */
+
+/* Work card. Markup: <article class="card"> with .card__meta, .card__title (a link stretched over the
+   whole card), .card__summary, .card__tags and .card__foot. WorkCard.astro writes this markup. */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  height: 100%;
+  padding: clamp(1.1rem, 2.2vw, 1.5rem);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(155deg, rgb(17 36 76 / 0.62), rgb(9 20 44 / 0.62));
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 22px 50px -34px rgb(0 0 0 / 0.85);
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+.card:hover,
+.card:focus-within {
+  transform: translateY(-4px);
+  border-color: rgb(167 139 250 / 0.5);
+  box-shadow:
+    0 28px 56px -32px rgb(0 0 0 / 0.9),
+    0 0 38px rgb(59 130 246 / 0.18),
+    0 0 60px rgb(124 58 237 / 0.2);
+}
+.card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  color: var(--muted);
+}
+.card__kind {
+  letter-spacing: 0.04em;
+  color: #b4c0d4;
+}
+.card__title {
+  font-size: var(--fs-card-title);
+  font-weight: 600;
+  line-height: 1.22;
+  overflow-wrap: anywhere;
+}
+.card__title a {
+  color: var(--text);
+  text-decoration: none;
+}
+.card__title a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+}
+.card:hover .card__title a {
+  color: #fff;
+}
+.card__title a:focus-visible {
+  outline: none;
+}
+.card:has(.card__title a:focus-visible) {
+  outline: 2px solid var(--lavender);
+  outline-offset: 3px;
+}
+.card__role {
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: #c4b5fd;
+}
+.card__summary {
+  font-size: 0.97rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+.card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card__foot {
+  display: flex;
+  align-items: center;
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+/* Grid used by every list of cards. */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: clamp(1rem, 2.4vw, 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card-grid > li {
+  min-width: 0;
+}
+
+/* Status pill. Variants: live, released, planned, progress, completed. Without a variant it is neutral. */
+.status-pill {
+  --pill: var(--st-completed);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  padding: 0.18rem 0.7rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: var(--pill);
+  background: color-mix(in srgb, var(--pill) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pill) 38%, transparent);
+}
+.status-pill::before {
+  content: '';
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--pill);
+}
+.status-pill--live {
+  --pill: var(--st-live);
+}
+.status-pill--live::before {
+  box-shadow: 0 0 8px var(--pill);
+}
+.status-pill--released {
+  --pill: var(--st-released);
+}
+.status-pill--planned {
+  --pill: var(--st-planned);
+}
+.status-pill--planned::before {
+  background: transparent;
+  border: 1.5px dashed var(--pill);
+}
+.status-pill--progress {
+  --pill: var(--st-progress);
+}
+.status-pill--completed {
+  --pill: var(--st-completed);
+}
+
+/* Page hero used at the top of every section page. */
+.page-hero {
+  position: relative;
+  padding-block: clamp(2.25rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 2.75rem);
+}
+.page-hero__title {
+  margin-top: var(--space-2);
+  font-size: var(--fs-page-title);
+  font-weight: 700;
+  line-height: 1.07;
+  letter-spacing: -0.03em;
+  background: linear-gradient(100deg, #f8fafc 0%, #e2e8f0 40%, #c4b5fd 80%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.page-hero__lead {
+  margin-top: var(--space-4);
+  max-width: 62ch;
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+.page-hero__rule {
+  display: block;
+  width: 4rem;
+  height: 3px;
+  margin-top: var(--space-5);
+  border-radius: 3px;
+  background: var(--grad);
+}
+
+/* Breadcrumb trail. */
+.breadcrumb {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-small);
+}
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+}
+.breadcrumb li:not(:last-child)::after {
+  content: '/';
+  margin-left: var(--space-3);
+  opacity: 0.7;
+}
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* Section header for the blocks on a page: eyebrow, title, lead and an optional "view all" link. */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  margin-bottom: clamp(1.5rem, 3.5vw, 2.25rem);
+}
+.section-head__text {
+  min-width: 0;
+}
+.section-head .section-title {
+  font-size: var(--fs-section-title);
+}
+
+/* Link with an arrow that nudges right on hover. */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: #c4b5fd;
+  text-decoration: none;
+}
+.link-arrow svg {
+  transition: transform 0.25s ease;
+}
+.link-arrow:hover {
+  color: #fff;
+}
+.link-arrow:hover svg {
+  transform: translateX(4px);
+}
+
+/* Neutral line for a section with nothing published. */
+.empty-note {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-sm);
+  border: 1px dashed rgb(148 163 184 / 0.4);
+  color: var(--muted);
+}
+
+/* Block spacing for pages built from several .block elements. */
+.block {
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+}
+
 /* Scroll reveal. Content stays visible without JavaScript (html.js is added by an inline script). */
 .js .reveal {
   opacity: 0;
@@ -280,5 +577,92 @@
   }
   @view-transition {
     navigation: none;
+  }
+  .card:hover,
+  .card:focus-within,
+  .link-arrow:hover svg {
+    transform: none;
+  }
+}
+
+/* Keyboard focus: a visible ring on every control, including inside cards and glass panels. */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--lavender);
+  outline-offset: 3px;
+}
+
+/* Never let a page scroll sideways. */
+html,
+body {
+  overflow-x: clip;
+}
+
+/* Touch screens: every control is at least 44px tall. */
+@media (pointer: coarse) {
+  .btn,
+  .link-arrow {
+    min-height: 44px;
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 11pt;
+  }
+  .cosmos,
+  .nav,
+  .skip-link,
+  .footer [class*='perry'],
+  [class*='perry'],
+  .hero__motif,
+  .hero__scroll,
+  .btn,
+  .filter-chip,
+  [data-project-filter] {
+    display: none !important;
+  }
+  .glass,
+  .card {
+    background: none !important;
+    border: 1px solid #999 !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    break-inside: avoid;
+  }
+  .reveal,
+  .js .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  .page-hero__title,
+  .hero__name,
+  .hero__headline,
+  .grad-text {
+    color: #000 !important;
+    background: none !important;
+    -webkit-text-fill-color: #000 !important;
+  }
+  a {
+    color: #000 !important;
+  }
+  main a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+  .section,
+  .page-hero,
+  .block {
+    padding-block: 1rem !important;
   }
 }

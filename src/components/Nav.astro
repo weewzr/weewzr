@@ -1,19 +1,32 @@
 ﻿---
 /**
  * Sticky glass navigation bar.
- * - Links come from `nav` in site.ts and use homeAnchor() so they work on every page.
+ * - Links come from `nav` in site.ts and point at real pages through withBase().
+ * - The current section is worked out at build time from the URL: aria-current="page" on the exact page,
+ *   aria-current="true" (same highlight) when the page is inside that section.
  * - Below 860px the links move into a slide/fade panel opened by a menu button.
  * - Without JavaScript the panel stays visible as a static block, so every link is reachable.
- * - Scroll-spy (home page only) marks the section in view with aria-current="location".
  */
 import { site, nav, social } from '../data/site';
-import { withBase, homeAnchor } from '../lib/url';
+import { withBase } from '../lib/url';
 import Icon from './Icon.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+const here = Astro.url.pathname.startsWith(base) ? Astro.url.pathname.slice(base.length) : Astro.url.pathname;
+const current = `/${here.replace(/^\/+/, '')}`;
+// The technical notes are listed under Research, so that tab stays lit on those pages.
+const extraPrefixes: Record<string, string[]> = { research: ['/writing/'] };
+const items = nav.map((item) => {
+  const prefix = `/${item.path}`;
+  const exact = current === prefix;
+  const inside = !exact && (current.startsWith(prefix) || (extraPrefixes[item.id] ?? []).some((p) => current.startsWith(p)));
+  return { ...item, state: (exact ? 'page' : inside ? 'true' : undefined) as 'page' | 'true' | undefined };
+});
 ---
 
 <header class="nav" data-site-nav>
   <div class="nav__bar container">
-    <a class="nav__brand" href={withBase('')} aria-label={`${site.name}, home`}>
+    <a class="nav__brand" href={withBase('')} aria-label={`${site.name}, home`} aria-current={current === '/' ? 'page' : undefined}>
       <svg class="nav__mark" width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false">
         <defs>
           <linearGradient id="nav-mark-grad" x1="4" y1="28" x2="28" y2="4" gradientUnits="userSpaceOnUse">
@@ -47,9 +60,9 @@ import Icon from './Icon.astro';
     <nav class="nav__panel" id="site-menu" aria-label="Primary">
       <ul class="nav__links">
         {
-          nav.map((item) => (
+          items.map((item) => (
             <li>
-              <a class="nav__link" href={homeAnchor(item.href)} data-section={item.href.replace('#', '')}>
+              <a class="nav__link" href={withBase(item.path)} aria-current={item.state}>
                 {item.label}
               </a>
             </li>
@@ -203,11 +216,11 @@ import Icon from './Icon.astro';
     transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   .nav__link:hover,
-  .nav__link[aria-current='location'] {
+  .nav__link[aria-current] {
     color: #fff;
   }
   .nav__link:hover::after,
-  .nav__link[aria-current='location']::after {
+  .nav__link[aria-current]::after {
     transform: scaleX(1);
   }
 
@@ -381,10 +394,6 @@ import Icon from './Icon.astro';
     }
   }
 
-  /* Sections made programmatically focusable by the script below take focus without a ring. */
-  :global(section[tabindex='-1']:focus) {
-    outline: none;
-  }
 </style>
 
 <script>
@@ -412,7 +421,7 @@ import Icon from './Icon.astro';
       if (isOpen() && !header.contains(event.target as Node)) setOpen(false);
     });
 
-    // Following a link closes the panel; the browser moves the focus start to the target section.
+    // Following a link closes the panel.
     panel.addEventListener('click', (event) => {
       if ((event.target as Element).closest('a')) setOpen(false);
     });
@@ -425,43 +434,5 @@ import Icon from './Icon.astro';
 
     // Reset when the layout switches to the desktop bar.
     window.matchMedia('(min-width: 860px)').addEventListener('change', () => setOpen(false));
-
-    // Scroll-spy: only when the linked sections exist on this page (the home page).
-    const links = Array.from(panel.querySelectorAll<HTMLAnchorElement>('a[data-section]'));
-    const sections = links
-      .map((link) => document.getElementById(link.dataset.section ?? ''))
-      .filter((el): el is HTMLElement => el !== null);
-    const hero = document.getElementById('hero');
-
-    // Make section targets focusable so following an anchor moves focus (and the reading position)
-    // to the section instead of dropping it on the page body when the panel closes.
-    for (const section of sections) {
-      if (!section.hasAttribute('tabindex')) section.setAttribute('tabindex', '-1');
-    }
-
-    if (sections.length > 0 && 'IntersectionObserver' in window) {
-      const inView = new Map<string, boolean>();
-      const setCurrent = (id: string | null) => {
-        for (const link of links) {
-          if (link.dataset.section === id) link.setAttribute('aria-current', 'location');
-          else link.removeAttribute('aria-current');
-        }
-      };
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) inView.set(entry.target.id, entry.isIntersecting);
-          if (hero && inView.get('hero')) {
-            setCurrent(null);
-            return;
-          }
-          // Pick the lowest section on the page that crosses the reading band.
-          const current = sections.filter((s) => inView.get(s.id)).pop();
-          if (current) setCurrent(current.id);
-        },
-        { rootMargin: '-35% 0px -60% 0px', threshold: 0 },
-      );
-      sections.forEach((section) => io.observe(section));
-      if (hero) io.observe(hero);
-    }
   }
 </script>

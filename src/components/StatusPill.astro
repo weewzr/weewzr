@@ -1,0 +1,25 @@
+---
+/**
+ * Status pill. `tone` picks the colour; when it is left out the tone is read from the wording of `label`
+ * (planned, in progress, completed, live, released). Unknown wording gets the neutral style.
+ */
+interface Props {
+  label: string;
+  tone?: 'live' | 'released' | 'planned' | 'progress' | 'completed';
+  class?: string;
+}
+const { label, tone, class: className = '' } = Astro.props;
+
+function inferTone(text: string): Props['tone'] | undefined {
+  const t = text.toLowerCase();
+  if (/\bplanned\b|\bproposed\b|\bupcoming\b/.test(t)) return 'planned';
+  if (/in progress|ongoing|under way|underway|active|in development|being written/.test(t)) return 'progress';
+  if (/\blive\b|simulator|prototype/.test(t)) return 'live';
+  if (/released|\bv\d/.test(t)) return 'released';
+  if (/complete|submitted|finished|delivered|published|done/.test(t)) return 'completed';
+  return undefined;
+}
+const variant = tone ?? inferTone(label);
+---
+
+<span class:list={['status-pill', variant && `status-pill--${variant}`, className]}>{label}</span>

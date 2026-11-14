@@ -1,0 +1,79 @@
+---
+/**
+ * One card for a research, community or innovation entry (also usable for any other linked work).
+ * Props:
+ *   href          path of the entry page without the base, for example "research/cn5303-low-carbon-data-centre/"
+ *   title         card heading (the entry shortTitle)
+ *   kind          what sort of work it is
+ *   period        display text for the dates
+ *   status        shown in a status pill
+ *   summary       one or two sentences
+ *   tags          optional; the first four are shown
+ *   role          optional; the owner's role
+ *   headingLevel  'h2' | 'h3' | 'h4' (default 'h3')
+ *   cta           link text for the footer (default "Read the case study")
+ */
+import Icon from './Icon.astro';
+import StatusPill from './StatusPill.astro';
+import { withBase } from '../lib/url';
+
+interface Props {
+  href: string;
+  title: string;
+  kind: string;
+  period: string;
+  status: string;
+  summary: string;
+  tags?: readonly string[];
+  role?: string;
+  headingLevel?: 'h2' | 'h3' | 'h4';
+  cta?: string;
+}
+const { href, title, kind, period, status, summary, tags = [], role, headingLevel = 'h3', cta = 'Read the case study' } = Astro.props;
+const Heading = headingLevel;
+const shownTags = tags.slice(0, 4);
+---
+
+<article class="card">
+  <div class="card__meta">
+    <StatusPill label={status} />
+    <span class="card__kind">{kind}</span>
+    <span>{period}</span>
+  </div>
+  <Heading class="card__title"><a href={withBase(href)}>{title}</a></Heading>
+  {role && <p class="card__role">{role}</p>}
+  <p class="card__summary">{summary}</p>
+  {
+    shownTags.length > 0 && (
+      <ul class="card__tags" aria-label="Tags">
+        {shownTags.map((t) => (
+          <li class="chip">{t}</li>
+        ))}
+      </ul>
+    )
+  }
+  <div class="card__foot">
+    <span class="link-arrow" aria-hidden="true">
+      {cta}
+      <Icon name="arrow-right" size={18} />
+    </span>
+  </div>
+</article>
+
+<style>
+  /* The whole card is the link (stretched title link); the footer text is decoration for sighted users. */
+  .card:hover .link-arrow {
+    color: #fff;
+  }
+  .card:hover .link-arrow :global(svg) {
+    transform: translateX(4px);
+  }
+  .card__foot .link-arrow {
+    min-height: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover .link-arrow :global(svg) {
+      transform: none;
+    }
+  }
+</style>

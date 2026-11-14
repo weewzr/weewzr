@@ -5,6 +5,7 @@
  */
 import { site, social, education } from '../data/site';
 import Icon from './Icon.astro';
+import { withBase } from '../lib/url';
 import PerryHero from './PerryHero.astro';
 
 // "Chemical Engineering @ NUS": the abbreviation is read from the bracketed part of the institution name.
@@ -69,11 +70,11 @@ const identityParts = site.identity.split(' | ').filter((part) => part !== eyebr
       </p>
       <p class="hero__subtitle" style="--i:4">{site.subtitle}</p>
       <div class="hero__actions" style="--i:5">
-        <a class="btn btn-primary hero__btn" href="#projects">
-          Explore Projects
+        <a class="btn btn-primary hero__btn" href={withBase('projects/')}>
+          View projects
           <Icon name="arrow-right" size={18} />
         </a>
-        <a class="btn hero__btn" href="#about">About Me</a>
+        <a class="btn hero__btn" href={withBase('about/')}>About me</a>
         <span class="hero__links">
           <a
             class="hero__icon"
@@ -98,7 +99,7 @@ const identityParts = site.identity.split(' | ').filter((part) => part !== eyebr
     </div>
   </div>
 
-  <a class="hero__scroll" href="#about" aria-label="Scroll to the About section">
+  <a class="hero__scroll" href="#interests" aria-label="Scroll to the research interests">
     <span class="hero__scroll-label">Scroll</span>
     <span class="hero__scroll-line" aria-hidden="true"></span>
   </a>
@@ -114,8 +115,8 @@ const identityParts = site.identity.split(' | ').filter((part) => part !== eyebr
     position: relative;
     display: flex;
     align-items: center;
-    min-height: calc(100svh - var(--nav-h));
-    padding-block: clamp(2.5rem, 6vh, 4.5rem) clamp(5.5rem, 10vh, 7rem);
+    min-height: min(calc(100svh - var(--nav-h)), 44rem);
+    padding-block: clamp(2rem, 5vh, 3.5rem) clamp(4.5rem, 8vh, 6rem);
   }
   /* Soft scrim behind the copy keeps text contrast above the starfield. */
   .hero::before {
@@ -224,7 +225,7 @@ const identityParts = site.identity.split(' | ').filter((part) => part !== eyebr
     flex-wrap: wrap;
     align-items: center;
     gap: 0.85rem;
-    margin-top: 2rem;
+    margin-top: 1.6rem;
   }
   .hero__btn {
     min-height: 48px;
