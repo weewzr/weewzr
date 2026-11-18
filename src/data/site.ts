@@ -272,7 +272,7 @@ export const projects: readonly Project[] = [
     name: 'KASCO',
     tagline: 'Kalimantan SAF Supply Chain Optimiser',
     description:
-      'A working planning tool for a Sustainable Aviation Fuel network across Kalimantan. It chooses refinery and depot sites and sizes and routes biomass and fuel to four international airports. It also shows the evidence behind each number. The Rust solver is compiled to WebAssembly, so the whole product runs in the browser with no server. Built for Airbus Challenge 3, Autonomous SG 2026.',
+      'Built for Autonomous SG 2026 (Airbus Challenge 3), organised by Acacia Hackathon Society and NUS Product Club. A working planning tool for a Sustainable Aviation Fuel network across Kalimantan. It chooses refinery and depot sites and sizes and routes biomass and fuel to four international airports. It also shows the evidence behind each number. The Rust solver is compiled to WebAssembly, so the whole product runs in the browser with no server.',
     status: 'Live prototype',
     stage: 'live',
     tech: ['Rust', 'WebAssembly', 'HiGHS', 'Python', 'GitHub Pages'],
@@ -293,7 +293,7 @@ export const projects: readonly Project[] = [
     name: 'NUS-H2',
     tagline: 'Nuclear-upgraded steam methane reforming with carbon capture for low-carbon hydrogen in Singapore',
     description:
-      'A low-carbon hydrogen study with an open engine and a browser simulator. A high-temperature gas-cooled reactor supplies process heat to steam methane reforming, and an amine unit captures the carbon dioxide. The headline Case B plant makes 100,000 Nm3/h of purified hydrogen, and the study reports levelised abatement cost against a stated target, including where the target is missed.',
+      'Built for CN4252 Hydrogen and Low Carbon Technologies: Industry Perspectives at NUS. Lecturer: Prof Yan Ning. A low-carbon hydrogen study with an open engine and a browser simulator. A high-temperature gas-cooled reactor supplies process heat to steam methane reforming, and an amine unit captures the carbon dioxide. The headline Case B plant makes 100,000 Nm3/h of purified hydrogen, and the study reports levelised abatement cost against a stated target, including where the target is missed.',
     status: 'Study with live simulator',
     stage: 'live',
     tech: ['Rust', 'WebAssembly', 'JavaScript', 'Python', 'LaTeX', 'GitHub Actions'],
@@ -338,7 +338,7 @@ export const projects: readonly Project[] = [
     name: 'AmCraX',
     tagline: 'Ammonia cracking and hydrogen production simulation platform',
     description:
-      'A planned simulation platform for ammonia cracking and hydrogen production. No code has been written and no repository exists yet. The scientific basis is a review essay on the conditions under which ammonia cracking can supply low-carbon hydrogen. A link to Aspen Plus is a possible later step.',
+      'Grows out of my CN5190 Hydrogen Energy and Technology review essay at NUS. Lecturers: Prof Wang Lei and Prof Lum Yanwei. A planned simulation platform for ammonia cracking and hydrogen production. No code has been written and no repository exists yet. The essay reviews the conditions under which ammonia cracking can supply low-carbon hydrogen. A link to Aspen Plus is a possible later step.',
     status: 'Planned',
     stage: 'planned',
     tech: [],

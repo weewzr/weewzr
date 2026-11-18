@@ -52,7 +52,7 @@ Tools are listed without proficiency ratings. The repositories below show how ea
 
 **Live prototype** | [Live app](https://weewzr.github.io/KASCO/) | [Repository](https://github.com/weewzr/KASCO)
 
-A working planning tool for a Sustainable Aviation Fuel network across Kalimantan, with a Rust solver compiled to WebAssembly so that the whole product runs in the browser with no server.
+Built for Autonomous SG 2026 (Airbus Challenge 3), organised by Acacia Hackathon Society and NUS Product Club. A working planning tool for a Sustainable Aviation Fuel network across Kalimantan, with a Rust solver compiled to WebAssembly so that the whole product runs in the browser with no server.
 
 - Lagrangian branch-and-bound over refinery sites with exact min-cost flow.
 - Independent checks: balances recomputed from flow records, with a HiGHS second opinion.
@@ -64,7 +64,7 @@ A working planning tool for a Sustainable Aviation Fuel network across Kalimanta
 
 **Study with live simulator** | [Live simulator](https://weewzr.github.io/NUSH2/) | [Repository](https://github.com/weewzr/NUSH2)
 
-A low-carbon hydrogen study for Singapore with an open engine and a browser simulator. A high-temperature gas-cooled reactor supplies process heat to steam methane reforming, and an amine unit captures the carbon dioxide.
+Built for CN4252 Hydrogen and Low Carbon Technologies: Industry Perspectives at NUS. Lecturer: Prof Yan Ning. A low-carbon hydrogen study for Singapore with an open engine and a browser simulator. A high-temperature gas-cooled reactor supplies process heat to steam methane reforming, and an amine unit captures the carbon dioxide.
 
 - Layered Rust engine with every input in a sourced parameter register.
 - Mass and energy balances, an emissions ledger, a levelised cost ledger and a discounted cash flow cross-check.
@@ -89,7 +89,7 @@ A transparent, verifiable model of fission-product release from a single TRISO c
 ## More on the Website
 
 - **Research and academic work:** [a low-carbon data centre case study for Singapore](https://weewzr.github.io/weewzr/research/cn5303-low-carbon-data-centre/) and [a review essay on ammonia cracking for hydrogen](https://weewzr.github.io/weewzr/research/cn5190-ammonia-cracking/).
-- **Planned project:** [AmCraX](https://weewzr.github.io/weewzr/projects/amcrax/), an ammonia cracking and hydrogen production simulation platform. No code yet.
+- **Planned project:** [AmCraX](https://weewzr.github.io/weewzr/projects/amcrax/), an ammonia cracking and hydrogen production simulation platform that grows out of my CN5190 Hydrogen Energy and Technology review essay at NUS (lecturers: Prof Wang Lei and Prof Lum Yanwei). No code yet.
 - **Community engagement:** [Grant A Wish XXIV](https://weewzr.github.io/weewzr/community/grant-a-wish-xxiv/), which I lead as Project Director.
 - **Innovation and competitions:** [ThickSense](https://weewzr.github.io/weewzr/innovation/thicksense/), an iDEATE 2026 semifinalist concept for checking thickened drinks.
 
