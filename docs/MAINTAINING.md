@@ -38,7 +38,7 @@ The Python tools need Pillow (tested with Pillow 11.1.0 on Python 3.10). `tools/
 | Project filter and area badges | `areas` on each project in `src/data/site.ts`, `src/components/FeaturedProjects.astro` (chips and script), `src/components/ProjectCard.astro` (badges) |
 | Research notes | `src/content/notes/*.md` or `*.mdx`; the index and note pages are in `src/pages/writing/` |
 | Colours, type, spacing and radii | Tokens at the top of `src/styles/global.css`; the rules are in `docs/DESIGN_SYSTEM.md` |
-| Light and dark mode | Tokens under `:root` and the dark blocks in `src/styles/global.css`; the toggle and its script are in `src/components/Nav.astro`; the saved choice is restored by the inline script in `src/layouts/BaseLayout.astro` |
+| Night and light mode | Night is the default: its tokens and the page gradient (`--page-bg`, drawn by `body::before`) are under `:root` in `src/styles/global.css`, and the light tokens are under `:root[data-theme='light']`. The toggle and its script are in `src/components/Nav.astro`; the saved choice is restored by the inline script in `src/layouts/BaseLayout.astro` |
 | Content schemas | `src/content.config.ts` |
 | Not-found page | `src/pages/404.astro` |
 | Images and static files | `public/` (copied unchanged to the site root) |

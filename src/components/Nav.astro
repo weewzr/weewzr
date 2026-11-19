@@ -78,7 +78,7 @@ const items = nav.map((item) => {
         >
           <Icon name="linkedin" size={20} />
         </a>
-        <button type="button" class="nav__icon" data-theme-toggle aria-label="Switch to dark theme">
+        <button type="button" class="nav__icon" data-theme-toggle aria-label="Switch to light theme">
           <span class="nav__theme-moon"><Icon name="moon" size={20} /></span>
           <span class="nav__theme-sun"><Icon name="sun" size={20} /></span>
         </button>
@@ -193,28 +193,20 @@ const items = nav.map((item) => {
     background-color: var(--bg-subtle);
   }
 
-  /* Colour-mode icon: moon when the page is light, sun when it is dark. Follows the same rule as the tokens. */
+  /* Colour-mode icon: sun on the default night page, moon when the page is light. */
   .nav__theme-moon {
-    display: grid;
+    display: none;
     place-items: center;
   }
   .nav__theme-sun {
-    display: none;
+    display: grid;
     place-items: center;
   }
-  :global(:root[data-theme='dark']) .nav__theme-moon {
-    display: none;
-  }
-  :global(:root[data-theme='dark']) .nav__theme-sun {
+  :global(:root[data-theme='light']) .nav__theme-moon {
     display: grid;
   }
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .nav__theme-moon {
-      display: none;
-    }
-    :global(:root:not([data-theme='light'])) .nav__theme-sun {
-      display: grid;
-    }
+  :global(:root[data-theme='light']) .nav__theme-sun {
+    display: none;
   }
   :global(html:not(.js)) [data-theme-toggle] {
     display: none;
@@ -400,12 +392,11 @@ const items = nav.map((item) => {
     window.matchMedia('(min-width: 860px)').addEventListener('change', () => setOpen(false));
   }
 
-  // Colour-mode toggle: the effective mode is data-theme on <html>, else the system preference.
+  // Colour-mode toggle: night is the default; data-theme="light" on <html> switches to the white page.
   const themeButton = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
   if (themeButton) {
     const root = document.documentElement;
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const effective = () => root.getAttribute('data-theme') ?? (media.matches ? 'dark' : 'light');
+    const effective = () => (root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
     const sync = () => {
       themeButton.setAttribute('aria-label', effective() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
     };
@@ -420,6 +411,5 @@ const items = nav.map((item) => {
       }
       sync();
     });
-    media.addEventListener('change', sync);
   }
 </script>

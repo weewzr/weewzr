@@ -5,7 +5,7 @@ One visual and editorial language for the portfolio site, the GitHub profile REA
 ## 1. Principles
 
 1. Content first. A reader should find what a project computes, how it was checked and where it stops within one screen.
-2. One accent. Blue marks links, focus and the single primary action in a view. Cyan is a secondary data colour. Everything else is neutral.
+2. One accent. Blue marks links, focus and the single primary action in a view. Cyan is a secondary data colour. Everything else is neutral, apart from the night page background, which runs from navy to violet.
 3. Borders before shadows. Surfaces are separated by a 1 px hairline. Nothing glows.
 4. Left aligned. Headings, text and cards share one left edge. Centred text is reserved for figure captions.
 5. Motion only confirms an action. Colour and opacity may change over 150 ms. Nothing moves on scroll.
@@ -14,7 +14,28 @@ One visual and editorial language for the portfolio site, the GitHub profile REA
 
 Contrast ratios are WCAG 2.1 values computed from the hex codes (script in the audit notes). Text needs 4.5:1, large text and UI boundaries 3:1.
 
+### Night theme (default)
+
+The page background is a navy to violet gradient, fixed to the viewport: `linear-gradient(135deg, #060b1b, #0a1838 40%, #241462 76%, #3f1b85)` with two faint radial tints (blue upper right, violet lower left). It is the one gradient and the one place violet appears. Surfaces on top of it are opaque navy, so text on a card never depends on the gradient. Text that sits straight on the page was checked against the lightest stop, `#3f1b85`.
+
+| Token | Hex | Use | Contrast |
+| --- | --- | --- | --- |
+| `--bg` | `#070d20` | header bar, dialogs, base colour under the gradient | |
+| `--bg-subtle` | `#0b1431` | footer band, code, table header | |
+| `--surface` | `#0f1a3e` | cards, menus | |
+| `--border` | `#27365c` | hairlines | decorative |
+| `--border-strong` | `#7f8fb0` | control edges | 3.78 on the lightest stop |
+| `--text` | `#e7edf4` | body and headings | 10.44 on the lightest stop, 16.63 on the darkest |
+| `--text-muted` | `#b4c0d4` | captions, metadata | 6.70 on the lightest stop |
+| `--accent` | `#8ab8ff` | links, focus ring | 6.08 on the lightest stop |
+| `--accent-hover` | `#b3d0ff` | hover | 7.84 on the lightest stop |
+| `--accent-solid` | `#2f6fed` | primary button fill | white on it 4.55 |
+| `--accent-bg` | `#1a2f66` | selected filter | |
+| `--cyan` | `#67d3e3` | secondary data colour | 7.03 on the lightest stop |
+
 ### Light theme
+
+Chosen with the header toggle (`data-theme="light"` on `<html>`), and remembered in the browser.
 
 | Token | Hex | Use | Contrast |
 | --- | --- | --- | --- |
@@ -29,26 +50,9 @@ Contrast ratios are WCAG 2.1 values computed from the hex codes (script in the a
 | `--accent-bg` | `#e9f1fe` | selected filter, tinted note | accent on it 5.86 |
 | `--cyan` | `#0b6b85` | secondary data colour, status "live" | 6.08 on bg |
 | `--cyan-bg` | `#e3f4f8` | tint behind cyan text | cyan on it 5.37 |
-| `--navy` | `#0b1f3a` | footer band, README banner | white on it > 15 |
+| `--navy` | `#0b1f3a` | README banner, image panels | white on it > 15 |
 
-### Dark theme
-
-| Token | Hex | Use | Contrast |
-| --- | --- | --- | --- |
-| `--bg` | `#0b1320` | page | |
-| `--bg-subtle` | `#101b2d` | bands, code | |
-| `--surface` | `#132036` | cards, menus | |
-| `--border` | `#263750` | hairlines | decorative |
-| `--border-strong` | `#5b6f8a` | control edges | 3.62 on bg |
-| `--text` | `#e7edf4` | body and headings | 15.79 on bg |
-| `--text-muted` | `#a3b2c5` | captions, metadata | 8.63 on bg |
-| `--accent` | `#78aeff` | links, focus ring | 8.24 on bg |
-| `--accent-hover` | `#a3c8ff` | hover | 10.87 on bg |
-| `--accent-solid` | `#2f6fed` | primary button fill | white on it 4.55 |
-| `--accent-bg` | `#152a4d` | selected filter | accent on it 6.32 |
-| `--cyan` | `#67d3e3` | secondary data colour | 10.64 on bg |
-
-Rules: no purple, violet or pink anywhere. No gradient text. Gradients are allowed only inside figures that come from a project (plots, process diagrams).
+Rules: violet belongs to the night page background and nowhere else. Buttons, links, borders, cards and text stay in the blue, cyan and neutral tokens. No gradient text. Other gradients are allowed only inside figures that come from a project (plots, process diagrams).
 
 ## 3. Typography
 
@@ -117,7 +121,7 @@ Rules: no purple, violet or pink anywhere. No gradient text. Gradients are allow
 - Project card: title, one sentence saying what it was built for and what it computes, up to three facts, tags, links. Image on top at a fixed aspect ratio where one exists.
 - Table: horizontal hairlines only, header row on `--bg-subtle`, numbers right aligned in mono, units in the header.
 - Callout: 1 px border with a 3 px accent rule on the left. No fill gradient.
-- Perry console: a terminal-style panel that stays dark in both colour modes. It carries its own five colours (the dark-theme values) as local variables in `PerryConsole.astro`. Perry figures may tilt or hop once on hover or click, for 300 ms at most, and only when the visitor has not asked for reduced motion. This is the only place a transform is animated.
+- Perry console: a terminal-style panel that stays dark in both colour modes. It carries its own five colours as local variables in `PerryConsole.astro`. Perry figures may tilt or hop once on hover or click, for 300 ms at most, and only when the visitor has not asked for reduced motion. This is the only place a transform is animated.
 - Code blocks: plain mono text on `--bg-subtle` with a 1 px border. No syntax colouring, so the same block reads in both colour modes.
 
 ## 9. README conventions (GitHub Markdown)

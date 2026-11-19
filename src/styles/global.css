@@ -3,27 +3,32 @@
 @import '@fontsource-variable/jetbrains-mono';
 
 /* Design tokens. The full system is described in docs/DESIGN_SYSTEM.md.
-   Light is the default. Dark applies when the visitor's system asks for it, or when the header
-   toggle sets data-theme="dark". data-theme="light" overrides a dark system setting. */
+   Night is the default: a navy to violet page background with navy surfaces on top of it.
+   The header toggle sets data-theme="light" for a white page, and the choice is remembered. */
 :root {
-  --bg: #ffffff;
-  --bg-subtle: #f4f7fa;
-  --surface: #ffffff;
-  --border: #d5dde6;
-  --border-strong: #8794a3;
-  --text: #101a2b;
-  --text-muted: #4b5b6f;
-  --accent: #1d4fd7;
-  --accent-hover: #173ea8;
-  --accent-solid: #1d4fd7;
-  --accent-solid-hover: #173ea8;
+  --bg: #070d20;
+  /* The one gradient on the site. It is fixed to the viewport behind every page (see body::before). */
+  --page-bg:
+    radial-gradient(60rem 40rem at 88% -10%, rgb(59 130 246 / 0.16), transparent 62%),
+    radial-gradient(52rem 42rem at -5% 105%, rgb(124 58 237 / 0.2), transparent 62%),
+    linear-gradient(135deg, #060b1b 0%, #0a1838 40%, #241462 76%, #3f1b85 100%);
+  --bg-subtle: #0b1431;
+  --surface: #0f1a3e;
+  --border: #27365c;
+  --border-strong: #7f8fb0;
+  --text: #e7edf4;
+  --text-muted: #b4c0d4;
+  --accent: #8ab8ff;
+  --accent-hover: #b3d0ff;
+  --accent-solid: #2f6fed;
+  --accent-solid-hover: #2a62d3;
   --on-accent: #ffffff;
-  --accent-bg: #e9f1fe;
-  --cyan: #0b6b85;
-  --cyan-bg: #e3f4f8;
+  --accent-bg: #1a2f66;
+  --cyan: #67d3e3;
+  --cyan-bg: #0f2f3b;
   --navy: #0b1f3a;
-  --shadow-sm: 0 1px 2px rgb(16 26 43 / 0.06);
-  color-scheme: light;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  color-scheme: dark;
 
   --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
@@ -72,45 +77,25 @@
   --font-display: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #0b1320;
-    --bg-subtle: #101b2d;
-    --surface: #132036;
-    --border: #263750;
-    --border-strong: #5b6f8a;
-    --text: #e7edf4;
-    --text-muted: #a3b2c5;
-    --accent: #78aeff;
-    --accent-hover: #a3c8ff;
-    --accent-solid: #2f6fed;
-    --accent-solid-hover: #2a62d3;
-    --on-accent: #ffffff;
-    --accent-bg: #152a4d;
-    --cyan: #67d3e3;
-    --cyan-bg: #0f2f3b;
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
-    color-scheme: dark;
-  }
-}
-:root[data-theme='dark'] {
-  --bg: #0b1320;
-  --bg-subtle: #101b2d;
-  --surface: #132036;
-  --border: #263750;
-  --border-strong: #5b6f8a;
-  --text: #e7edf4;
-  --text-muted: #a3b2c5;
-  --accent: #78aeff;
-  --accent-hover: #a3c8ff;
-  --accent-solid: #2f6fed;
-  --accent-solid-hover: #2a62d3;
+:root[data-theme='light'] {
+  --bg: #ffffff;
+  --page-bg: #ffffff;
+  --bg-subtle: #f4f7fa;
+  --surface: #ffffff;
+  --border: #d5dde6;
+  --border-strong: #8794a3;
+  --text: #101a2b;
+  --text-muted: #4b5b6f;
+  --accent: #1d4fd7;
+  --accent-hover: #173ea8;
+  --accent-solid: #1d4fd7;
+  --accent-solid-hover: #173ea8;
   --on-accent: #ffffff;
-  --accent-bg: #152a4d;
-  --cyan: #67d3e3;
-  --cyan-bg: #0f2f3b;
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
-  color-scheme: dark;
+  --accent-bg: #e9f1fe;
+  --cyan: #0b6b85;
+  --cyan-bg: #e3f4f8;
+  --shadow-sm: 0 1px 2px rgb(16 26 43 / 0.06);
+  color-scheme: light;
 }
 
 @theme {
@@ -128,7 +113,8 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background: var(--bg);
+    /* html supplies the base colour and body::before the page background, so body stays clear. */
+    background: transparent;
     color: var(--text);
     font-family: var(--font-body);
     font-size: var(--fs-body);
@@ -187,6 +173,16 @@
     background: var(--accent-solid);
     color: var(--on-accent);
   }
+}
+
+/* Page background, fixed to the viewport so it does not stretch with page length. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--page-bg);
+  pointer-events: none;
 }
 
 /* Unlayered on purpose: Tailwind 4 ships its own .container utility, and unlayered rules beat layered ones. */
@@ -576,6 +572,7 @@ body {
     color: #111 !important;
     font-size: 11pt;
   }
+  body::before,
   .nav,
   .skip-link,
   [class*='perry'],
