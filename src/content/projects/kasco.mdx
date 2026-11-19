@@ -73,14 +73,14 @@ sources:
     url: "https://github.com/weewzr/KASCO/blob/main/README.md#official-inputs"
   - label: "README: results"
     url: "https://github.com/weewzr/KASCO/blob/main/README.md#results"
-  - label: "README: method in brief"
-    url: "https://github.com/weewzr/KASCO/blob/main/README.md#method-in-brief"
+  - label: "README: method"
+    url: "https://github.com/weewzr/KASCO/blob/main/README.md#method"
   - label: "README: limits"
     url: "https://github.com/weewzr/KASCO/blob/main/README.md#limits"
   - label: "README: front end"
     url: "https://github.com/weewzr/KASCO/blob/main/README.md#front-end"
-  - label: "README: repository"
-    url: "https://github.com/weewzr/KASCO/blob/main/README.md#repository"
+  - label: "README: repository layout"
+    url: "https://github.com/weewzr/KASCO/blob/main/README.md#repository-layout"
   - label: "Mathematical model (docs/MODEL.md)"
     url: "https://github.com/weewzr/KASCO/blob/main/docs/MODEL.md"
   - label: "Branch-and-bound search (crates/engine/src/solver.rs)"
@@ -230,7 +230,7 @@ The engine has 38 tests (`cargo test --release -p saf_engine`, as recorded in th
 | Saving against two simple heuristic layouts | USD 61M to 77M per year | README, Results |
 | Strong k-means benchmark, same fleet and refinement | about USD 1.1M above the network at median | README, Results |
 | Transport share of cost | 7.5% | README, Results |
-| Field-depot design | an estimated 25% fewer truck-km | README, Method in brief |
+| Field-depot design | an estimated 25% fewer truck-km | README, Method |
 
 The README states what this means. The k-means benchmark reaches the same network at best, so the README places the value of the tool in the proven bound and in the fleet and size choice for each scenario. The limits that the tool exposes are part of that value. These are model results, with no measured savings against real planners behind them.
 
