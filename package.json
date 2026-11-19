@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Celestial Engineering: personal engineering and research portfolio of Wee Zhern Ray",
+  "description": "Personal engineering and research portfolio of Wee Zhern Ray",
   "engines": {
     "node": ">=22.23.4"
   },
@@ -18,15 +18,12 @@
     "@astrojs/sitemap": "3.7.4",
     "@fontsource-variable/inter": "5.3.0",
     "@fontsource-variable/jetbrains-mono": "5.3.0",
-    "@fontsource-variable/space-grotesk": "5.3.0",
     "@tailwindcss/vite": "4.3.5",
     "astro": "7.4.8",
-    "tailwindcss": "4.3.5",
-    "three": "0.187.0"
+    "tailwindcss": "4.3.5"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
-    "@types/three": "0.187.0",
     "typescript": "5.9.3"
   }
 }

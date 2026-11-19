@@ -68,7 +68,7 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
 
     <header class="case-head">
       <p class="status">{d.status}</p>
-      <h1 id="case-title" class="grad-text">{d.title}</h1>
+      <h1 id="case-title">{d.title}</h1>
       <dl class="meta">
         <div><dt>Kind</dt><dd>{d.kind}</dd></div>
         <div><dt>Period</dt><dd>{d.period}</dd></div>
@@ -154,7 +154,7 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
       (prev || next) && (
         <nav class={`pager ${prev && next ? 'two' : ''}`} aria-label={`Other ${section.label.toLowerCase()} pages`}>
           {prev && (
-            <a class="pager-link glass gradient-border" href={entryHref(prev)} rel="prev">
+            <a class="pager-link glass" href={entryHref(prev)} rel="prev">
               <span class="pager-dir">
                 <Icon name="arrow-right" size={16} class="flip" /> Previous
               </span>
@@ -162,7 +162,7 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
             </a>
           )}
           {next && (
-            <a class="pager-link next glass gradient-border" href={entryHref(next)} rel="next">
+            <a class="pager-link next glass" href={entryHref(next)} rel="next">
               <span class="pager-dir">
                 Next <Icon name="arrow-right" size={16} />
               </span>
@@ -179,8 +179,8 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
 
 <style>
   .case {
-    padding-top: calc(var(--nav-h) + clamp(1.25rem, 4vw, 2.5rem));
-    padding-bottom: clamp(3.5rem, 8vw, 6rem);
+    padding-top: calc(var(--nav-h) + var(--space-5));
+    padding-bottom: var(--space-8);
   }
 
   /* Breadcrumb */
@@ -190,9 +190,9 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem 0.5rem;
-    font-size: 0.9rem;
-    color: var(--muted);
+    gap: var(--space-1) var(--space-2);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .crumbs li {
     display: flex;
@@ -200,21 +200,22 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
   }
   .crumbs li + li::before {
     content: '/';
-    margin-right: 0.5rem;
-    color: rgb(148 163 184 / 0.55);
+    margin-right: var(--space-2);
+    color: var(--border-strong);
   }
   .crumbs a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    color: #c4b5fd;
+    color: var(--accent);
     text-decoration: none;
   }
   .crumbs a:hover {
+    color: var(--accent-hover);
     text-decoration: underline;
   }
   .crumbs [aria-current='page'] {
-    padding-block: 0.4rem;
+    padding-block: var(--space-2);
     color: var(--text);
   }
 
@@ -224,97 +225,87 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
     flex-direction: column;
     align-items: flex-start;
     max-width: 62rem;
-    margin: 1.25rem 0 clamp(1.5rem, 4vw, 2.25rem);
+    margin: var(--space-4) 0 var(--space-6);
   }
   .status {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     max-width: 100%;
     margin: 0;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--fs-label);
+    font-weight: 500;
     line-height: 1.4;
-    letter-spacing: 0.04em;
-    color: #ddd6fe;
-    background: rgb(124 58 237 / 0.16);
-    border: 1px solid rgb(167 139 250 / 0.38);
+    color: var(--text);
   }
   .status::before {
     content: '';
     flex: none;
-    width: 0.45rem;
-    height: 0.45rem;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: var(--lavender);
-    box-shadow: 0 0 8px var(--lavender);
+    background: var(--accent);
   }
   h1 {
-    margin-top: 0.9rem;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 700;
-    padding-bottom: 0.08em;
+    margin-top: var(--space-3);
+    font-size: var(--fs-page-title);
+    color: var(--text);
   }
   .meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem 1.75rem;
-    margin: 1rem 0 0;
+    gap: var(--space-1) var(--space-5);
+    margin: var(--space-4) 0 0;
     padding: 0;
   }
   .meta div {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.1rem 0.5rem;
+    gap: 0 var(--space-2);
     min-width: 0;
   }
   .meta dt {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .meta dd {
     margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    color: #e2e8f0;
+    font-size: var(--fs-small);
+    color: var(--text);
   }
   .summary {
-    margin-top: 1.1rem;
-    max-width: 62ch;
-    font-size: 1.1rem;
-    color: #cbd5e1;
+    margin-top: var(--space-4);
+    max-width: 68ch;
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: var(--text-muted);
   }
   .tags {
     list-style: none;
-    margin: 1.1rem 0 0;
+    margin: var(--space-4) 0 0;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--space-2);
   }
   .hero {
-    margin: 1.75rem 0 0;
+    margin: var(--space-5) 0 0;
     width: 100%;
   }
   .hero img {
     display: block;
     width: 100%;
-    max-height: 30rem;
-    object-fit: cover;
-    border-radius: 18px;
-    border: 1px solid rgb(148 163 184 / 0.25);
-    background: var(--bg-2);
+    height: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-subtle);
   }
   .hero figcaption {
-    margin-top: 0.6rem;
-    font-size: 0.85rem;
-    color: var(--muted);
+    margin-top: var(--space-2);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    text-align: center;
   }
 
   /* Two-column body */
@@ -322,12 +313,12 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
-    margin-top: clamp(1.5rem, 4vw, 2.25rem);
+    margin-top: var(--space-6);
   }
   @media (min-width: 1024px) {
     .case-grid {
       grid-template-columns: 15rem minmax(0, 1fr);
-      gap: 2.5rem;
+      gap: var(--space-6);
       align-items: start;
     }
   }
@@ -345,42 +336,43 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
     max-width: 54rem;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.75rem;
+    gap: var(--space-6);
   }
+  /* The prose sits directly on the page. */
   .case-body {
-    padding: clamp(1.25rem, 3.5vw, 2.5rem);
-    background: var(--glass-strong);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
   }
   .block {
-    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
-    background: var(--glass-strong);
+    padding: var(--space-5);
+    background: var(--surface);
   }
   .block > h2,
   .block-plain > h2 {
-    font-size: clamp(1.35rem, 3vw, 1.7rem);
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #fff;
-  }
-  .block-plain {
+    font-size: var(--fs-section-title);
+    font-weight: 650;
+    margin-bottom: var(--space-4);
+    color: var(--text);
   }
   .stack {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.25rem;
+    gap: var(--space-5);
   }
 
   /* Previous / next */
   .pager {
     max-width: 54rem;
-    margin: 2rem 0 0;
+    margin: var(--space-6) 0 0;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 1rem;
+    gap: var(--space-4);
   }
   @media (min-width: 1024px) {
     .pager {
-      margin-left: calc(15rem + 2.5rem);
+      margin-left: calc(15rem + var(--space-6));
     }
   }
   @media (min-width: 640px) {
@@ -391,45 +383,34 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
   .pager-link {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: var(--space-1);
     min-height: 44px;
-    padding: 1rem 1.25rem;
+    padding: var(--space-4);
     text-decoration: none;
     color: var(--text);
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
+    transition: border-color var(--ease);
   }
   .pager-link.next {
     text-align: right;
     align-items: flex-end;
   }
   .pager-link:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 36px rgb(124 58 237 / 0.28);
+    border-color: var(--border-strong);
+    color: var(--text);
   }
   .pager-dir {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
+    gap: var(--space-2);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .pager-dir :global(.flip) {
     transform: scaleX(-1);
   }
   .pager-name {
-    font-family: var(--font-display);
     font-weight: 600;
-    font-size: 1.25rem;
-    color: #fff;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .pager-link:hover {
-      transform: none;
-    }
+    font-size: var(--fs-card-title);
+    color: var(--text);
   }
 </style>

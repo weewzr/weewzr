@@ -86,8 +86,8 @@ const personLd = {
       />
       <ul class="card-grid" role="list">
         {
-          work.map((s, i) => (
-            <li class="reveal" style={`--i:${i}`}>
+          work.map((s) => (
+            <li>
               <article class="card">
                 <p class="card__meta">{counts[s.id]}</p>
                 <h3 class="card__title">
@@ -97,7 +97,7 @@ const personLd = {
                 <div class="card__foot">
                   <span class="link-arrow" aria-hidden="true">
                     Open section
-                    <Icon name="arrow-right" size={18} />
+                    <Icon name="arrow-right" size={20} />
                   </span>
                 </div>
               </article>
@@ -113,7 +113,7 @@ const personLd = {
 
 <style>
   .about-download {
-    margin-top: 1.25rem;
+    margin-top: var(--space-4);
   }
   .card__foot .link-arrow {
     min-height: 0;

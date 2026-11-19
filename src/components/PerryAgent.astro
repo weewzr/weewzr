@@ -36,7 +36,7 @@ const triggerProps = enabled
     position: relative;
     display: flex;
     justify-content: flex-end;
-    margin-top: 0.75rem;
+    margin-top: var(--space-3);
     pointer-events: none;
   }
   .perry-agent__btn {
@@ -53,13 +53,13 @@ const triggerProps = enabled
     cursor: pointer;
     pointer-events: auto;
     -webkit-tap-highlight-color: transparent;
-    border-radius: 14px;
+    border-radius: var(--radius);
   }
   div.perry-agent__btn {
     cursor: default;
   }
   .perry-agent__btn:focus-visible {
-    outline: 2px solid var(--lavender);
+    outline: 2px solid var(--accent);
     outline-offset: 4px;
   }
   .perry-agent__lean {
@@ -68,7 +68,6 @@ const triggerProps = enabled
   }
   .perry-agent :global(.perry-agent__img) {
     width: 100%;
-    filter: drop-shadow(0 8px 14px rgb(2 6 23 / 0.5));
   }
   /* Beside the small mascot, in the empty part of its own row. */
   .perry-agent__bubble {
@@ -110,37 +109,13 @@ const triggerProps = enabled
     }
   }
 
+  /* One short lean when Perry is hovered, focused or tapped. Nothing loops. */
   @media (prefers-reduced-motion: no-preference) {
     .perry-agent__lean {
-      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
-      animation: perry-agent-idle 6.5s ease-in-out infinite;
+      transition: transform 200ms ease;
     }
-    .perry-agent__btn:is(:hover, :focus-visible) .perry-agent__lean {
-      animation: perry-agent-lean 0.6s ease-out forwards;
-    }
+    .perry-agent__btn:is(:hover, :focus-visible) .perry-agent__lean,
     .perry-agent.is-talking .perry-agent__lean {
-      animation: perry-agent-lean 0.6s ease-out forwards;
-    }
-  }
-
-  @keyframes perry-agent-idle {
-    0%,
-    100% {
-      transform: translateY(0) rotate(0deg);
-    }
-    50% {
-      transform: translateY(-3px) rotate(-0.8deg);
-    }
-  }
-  /* Lean in towards the cards and tip the hat. */
-  @keyframes perry-agent-lean {
-    0% {
-      transform: translateY(0) rotate(0deg);
-    }
-    45% {
-      transform: translate(-3px, 2px) rotate(-5deg);
-    }
-    100% {
       transform: translate(-2px, 1px) rotate(-3deg);
     }
   }

@@ -406,14 +406,14 @@ export const mascot = {
   ],
 } as const;
 
-/** Colour tokens mirrored in src/styles/global.css. */
+/** Brand colours for build tools (social image, favicon). The site itself reads src/styles/global.css. */
 export const theme = {
-  bg: '#060B1B',
-  bg2: '#0B1B3A',
-  blue: '#2563EB',
-  blue2: '#3B82F6',
-  purple: '#7C3AED',
-  lavender: '#A78BFA',
-  text: '#E2E8F0',
-  muted: '#94A3B8',
+  navy: '#0B1F3A',
+  bgDark: '#0B1320',
+  bgLight: '#FFFFFF',
+  accent: '#1D4FD7',
+  accentDark: '#78AEFF',
+  cyan: '#0B6B85',
+  text: '#101A2B',
+  muted: '#4B5B6F',
 } as const;

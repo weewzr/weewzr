@@ -10,11 +10,11 @@ Perry the Platypus and Phineas and Ferb are the property of Disney. The Perry im
 
 ## Design inspiration
 
-The layout and mood were shaped by looking at the public portfolio templates below, all released under the MIT licence. They were used for ideas only (a starfield backdrop, glass panels, spacing, a central data file, project cards, a writing section). No code, markup or assets were copied from them; every component here was written for this site.
+The layout and mood were shaped by looking at the public portfolio templates below, all released under the MIT licence. They were used for ideas only (spacing, a central data file, project cards, a writing section). No code, markup or assets were copied from them; every component here was written for this site.
 
 | Template | Author | Idea taken |
 | --- | --- | --- |
-| [astro-darkness](https://github.com/kpab/astro-darkness) | kpab | Starfield backdrop and glass panels |
+| [astro-darkness](https://github.com/kpab/astro-darkness) | kpab | Starfield backdrop and glass panels (both removed in the November 2026 design system change) |
 | [dark-minimal](https://github.com/Gothsec/dark-minimal) | Gothsec | Restraint and spacing on dark backgrounds |
 | [starfolio](https://github.com/webrating/starfolio) | webrating | One central data file feeding the whole site |
 | [devportfolio](https://github.com/RyanFitzgerald/devportfolio) | Ryan Fitzgerald | Project card structure |
@@ -35,12 +35,10 @@ Direct production dependencies, with the versions installed when this page was w
 | @astrojs/sitemap | 3.7.4 | MIT | Generates `sitemap-index.xml` |
 | tailwindcss | 4.3.5 | MIT | Utility CSS and design tokens |
 | @tailwindcss/vite | 4.3.5 | MIT | Tailwind plugin for the build |
-| three | 0.187.0 | MIT | Three.js, for the starfield canvas |
-| @fontsource-variable/space-grotesk | 5.3.0 | OFL-1.1 | Space Grotesk, headings |
-| @fontsource-variable/inter | 5.3.0 | OFL-1.1 | Inter, body text |
+| @fontsource-variable/inter | 5.3.0 | OFL-1.1 | Inter, headings and body text |
 | @fontsource-variable/jetbrains-mono | 5.3.0 | OFL-1.1 | JetBrains Mono, technical text |
 
-Development-only tools: `@astrojs/check` (MIT), `@types/three` (MIT) and `typescript` (Apache-2.0).
+Development-only tools: `@astrojs/check` (MIT) and `typescript` (Apache-2.0).
 
 The fonts are self-hosted: the built site contains their `woff2` files. The copyright lines and the SIL Open Font License 1.1 text that go with them are reproduced in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md).
 

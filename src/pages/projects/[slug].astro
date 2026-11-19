@@ -114,7 +114,7 @@ const projectLd: Record<string, unknown> = {
       <header class="case-head">
         <div class="head-text">
           <p class="status">{project.status}</p>
-          <h1 id="case-title" class="grad-text">{project.name}</h1>
+          <h1 id="case-title">{project.name}</h1>
           <p class="tagline">{project.tagline}</p>
           {entry && <p class="summary">{summary}</p>}
 
@@ -254,7 +254,7 @@ const projectLd: Record<string, unknown> = {
         (prev || next) && (
           <nav class={`pager ${prev && next ? 'two' : ''}`} aria-label="Other projects">
             {prev && (
-              <a class="pager-link glass gradient-border" href={withBase(`projects/${prev.slug}/`)} rel="prev">
+              <a class="pager-link glass" href={withBase(`projects/${prev.slug}/`)} rel="prev">
                 <span class="pager-dir">
                   <Icon name="arrow-right" size={16} class="flip" /> Previous project
                 </span>
@@ -262,7 +262,7 @@ const projectLd: Record<string, unknown> = {
               </a>
             )}
             {next && (
-              <a class="pager-link next glass gradient-border" href={withBase(`projects/${next.slug}/`)} rel="next">
+              <a class="pager-link next glass" href={withBase(`projects/${next.slug}/`)} rel="next">
                 <span class="pager-dir">
                   Next project <Icon name="arrow-right" size={16} />
                 </span>
@@ -279,8 +279,8 @@ const projectLd: Record<string, unknown> = {
 
 <style>
   .case {
-    padding-top: calc(var(--nav-h) + clamp(1.25rem, 4vw, 2.5rem));
-    padding-bottom: clamp(3.5rem, 8vw, 6rem);
+    padding-top: calc(var(--nav-h) + var(--space-5));
+    padding-bottom: var(--space-8);
   }
 
   /* Breadcrumb */
@@ -290,9 +290,9 @@ const projectLd: Record<string, unknown> = {
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem 0.5rem;
-    font-size: 0.9rem;
-    color: var(--muted);
+    gap: var(--space-1) var(--space-2);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .crumbs li {
     display: flex;
@@ -300,21 +300,22 @@ const projectLd: Record<string, unknown> = {
   }
   .crumbs li + li::before {
     content: '/';
-    margin-right: 0.5rem;
-    color: rgb(148 163 184 / 0.55);
+    margin-right: var(--space-2);
+    color: var(--border-strong);
   }
   .crumbs a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    color: #c4b5fd;
+    color: var(--accent);
     text-decoration: none;
   }
   .crumbs a:hover {
+    color: var(--accent-hover);
     text-decoration: underline;
   }
   .crumbs [aria-current='page'] {
-    padding-block: 0.4rem;
+    padding-block: var(--space-2);
     color: var(--text);
   }
 
@@ -322,14 +323,14 @@ const projectLd: Record<string, unknown> = {
   .case-head {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.75rem;
-    margin-top: 1.25rem;
-    align-items: center;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+    align-items: start;
   }
   @media (min-width: 900px) {
     .case-head {
       grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-      gap: 3rem;
+      gap: var(--space-7);
     }
   }
   .head-text {
@@ -341,163 +342,151 @@ const projectLd: Record<string, unknown> = {
   .status {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     max-width: 100%;
     margin: 0;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: var(--fs-label);
+    font-weight: 500;
     line-height: 1.4;
-    letter-spacing: 0.04em;
-    color: #ddd6fe;
-    background: rgb(124 58 237 / 0.16);
-    border: 1px solid rgb(167 139 250 / 0.38);
+    color: var(--text);
   }
   .status::before {
     content: '';
     flex: none;
-    width: 0.45rem;
-    height: 0.45rem;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: var(--lavender);
-    box-shadow: 0 0 8px var(--lavender);
+    background: var(--accent);
   }
   h1 {
-    margin-top: 0.9rem;
-    font-size: clamp(2.4rem, 6vw, 3.75rem);
-    font-weight: 700;
-    padding-bottom: 0.08em;
+    margin-top: var(--space-3);
+    font-size: var(--fs-page-title);
+    color: var(--text);
   }
   .tagline {
-    margin-top: 0.6rem;
-    font-size: clamp(1.05rem, 2vw, 1.25rem);
-    line-height: 1.45;
-    color: var(--lavender);
+    margin-top: var(--space-2);
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    color: var(--text-muted);
   }
   .summary {
-    margin-top: 1rem;
-    max-width: 60ch;
-    color: #cbd5e1;
+    margin-top: var(--space-4);
+    max-width: 68ch;
+    color: var(--text);
   }
   .tech {
     list-style: none;
-    margin: 1.25rem 0 0;
+    margin: var(--space-4) 0 0;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--space-2);
   }
   .actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.7rem;
-    margin-top: 1.5rem;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
   }
   .actions .btn {
     min-height: 44px;
   }
   .soon-label {
     display: inline-block;
-    padding: 0.3rem 0.8rem;
-    border-radius: 999px;
-    font-size: 0.82rem;
-    color: var(--muted);
-    border: 1px dashed rgb(148 163 184 / 0.4);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-strong);
   }
   .head-media {
     margin: 0;
     min-width: 0;
   }
+  /* The image keeps the ratio given by its width and height attributes, so nothing moves when it loads. */
   .frame {
-    border-radius: 18px;
+    border-radius: var(--radius);
     overflow: hidden;
-    border: 1px solid rgb(148 163 184 / 0.25);
-    background: var(--bg-2);
-    aspect-ratio: 16 / 10;
-    box-shadow:
-      0 24px 56px -28px rgb(0 0 0 / 0.9),
-      0 0 50px rgb(124 58 237 / 0.16);
+    border: 1px solid var(--border);
+    background: var(--bg-subtle);
   }
   .frame img {
     display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
   }
   .head-media figcaption {
-    margin-top: 0.6rem;
-    font-size: 0.82rem;
-    line-height: 1.45;
-    color: var(--muted);
+    margin-top: var(--space-2);
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    color: var(--text-muted);
     text-align: center;
   }
 
-  /* Body panel */
+  /* Body: the prose sits directly on the page. */
   .case-body {
-    max-width: 52rem;
-    margin: clamp(2.5rem, 6vw, 4rem) auto 0;
-    padding: clamp(1.25rem, 3.5vw, 2.5rem);
-    background: var(--glass-strong);
+    max-width: 48rem;
+    margin: var(--space-7) auto 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
   }
 
   /* Status, roadmap, figures and sources panels */
   .extra {
-    max-width: 52rem;
-    margin: 1.75rem auto 0;
-    padding: clamp(1.25rem, 3vw, 1.75rem) clamp(1.25rem, 3.5vw, 2.5rem);
-    background: var(--glass-strong);
+    max-width: 48rem;
+    margin: var(--space-6) auto 0;
+    padding: var(--space-5);
+    background: var(--surface);
   }
   .extra h2 {
-    margin-bottom: 1rem;
-    font-size: 1.25rem;
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-card-title);
     font-weight: 600;
   }
   .sources-wrap {
-    max-width: 52rem;
-    margin: 1.75rem auto 0;
+    max-width: 48rem;
+    margin: var(--space-6) auto 0;
   }
   .planned-note {
-    margin-top: 1.1rem;
-    padding: 0.7rem 1rem;
-    border: 1px dashed rgb(167 139 250 / 0.5);
-    border-radius: 12px;
-    background: rgb(124 58 237 / 0.1);
-    color: #e2e8f0;
-    font-size: 0.95rem;
-  }
-  .planned-note strong {
-    color: #fff;
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--fs-small);
   }
   .frame-empty {
     display: grid;
     place-items: center;
-    padding: 1.5rem;
+    padding: var(--space-5);
+    aspect-ratio: 16 / 10;
     border-style: dashed;
     text-align: center;
-    background: rgb(11 27 58 / 0.5);
+    background: var(--bg-subtle);
   }
   .frame-empty p {
     display: grid;
-    gap: 0.4rem;
-    color: #cbd5e1;
+    gap: var(--space-2);
+    color: var(--text-muted);
   }
   .frame-empty-label {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--lavender);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--text);
   }
 
   /* Previous / next */
   .pager {
-    max-width: 52rem;
-    margin: 1.75rem auto 0;
+    max-width: 48rem;
+    margin: var(--space-6) auto 0;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 1rem;
+    gap: var(--space-4);
   }
   @media (min-width: 640px) {
     .pager.two {
@@ -507,93 +496,84 @@ const projectLd: Record<string, unknown> = {
   .pager-link {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: var(--space-1);
     min-height: 44px;
-    padding: 1rem 1.25rem;
+    padding: var(--space-4);
     text-decoration: none;
     color: var(--text);
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
+    transition: border-color var(--ease);
   }
   .pager-link.next {
     text-align: right;
     align-items: flex-end;
   }
   .pager-link:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 36px rgb(124 58 237 / 0.28);
+    border-color: var(--border-strong);
+    color: var(--text);
   }
   .pager-dir {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
+    gap: var(--space-2);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .pager-dir :global(.flip) {
     transform: scaleX(-1);
   }
   .pager-name {
-    font-family: var(--font-display);
     font-weight: 600;
-    font-size: 1.35rem;
-    color: #fff;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .pager-link:hover {
-      transform: none;
-    }
+    font-size: var(--fs-card-title);
+    color: var(--text);
   }
 </style>
 
 <style is:global>
   /* Case-study tabs (see src/scripts/case-tabs.js). Without the script the bar stays hidden and every
-     section is shown in authored order. The script sets data-ready on .case-body once the tabs exist. */
+     section is shown in authored order. The script sets data-ready on .case-body once the tabs exist.
+     With JavaScript on, the bar's space is reserved from the first paint (visibility: hidden) so that
+     the page does not shift when the script reveals it. */
   .case-tabs-bar {
     display: none;
+  }
+  .js [data-case-tabs]:not([data-ready]) .case-tabs-bar {
+    display: flex;
+    min-height: 45px;
+    margin: 0 0 var(--space-5);
+    visibility: hidden;
   }
   [data-case-tabs][data-ready] .case-tabs-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem;
-    margin: 0 0 1.75rem;
-    padding: 0.3rem;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: rgb(6 11 27 / 0.55);
+    gap: 0 var(--space-4);
+    margin: 0 0 var(--space-5);
+    border-bottom: 1px solid var(--border);
   }
   .case-tabs-bar button {
-    flex: 1 1 auto;
+    flex: none;
     min-height: 44px;
-    padding: 0.4rem 1rem;
-    border: 1px solid transparent;
-    border-radius: 10px;
+    margin-bottom: -1px;
+    padding: var(--space-2) var(--space-1);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
     background: transparent;
-    color: #cbd5e1;
-    font-family: var(--font-display);
-    font-size: 1rem;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
     font-weight: 600;
     line-height: 1.2;
     cursor: pointer;
     transition:
-      background-color 0.2s ease,
-      color 0.2s ease;
+      color var(--ease),
+      border-color var(--ease);
   }
   .case-tabs-bar button:hover {
-    background: rgb(148 163 184 / 0.14);
-    color: #fff;
+    color: var(--text);
   }
   .case-tabs-bar button[aria-selected='true'] {
-    color: #fff;
-    background: rgb(124 58 237 / 0.3);
-    border-color: rgb(167 139 250 / 0.55);
-  }
-  .case-tab-panel {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
   }
   .case-tab-panel > :first-child {
     margin-top: 0;
@@ -605,15 +585,12 @@ const projectLd: Record<string, unknown> = {
     /* Hidden panels are shown for printing by the beforeprint handler in case-tabs.js: the preflight
        [hidden] rule is important and layered, so a CSS override here would lose. */
     .case-tab-panel + .case-tab-panel {
-      margin-top: 2.6rem;
+      margin-top: var(--space-7);
     }
   }
   @media (max-width: 640px) {
-    .case-prose {
-      font-size: 1rem;
-    }
     .case-prose table {
-      font-size: 0.86rem;
+      font-size: var(--fs-label);
     }
   }
 </style>

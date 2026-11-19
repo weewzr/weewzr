@@ -3,7 +3,7 @@
 Only real project material is used, never an invented screenshot:
   kasco.webp   _work/kasco.png (screenshot of the live KASCO app), resized to 16:10 only.
   nush2.webp   _work/NUSH2_process_flow.svg (figure from the NUS-H2 repository), rendered with
-               Edge headless and placed unmodified on a dark panel.
+               Edge headless and placed unmodified on a flat navy panel.
   strato.webp  _work/triso_cross_section.png (figure from the STRATO documentation), placed
                unmodified on the same kind of panel.
 
@@ -19,7 +19,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parent.parent
 WORK = ROOT / "_work"
@@ -28,7 +28,7 @@ OUT = ROOT / "public" / "projects"
 
 W, H = 1280, 800  # 16:10
 SMALL_W = 640
-PANEL = (0x0B, 0x1B, 0x3A)  # --bg-2
+PANEL = (0x0B, 0x1F, 0x3A)  # --navy in src/styles/global.css
 EDGE_CANDIDATES = [
     Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
     Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
@@ -55,28 +55,18 @@ def save_webp(img: Image.Image, stem: str) -> None:
 
 
 def panel_background(width: int, height: int) -> Image.Image:
-    """Dark #0B1B3A panel with a very soft blue and purple glow in two corners."""
-    base = Image.new("RGB", (width, height), PANEL)
-    glow = Image.new("RGB", (width, height), PANEL)
-    d = ImageDraw.Draw(glow)
-    d.ellipse((-width * 0.25, -height * 0.55, width * 0.45, height * 0.45), fill=(37, 99, 235))
-    d.ellipse((width * 0.55, height * 0.6, width * 1.2, height * 1.5), fill=(124, 58, 237))
-    glow = glow.filter(ImageFilter.GaussianBlur(width * 0.12))
-    return Image.blend(base, glow, 0.22)
+    """Flat navy panel. No gradient and no glow, so the figure is the only thing with colour."""
+    return Image.new("RGB", (width, height), PANEL)
 
 
-def place_on_panel(figure: Image.Image, max_w: int, max_h: int, radius: int = 14) -> Image.Image:
-    """Centre an unmodified figure (only scaled) on the dark panel as a rounded light card."""
+def place_on_panel(figure: Image.Image, max_w: int, max_h: int, radius: int = 8) -> Image.Image:
+    """Centre an unmodified figure (only scaled) on the navy panel as a light card with 8px corners."""
     fig = figure.convert("RGB")
     scale = min(max_w / fig.width, max_h / fig.height)
     new_size = (round(fig.width * scale), round(fig.height * scale))
     fig = fig.resize(new_size, Image.LANCZOS)
     canvas = panel_background(W, H).convert("RGBA")
     x, y = (W - new_size[0]) // 2, (H - new_size[1]) // 2
-    # Soft shadow under the card so it lifts off the panel.
-    shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(shadow).rounded_rectangle((x, y + 8, x + new_size[0], y + new_size[1] + 8), radius, fill=(0, 0, 0, 110))
-    canvas = Image.alpha_composite(canvas, shadow.filter(ImageFilter.GaussianBlur(14)))
     mask = Image.new("L", new_size, 0)
     ImageDraw.Draw(mask).rounded_rectangle((0, 0, new_size[0] - 1, new_size[1] - 1), radius, fill=255)
     canvas.paste(fig, (x, y), mask)

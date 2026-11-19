@@ -55,25 +55,17 @@ const shownTags = tags.slice(0, 4);
   <div class="card__foot">
     <span class="link-arrow" aria-hidden="true">
       {cta}
-      <Icon name="arrow-right" size={18} />
+      <Icon name="arrow-right" size={20} />
     </span>
   </div>
 </article>
 
 <style>
   /* The whole card is the link (stretched title link); the footer text is decoration for sighted users. */
-  .card:hover .link-arrow {
-    color: #fff;
-  }
-  .card:hover .link-arrow :global(svg) {
-    transform: translateX(4px);
-  }
   .card__foot .link-arrow {
     min-height: 0;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .card:hover .link-arrow :global(svg) {
-      transform: none;
-    }
+  .card:hover .link-arrow {
+    color: var(--accent-hover);
   }
 </style>

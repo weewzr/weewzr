@@ -37,7 +37,8 @@ The Python tools need Pillow (tested with Pillow 11.1.0 on Python 3.10). `tools/
 | Case-study tabs | `caseStudyTabs` and `caseStudyPinned` in `src/data/site.ts`, `src/scripts/case-tabs.js`, tab styles in `src/pages/projects/[slug].astro` |
 | Project filter and area badges | `areas` on each project in `src/data/site.ts`, `src/components/FeaturedProjects.astro` (chips and script), `src/components/ProjectCard.astro` (badges) |
 | Research notes | `src/content/notes/*.md` or `*.mdx`; the index and note pages are in `src/pages/writing/` |
-| Starfield background | `src/components/Starfield.astro` and `src/scripts/starfield.ts` (Three.js, loaded lazily) |
+| Colours, type, spacing and radii | Tokens at the top of `src/styles/global.css`; the rules are in `docs/DESIGN_SYSTEM.md` |
+| Light and dark mode | Tokens under `:root` and the dark blocks in `src/styles/global.css`; the toggle and its script are in `src/components/Nav.astro`; the saved choice is restored by the inline script in `src/layouts/BaseLayout.astro` |
 | Content schemas | `src/content.config.ts` |
 | Not-found page | `src/pages/404.astro` |
 | Images and static files | `public/` (copied unchanged to the site root) |
@@ -164,6 +165,8 @@ Three rules are enforced by habit and partly by the checkers:
 - No CV. `cv.enabled` in `src/data/site.ts` is `false`, and `tools/check_structure.py` fails if a CV link appears in the build.
 
 ## Astryx evaluation
+
+This section is a record of the site as it was on 2026-11-10. The starfield, the glass panels, the violet palette and the Space Grotesk headings it mentions were removed in the design system change of November 2026 (see `docs/DESIGN_SYSTEM.md`). The measurements below were taken before that change and have not been repeated.
 
 Astryx (`@astryxdesign/core` 0.7.11, MIT, Beta) was evaluated on 2026-11-10 on the branch `feat/astryx-portfolio`. The outcome is that no Astryx component ships. This section records the evidence and what was built in its place, so the decision can be revisited.
 

@@ -91,10 +91,10 @@ const firstOpen = (() => {
 
 <style>
   .tl-progress {
-    margin: 0 0 1.1rem;
+    margin: 0 0 var(--space-4);
     font-family: var(--font-mono);
-    font-size: 0.88rem;
-    color: #dbe4f0;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
 
   /* Rail: only with JavaScript, only on wide screens. */
@@ -105,8 +105,8 @@ const firstOpen = (() => {
     :global(.js) .tl-rail {
       display: grid;
       grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
-      gap: 0.5rem;
-      margin: 0 0 1.5rem;
+      gap: var(--space-2);
+      margin: 0 0 var(--space-5);
       position: relative;
     }
     :global(.js) .tl-rail::before {
@@ -114,9 +114,9 @@ const firstOpen = (() => {
       position: absolute;
       left: 8%;
       right: 8%;
-      top: 1.35rem;
-      height: 2px;
-      background: var(--line);
+      top: 1.5rem;
+      height: 1px;
+      background: var(--border);
     }
   }
   .tl-step {
@@ -124,59 +124,65 @@ const firstOpen = (() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.4rem;
+    gap: var(--space-2);
     min-height: 44px;
-    padding: 0.5rem 0.4rem 0.7rem;
-    border: 1px solid transparent;
-    border-radius: 12px;
+    padding: var(--space-2) var(--space-2) var(--space-3);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: var(--radius);
     background: transparent;
     color: var(--text);
     text-align: center;
     font: inherit;
     cursor: pointer;
+    transition:
+      color var(--ease),
+      background-color var(--ease),
+      border-color var(--ease);
   }
   .tl-step:hover {
-    background: rgb(148 163 184 / 0.1);
+    background: var(--bg-subtle);
   }
   .tl-step[aria-expanded='true'] {
-    border-color: rgb(167 139 250 / 0.5);
-    background: rgb(124 58 237 / 0.14);
+    border-bottom-color: var(--accent);
+    background: var(--bg-subtle);
+  }
+  .tl-step[aria-expanded='true'] .tl-step-title {
+    color: var(--accent);
   }
   .tl-dot {
     display: grid;
     place-items: center;
-    width: 2.1rem;
-    height: 2.1rem;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     font-weight: 600;
-    color: #fff;
-    background: var(--bg-2);
-    border: 2px solid var(--muted);
+    color: var(--text);
+    background: var(--bg);
+    border: 2px solid var(--border-strong);
     z-index: 1;
   }
   .st-done .tl-dot {
-    background: #1d4ed8;
-    border-color: #93c5fd;
+    background: var(--accent-solid);
+    border-color: var(--accent-solid);
+    color: var(--on-accent);
   }
   .st-active .tl-dot {
-    background: #6d28d9;
-    border-color: var(--lavender);
-    box-shadow: 0 0 14px rgb(167 139 250 / 0.6);
+    background: var(--bg);
+    border-color: var(--accent);
+    color: var(--accent);
   }
   .tl-step-title {
-    font-family: var(--font-display);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: var(--fs-small);
     line-height: 1.25;
-    color: #fff;
+    color: var(--text);
   }
   .tl-step-status {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    color: var(--muted);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
   }
 
   /* Phase list */
@@ -185,97 +191,93 @@ const firstOpen = (() => {
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 1rem;
+    gap: var(--space-4);
   }
   .tl-item {
-    padding: 1rem 1.15rem 1.1rem;
-    border: 1px solid var(--line);
-    border-left: 4px solid var(--muted);
-    border-radius: 12px;
-    background: rgb(6 11 27 / 0.45);
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
   }
   .tl-item.st-done {
-    border-left-color: #60a5fa;
+    border-left-color: var(--accent);
   }
   .tl-item.st-active {
-    border-left-color: var(--lavender);
+    border-left-color: var(--cyan);
   }
   .tl-item[hidden] {
     display: none;
   }
   .tl-num {
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--lavender);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .tl-head h3 {
-    margin-top: 0.2rem;
-    font-size: 1.2rem;
+    margin-top: var(--space-1);
+    font-size: var(--fs-card-title);
     font-weight: 600;
-    color: #fff;
+    color: var(--text);
   }
   .tl-meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.4rem 0.75rem;
-    margin-top: 0.45rem;
+    gap: var(--space-2) var(--space-3);
+    margin-top: var(--space-2);
   }
   .tl-period {
     font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: #cbd5e1;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .tl-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.1rem 0.6rem;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    border: 1px solid var(--line);
-    color: #e2e8f0;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-label);
+    border: 1px solid var(--border);
+    color: var(--text);
   }
   .tl-badge.st-done {
-    background: rgb(37 99 235 / 0.22);
-    border-color: rgb(96 165 250 / 0.55);
+    background: var(--accent-bg);
+    border-color: var(--accent);
   }
   .tl-badge.st-active {
-    background: rgb(124 58 237 / 0.25);
-    border-color: rgb(167 139 250 / 0.6);
+    background: var(--cyan-bg);
+    border-color: var(--cyan);
   }
   .tl-badge.st-upcoming {
-    background: rgb(148 163 184 / 0.12);
+    background: var(--bg-subtle);
   }
   .tl-summary {
-    margin-top: 0.7rem;
-    color: #d5deea;
+    margin-top: var(--space-3);
+    color: var(--text);
     line-height: 1.65;
   }
   .tl-neutral {
-    color: var(--muted);
+    color: var(--text-muted);
     font-style: italic;
   }
   .tl-sub {
     list-style: none;
-    margin: 0.8rem 0 0;
+    margin: var(--space-3) 0 0;
     padding: 0;
     display: grid;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
   .tl-sub li {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 0.1rem;
-    padding-left: 0.85rem;
-    border-left: 2px solid var(--line);
+    gap: 0;
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--border);
   }
   @media (min-width: 640px) {
     .tl-sub li {
       grid-template-columns: 9rem minmax(0, 1fr);
-      column-gap: 0.9rem;
+      column-gap: var(--space-4);
     }
     .tl-sub .tl-detail {
       grid-column: 2;
@@ -283,15 +285,15 @@ const firstOpen = (() => {
   }
   .tl-date {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: #cbd5e1;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .tl-label {
-    color: #fff;
+    color: var(--text);
   }
   .tl-detail {
-    color: var(--muted);
-    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
   }
   @media print {
     .tl-rail {

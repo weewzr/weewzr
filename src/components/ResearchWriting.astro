@@ -59,7 +59,7 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
       )
     }
 
-    <header class="head reveal">
+    <header class="head">
       <p class="eyebrow">Research &amp; Writing</p>
       <Title id={titleId} class="section-title">{standalone ? 'Notes and studies' : (heading ?? 'Notes and studies')}</Title>
       <p class="section-lead">
@@ -77,7 +77,7 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
 
     {
       standalone && groups.length > 1 && (
-        <nav class="jump reveal" aria-label="Topics">
+        <nav class="jump" aria-label="Topics">
           <ul>
             {groups.map((group) => (
               <li>
@@ -94,11 +94,11 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
 
     {
       total === 0 ? (
-        <p class="empty reveal">Notes will appear here as they are published.</p>
+        <p class="empty">Notes will appear here as they are published.</p>
       ) : (
         <ul class="groups">
-          {groups.map((group, g) => (
-            <li class="group reveal" style={`--i:${g}`} id={`cat-${group.slug}`}>
+          {groups.map((group) => (
+            <li class="group" id={`cat-${group.slug}`}>
               <header class="group-head">
                 <GroupTitle class="group-title">{group.name}</GroupTitle>
                 <span class="count">
@@ -110,7 +110,7 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
                   const { title, description, kind, date, sourceUrl, sourceLabel } = note.data;
                   return (
                     <li>
-                      <article class="note-card glass gradient-border">
+                      <article class="note-card">
                         <div class="meta">
                           <span class="chip">{kind}</span>
                           <time datetime={date.toISOString().slice(0, 10)}>{dateFormat.format(date)}</time>
@@ -150,10 +150,10 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
 
     {
       !standalone && total > 0 && (
-        <p class="more reveal">
+        <p class="more">
           <a class="btn" href={withBase('writing/')}>
             Browse all {total} {noun(total)}
-            <Icon name="arrow-right" size={18} />
+            <Icon name="arrow-right" size={20} />
           </a>
         </p>
       )
@@ -163,52 +163,49 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
 
 <style>
   .standalone {
-    padding-top: clamp(2rem, 5vw, 3.5rem);
+    padding-top: clamp(var(--space-6), 5vw, var(--space-7));
   }
 
   /* Breadcrumb (index page only). */
   .crumbs {
-    margin-bottom: clamp(1.25rem, 3vw, 2rem);
-    font-size: 0.9rem;
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-small);
   }
   .crumbs ol {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.25rem 0.6rem;
+    gap: 0 var(--space-3);
     margin: 0;
     padding: 0;
     list-style: none;
-    color: var(--muted);
+    color: var(--text-muted);
   }
   .crumbs li:not(:last-child)::after {
     content: '/';
-    margin-left: 0.6rem;
-    color: var(--muted);
-    opacity: 0.7;
+    margin-left: var(--space-3);
+    color: var(--border-strong);
   }
   .crumbs a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    color: var(--lavender);
   }
 
   .tally {
-    margin-top: 0.9rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--muted);
+    margin-top: var(--space-3);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
 
   /* Category anchors (index page, two or more topics). */
   .jump {
-    margin-top: 1.75rem;
+    margin-top: var(--space-5);
   }
   .jump ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: var(--space-2);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -216,45 +213,45 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
   .jump a {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: var(--space-2);
     min-height: 44px;
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: rgb(255 255 255 / 0.04);
+    padding: var(--space-1) var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-strong);
     color: var(--text);
-    font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: var(--fs-small);
     font-weight: 500;
     text-decoration: none;
-    transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+    transition:
+      border-color var(--ease),
+      background-color var(--ease),
+      color var(--ease);
   }
   .jump a:hover {
-    color: #fff;
-    border-color: rgb(167 139 250 / 0.6);
-    background: rgb(124 58 237 / 0.18);
-    transform: translateY(-2px);
+    color: var(--text);
+    border-color: var(--text);
+    background: var(--bg-subtle);
   }
   .jump-count {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--lavender);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
   }
 
   .empty {
-    margin-top: clamp(1.75rem, 4vw, 2.5rem);
-    padding-top: 1.1rem;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
   }
 
   /* Category groups sit side by side where there is room. */
   .groups {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-    gap: clamp(2rem, 4vw, 2.75rem) clamp(1.25rem, 2.5vw, 1.75rem);
+    gap: var(--space-6) var(--space-5);
     align-items: stretch;
-    margin: clamp(2rem, 4.5vw, 3rem) 0 0;
+    margin: var(--space-6) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -264,41 +261,29 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
     min-width: 0;
   }
   .group-head {
-    position: relative;
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.75rem;
-    padding-bottom: 0.7rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--line);
-  }
-  .group-head::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 3.5rem;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--grad);
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
   }
   .group-title {
-    font-size: 1.15rem;
+    font-size: var(--fs-card-title);
     font-weight: 600;
   }
   .count {
     flex: none;
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    color: var(--muted);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
   }
 
   .cards {
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: 1.1rem;
+    gap: var(--space-4);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -312,36 +297,32 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: var(--space-3);
     height: 100%;
-    padding: 1.25rem 1.3rem 0.9rem;
+    padding: var(--space-5);
     border-radius: var(--radius);
-    background: linear-gradient(155deg, rgb(17 36 76 / 0.62), rgb(9 20 44 / 0.62));
-    box-shadow: 0 22px 50px -34px rgb(0 0 0 / 0.85);
-    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.3s ease;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: border-color var(--ease);
   }
   .note-card:hover,
   .note-card:focus-within {
-    transform: translateY(-4px);
-    box-shadow:
-      0 28px 56px -32px rgb(0 0 0 / 0.9),
-      0 0 38px rgb(59 130 246 / 0.2),
-      0 0 60px rgb(124 58 237 / 0.22);
+    border-color: var(--border-strong);
   }
   .meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem 0.75rem;
+    gap: var(--space-2) var(--space-3);
   }
   time {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--muted);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
   }
   .card-title {
-    font-size: 1.2rem;
-    line-height: 1.25;
+    font-size: var(--fs-card-title);
+    line-height: 1.35;
     font-weight: 600;
     overflow-wrap: anywhere;
   }
@@ -356,85 +337,60 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
     border-radius: var(--radius);
   }
   .note-card:hover .card-title a {
-    color: #fff;
+    color: var(--accent);
   }
   @supports selector(:has(*)) {
     .card-title a:focus-visible {
       outline: none;
     }
     .note-card:has(.card-title a:focus-visible) {
-      outline: 2px solid var(--lavender);
-      outline-offset: 3px;
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
   }
   .desc {
-    color: var(--muted);
-    font-size: 0.97rem;
+    color: var(--text-muted);
+    font-size: var(--fs-small);
     line-height: 1.6;
   }
   .foot {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: var(--space-3);
     margin-top: auto;
-    padding-top: 0.35rem;
-    border-top: 1px solid var(--line);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
   }
   .read {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-display);
-    font-size: 0.92rem;
+    gap: var(--space-2);
+    font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--lavender);
-  }
-  .read :global(svg) {
-    transition: transform 0.3s ease;
-  }
-  .note-card:hover .read :global(svg) {
-    transform: translateX(4px);
+    color: var(--accent);
   }
   .source {
     position: relative;
     z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: var(--space-2);
     min-height: 44px;
-    padding-inline: 0.15rem;
-    font-size: 0.88rem;
-    color: var(--muted);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .source:hover {
     color: var(--text);
   }
 
   .more {
-    margin-top: clamp(2rem, 4.5vw, 3rem);
+    margin-top: var(--space-6);
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 639px) {
     .note-card {
-      padding: 1.1rem 1.1rem 0.8rem;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .note-card,
-    .note-card:hover,
-    .note-card:focus-within {
-      transform: none;
-      transition: none;
-    }
-    .read :global(svg),
-    .note-card:hover .read :global(svg) {
-      transform: none;
-      transition: none;
-    }
-    .jump a:hover {
-      transform: none;
+      padding: var(--space-4);
     }
   }
 </style>

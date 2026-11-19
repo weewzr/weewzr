@@ -32,10 +32,10 @@ const personLd = {
   <ResearchInterests compact perry />
   <FeaturedProjects showHead id="projects" />
   <CollectionPreview section="research" entries={research}>
-    <p id="writing" class="notes-line reveal">
+    <p id="writing" class="notes-line">
       <a class="link-arrow" href={withBase('writing/')}>
         Technical notes and computational studies
-        <Icon name="arrow-right" size={18} />
+        <Icon name="arrow-right" size={20} />
       </a>
     </p>
   </CollectionPreview>
@@ -46,7 +46,7 @@ const personLd = {
 
 <style>
   .notes-line {
-    margin-top: clamp(1rem, 2.5vw, 1.5rem);
+    margin-top: var(--space-5);
   }
 </style>
 

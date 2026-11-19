@@ -20,12 +20,13 @@ const { items, statusNote, label = 'Development roadmap' } = Astro.props;
 
 <style>
   .status-note {
-    margin: 0 0 1.25rem;
-    padding: 0.8rem 1.1rem;
-    border-left: 3px solid var(--purple);
-    border-radius: 0 12px 12px 0;
-    background: rgb(124 58 237 / 0.1);
-    color: #e2e8f0;
+    margin: 0 0 var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
     line-height: 1.65;
   }
 </style>

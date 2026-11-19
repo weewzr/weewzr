@@ -20,7 +20,7 @@ const { eyebrow, title, lead, id, level = 'h2', href, linkLabel } = Astro.props;
 const Heading = level;
 ---
 
-<header class="section-head reveal">
+<header class="section-head">
   <div class="section-head__text">
     <p class="eyebrow">{eyebrow}</p>
     <Heading id={id} class="section-title">{title}</Heading>
@@ -30,7 +30,7 @@ const Heading = level;
     href && (
       <a class="link-arrow" href={withBase(href)}>
         {linkLabel ?? 'View all'}
-        <Icon name="arrow-right" size={18} />
+        <Icon name="arrow-right" size={20} />
       </a>
     )
   }

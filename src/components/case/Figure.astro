@@ -53,20 +53,20 @@ const url = withBase(src);
 
 <style>
   .fig {
-    margin: 1.75rem 0;
+    margin: var(--space-5) 0;
   }
   .fig.fig img {
     display: block;
     max-width: 100%;
     height: auto;
     margin: 0 auto;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: var(--bg-2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-subtle);
   }
   .fig-open {
     display: block;
-    border-radius: 12px;
+    border-radius: var(--radius);
     cursor: zoom-in;
     text-decoration: none;
   }
@@ -74,20 +74,19 @@ const url = withBase(src);
   .fig-hint {
     display: block;
     width: fit-content;
-    margin: 0.5rem 0 0 auto;
-    padding: 0.2rem 0.65rem;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    color: #fff;
-    background: rgb(6 11 27 / 0.82);
-    border: 1px solid rgb(167 139 250 / 0.5);
+    margin: var(--space-2) 0 0 auto;
+    padding: 0.125rem var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border);
   }
   figcaption {
-    margin-top: 0.55rem;
-    font-size: 0.86rem;
+    margin-top: var(--space-2);
+    font-size: var(--fs-small);
     line-height: 1.5;
-    color: var(--muted);
+    color: var(--text-muted);
     text-align: center;
   }
 
@@ -97,8 +96,8 @@ const url = withBase(src);
     height: min(92vh, 900px);
     margin: auto;
     padding: 0;
-    border: 1px solid rgb(167 139 250 / 0.5);
-    border-radius: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     background: var(--bg);
     color: var(--text);
     overflow: hidden;
@@ -108,19 +107,19 @@ const url = withBase(src);
     flex-direction: column;
   }
   .fig-dialog::backdrop {
-    background: rgb(2 6 18 / 0.86);
+    background: color-mix(in srgb, var(--navy) 85%, transparent);
   }
   .fig-dialog-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding: 0.5rem 0.75rem 0.5rem 1rem;
-    border-bottom: 1px solid var(--line);
+    gap: var(--space-4);
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+    border-bottom: 1px solid var(--border);
   }
   .fig-dialog-cap {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     line-height: 1.4;
     color: var(--text);
   }
@@ -128,24 +127,27 @@ const url = withBase(src);
     flex: none;
     min-height: 44px;
     min-width: 44px;
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: rgb(255 255 255 / 0.06);
-    color: #fff;
-    font-family: var(--font-display);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
+    transition:
+      background-color var(--ease),
+      border-color var(--ease);
   }
   .fig-close:hover {
-    border-color: rgb(167 139 250 / 0.7);
-    background: rgb(124 58 237 / 0.2);
+    border-color: var(--text);
+    background: var(--bg-subtle);
   }
   .fig-dialog-scroll {
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
-    padding: 0.75rem;
+    padding: var(--space-3);
   }
   /* Full size: the image keeps its pixel width and the reader pans by scrolling. */
   .fig .fig-dialog-scroll img {

@@ -25,7 +25,7 @@ const vw = 300, vh = 78, vgap = 30;
       const y = 4 + i * (vh + vgap);
       return (
         <g>
-          <rect x="4" y={y} width={vw} height={vh} rx="14" class="sc-box" />
+          <rect x="4" y={y} width={vw} height={vh} rx="8" class="sc-box" />
           <circle cx="30" cy={y + 28} r="13" class="sc-badge" />
           <text x="30" y={y + 34} text-anchor="middle" class="sc-num sc-num-n">{s.n}</text>
           <text x="54" y={y + 34} class="sc-name sc-name-n">{s.name}</text>
@@ -42,11 +42,11 @@ const vw = 300, vh = 78, vgap = 30;
 
 <style>
   .sensing-chain {
-    margin: 1.75rem 0;
-    padding: 1rem;
-    border: 1px solid var(--line);
+    margin: var(--space-5) 0;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: var(--glass);
+    background: var(--surface);
   }
   svg {
     display: block;
@@ -58,15 +58,15 @@ const vw = 300, vh = 78, vgap = 30;
     max-width: 380px;
   }
   .sc-box {
-    fill: var(--bg-2);
-    stroke: var(--blue-2);
+    fill: var(--bg-subtle);
+    stroke: var(--border-strong);
     stroke-width: 1.5;
   }
   .sc-badge {
-    fill: var(--purple);
+    fill: var(--accent-solid);
   }
   .sc-num {
-    fill: #fff;
+    fill: var(--on-accent);
     font: 700 14px var(--font-mono);
   }
   .sc-num-n {
@@ -74,13 +74,13 @@ const vw = 300, vh = 78, vgap = 30;
   }
   .sc-name {
     fill: var(--text);
-    font: 600 17px var(--font-display);
+    font: 600 17px var(--font-body);
   }
   .sc-name-n {
     font-size: 17px;
   }
   .sc-note {
-    fill: var(--muted);
+    fill: var(--text-muted);
     font: 400 13.5px var(--font-body);
   }
   .sc-note-n {
@@ -88,15 +88,15 @@ const vw = 300, vh = 78, vgap = 30;
   }
   .sc-arrow {
     fill: none;
-    stroke: var(--lavender);
+    stroke: var(--accent);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
   figcaption {
-    margin-top: 0.75rem;
-    color: var(--muted);
-    font-size: 0.85rem;
+    margin-top: var(--space-3);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
     text-align: center;
   }
 </style>

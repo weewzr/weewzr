@@ -31,7 +31,7 @@ const facts = [
   <div class="ab-wrap">
     {
       heading && (
-        <header class="reveal">
+        <header>
           <p class="eyebrow">Profile</p>
           <h2 id="about-title" class="section-title">About</h2>
         </header>
@@ -43,7 +43,7 @@ const facts = [
         <div class="ab-copy">
           {
             aboutParagraphs.map((text, i) => (
-              <p class:list={['reveal', { 'ab-first': i === 0 }]} style={`--i:${i}`}>
+              <p class:list={[{ 'ab-first': i === 0 }]}>
                 {text}
               </p>
             ))
@@ -52,8 +52,8 @@ const facts = [
 
         <ul class="ab-facts" role="list" aria-label="At a glance">
           {
-            facts.map((fact, i) => (
-              <li class="ab-fact reveal" style={`--i:${i}`}>
+            facts.map((fact) => (
+              <li class="ab-fact">
                 <span class="ab-fact-label">{fact.label}</span>
                 <span class="ab-fact-value">{fact.value}</span>
               </li>
@@ -63,7 +63,7 @@ const facts = [
       </div>
 
       <div class="ab-side">
-        <article class="ab-card glass gradient-border reveal" style="--i:1">
+        <article class="ab-card">
           <header class="ab-card-head">
             <span class="ab-ico"><Icon name="book" size={20} /></span>
             <CardTitle>Education</CardTitle>
@@ -85,7 +85,7 @@ const facts = [
           </dl>
         </article>
 
-        <article class="ab-card glass gradient-border reveal" style="--i:2">
+        <article class="ab-card">
           <header class="ab-card-head">
             <span class="ab-ico"><Icon name="atom" size={20} /></span>
             <CardTitle>Affiliations</CardTitle>
@@ -129,7 +129,7 @@ const facts = [
   }
   .ab-grid {
     display: grid;
-    gap: clamp(1.75rem, 4vw, 3rem);
+    gap: var(--space-6);
     margin-top: 0;
   }
   @media (min-width: 900px) {
@@ -141,57 +141,47 @@ const facts = [
 
   .ab-main {
     display: grid;
-    gap: 2rem;
+    gap: var(--space-6);
     min-width: 0;
   }
   .ab-copy {
     display: grid;
-    gap: 1.15rem;
-    max-width: 64ch;
+    gap: var(--space-4);
+    max-width: 68ch;
   }
   .ab-copy p {
-    color: #cbd5e1;
+    color: var(--text-muted);
   }
   .ab-copy .ab-first {
     color: var(--text);
-    font-size: clamp(1.125rem, 1.6vw, 1.28rem);
+    font-size: var(--fs-lead);
     line-height: 1.6;
   }
 
-  /* Compact fact strip */
+  /* Facts as a definition grid with hairlines. */
   .ab-facts {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
+    gap: 0 var(--space-5);
   }
   .ab-fact {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: var(--space-1);
     min-width: 0;
-    padding: 0.8rem 0.95rem;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--line);
-    border-left: 2px solid var(--blue-2);
-    background: rgb(11 27 58 / 0.4);
-  }
-  .ab-fact:nth-child(even) {
-    border-left-color: var(--lavender);
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--border);
   }
   .ab-fact-label {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
   }
   .ab-fact-value {
-    font-family: var(--font-display);
     font-weight: 500;
-    font-size: 1.02rem;
+    font-size: var(--fs-body);
     line-height: 1.3;
     color: var(--text);
     overflow-wrap: anywhere;
@@ -200,87 +190,84 @@ const facts = [
   /* Side column cards */
   .ab-side {
     display: grid;
-    gap: 1.25rem;
+    gap: var(--space-5);
     min-width: 0;
   }
   .ab-card {
-    padding: clamp(1.25rem, 3vw, 1.75rem);
+    padding: var(--space-4);
     min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  @media (min-width: 640px) {
+    .ab-card {
+      padding: var(--space-5);
+    }
   }
   .ab-card-head {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-2);
   }
   .ab-ico {
-    display: inline-grid;
-    place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    display: inline-flex;
     flex: none;
-    border-radius: 12px;
-    color: var(--lavender);
-    background: linear-gradient(145deg, rgb(59 130 246 / 0.18), rgb(124 58 237 / 0.22));
-    border: 1px solid rgb(167 139 250 / 0.3);
+    color: var(--text-muted);
   }
   .ab-card :is(h2, h3) {
-    font-size: 1.2rem;
+    font-size: var(--fs-card-title);
     font-weight: 600;
+    line-height: 1.35;
   }
 
   .ab-inst {
-    margin-top: 1.1rem;
-    font-family: var(--font-display);
-    font-size: 1.1rem;
+    margin-top: var(--space-3);
+    font-size: var(--fs-body);
     font-weight: 500;
     line-height: 1.35;
   }
   .ab-edu {
-    margin: 1rem 0 0;
+    margin: var(--space-3) 0 0;
     display: grid;
-    gap: 0.85rem;
   }
   .ab-edu > div {
-    padding-left: 0.9rem;
-    border-left: 2px solid rgb(167 139 250 / 0.45);
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--border);
   }
   .ab-edu dt {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
   }
   .ab-edu dd {
-    margin: 0.1rem 0 0;
+    margin: var(--space-1) 0 0;
     color: var(--text);
     overflow-wrap: anywhere;
   }
 
   .ab-intro {
-    margin-top: 1rem;
-    color: var(--muted);
-    font-size: 0.97rem;
+    margin-top: var(--space-3);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
   }
   .ab-aff {
     list-style: none;
-    margin: 0.9rem 0 0;
+    margin: var(--space-3) 0 0;
     padding: 0;
     display: grid;
-    gap: 1.1rem;
+    gap: var(--space-3);
   }
   .ab-aff > li {
-    padding-top: 1.1rem;
-    border-top: 1px solid var(--line);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
     min-width: 0;
   }
   .ab-unit {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: var(--space-2);
     min-height: 44px;
     max-width: 100%;
-    font-family: var(--font-display);
     font-weight: 500;
     line-height: 1.35;
     text-decoration: none;
@@ -289,34 +276,20 @@ const facts = [
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 4px;
-    text-decoration-color: rgb(167 139 250 / 0.5);
     overflow-wrap: anywhere;
-  }
-  .ab-unit:hover .ab-unit-name {
-    text-decoration-color: currentColor;
   }
   .ab-unit :global(.ab-ext) {
     flex: none;
-    opacity: 0.85;
-  }
-  .ab-unit:focus-visible {
-    outline: 2px solid var(--lavender);
-    outline-offset: 3px;
-    border-radius: 6px;
   }
   .ab-people {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.25rem 0.75rem;
-    margin-top: 0.15rem;
+    gap: var(--space-1) var(--space-3);
   }
   .ab-people-label {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
   }
   .ab-people ul {
     list-style: none;
@@ -324,15 +297,15 @@ const facts = [
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.1rem 1.1rem;
+    gap: var(--space-1) var(--space-4);
   }
   .ab-people li {
     color: var(--text);
-    font-size: 0.98rem;
+    font-size: var(--fs-small);
   }
   .ab-note {
-    margin-top: 0.4rem;
-    color: var(--muted);
-    font-size: 0.95rem;
+    margin-top: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
   }
 </style>

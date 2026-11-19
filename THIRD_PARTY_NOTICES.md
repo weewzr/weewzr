@@ -8,11 +8,10 @@ The site self-hosts variable fonts from the Fontsource packages. The `woff2` fil
 
 | Font | Used for | Copyright notice |
 | --- | --- | --- |
-| Space Grotesk | Headings | Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk) |
-| Inter | Body text | Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter) |
+| Inter | Headings and body text | Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter) |
 | JetBrains Mono | Technical text | Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono) |
 
-The three fonts are licensed under the SIL Open Font License, Version 1.1, reproduced here without alteration (the text is taken from the `LICENSE` file shipped in each Fontsource package, which is identical across the three).
+Both fonts are licensed under the SIL Open Font License, Version 1.1, reproduced here without alteration (the text is taken from the `LICENSE` file shipped in each Fontsource package, which is identical in both).
 
 ```text
 -----------------------------------------------------------
@@ -109,7 +108,6 @@ The following packages are distributed under the MIT licence. Each copyright lin
 
 | Package | Copyright notice |
 | --- | --- |
-| three (Three.js) | Copyright © 2010-2026 three.js authors |
 | astro, @astrojs/mdx, @astrojs/sitemap | Copyright (c) 2021 Fred K. Schott |
 | tailwindcss, @tailwindcss/vite | Copyright (c) Tailwind Labs, Inc. |
 

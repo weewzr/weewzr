@@ -1,33 +1,40 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/space-grotesk';
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/jetbrains-mono';
 
-/* Celestial Engineering design tokens. Mirror of src/data/site.ts `theme`. */
+/* Design tokens. The full system is described in docs/DESIGN_SYSTEM.md.
+   Light is the default. Dark applies when the visitor's system asks for it, or when the header
+   toggle sets data-theme="dark". data-theme="light" overrides a dark system setting. */
 :root {
-  --bg: #060b1b;
-  --bg-2: #0b1b3a;
-  --blue: #2563eb;
-  --blue-2: #3b82f6;
-  --purple: #7c3aed;
-  --lavender: #a78bfa;
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-  --line: rgb(148 163 184 / 0.18);
-  --glass: rgb(11 27 58 / 0.55);
-  --glass-strong: rgb(11 27 58 / 0.8);
-  --glow-blue: 0 0 40px rgb(59 130 246 / 0.25);
-  --glow-purple: 0 0 48px rgb(124 58 237 / 0.28);
-  --grad: linear-gradient(135deg, var(--blue-2), var(--purple) 55%, var(--lavender));
-  --font-display: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+  --bg: #ffffff;
+  --bg-subtle: #f4f7fa;
+  --surface: #ffffff;
+  --border: #d5dde6;
+  --border-strong: #8794a3;
+  --text: #101a2b;
+  --text-muted: #4b5b6f;
+  --accent: #1d4fd7;
+  --accent-hover: #173ea8;
+  --accent-solid: #1d4fd7;
+  --accent-solid-hover: #173ea8;
+  --on-accent: #ffffff;
+  --accent-bg: #e9f1fe;
+  --cyan: #0b6b85;
+  --cyan-bg: #e3f4f8;
+  --navy: #0b1f3a;
+  --shadow-sm: 0 1px 2px rgb(16 26 43 / 0.06);
+  color-scheme: light;
+
   --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
-  --radius: 18px;
-  --radius-sm: 10px;
-  --maxw: 1180px;
-  --nav-h: 68px;
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --maxw: 1120px;
+  --nav-h: 64px;
+  --ease: 150ms ease;
 
-  /* Spacing scale (4px base). Use these in new components instead of ad hoc rem values. */
+  /* Spacing scale in px: 4, 8, 12, 16, 24, 32, 48, 64, 96. */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -35,37 +42,78 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
   --space-7: 3rem;
-  --space-8: 4.5rem;
-  --space-9: 7rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
 
-  /* Type scale for page heroes, section titles and cards. */
-  --fs-page-title: clamp(2.2rem, 1.4rem + 3.6vw, 3.75rem);
-  --fs-section-title: clamp(1.75rem, 1.2rem + 2.4vw, 2.6rem);
-  --fs-lead: clamp(1.05rem, 0.98rem + 0.4vw, 1.22rem);
-  --fs-card-title: clamp(1.18rem, 1.1rem + 0.35vw, 1.4rem);
+  /* Type scale. */
+  --fs-page-title: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+  --fs-section-title: clamp(1.5rem, 1.35rem + 0.6vw, 1.75rem);
+  --fs-lead: 1.125rem;
+  --fs-card-title: 1.125rem;
   --fs-body: 1rem;
-  --fs-small: 0.9rem;
-  --fs-label: 0.76rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.8125rem;
 
-  /* Status colours (text on a tinted fill, each at least 4.5:1 against the card background). */
-  --st-live: #6ee7b7;
-  --st-released: #93c5fd;
-  --st-planned: #fcd34d;
-  --st-progress: #c4b5fd;
-  --st-completed: #cbd5e1;
+  /* Status colours. Each status also has its own dot shape or text, so colour never carries it alone. */
+  --st-live: var(--cyan);
+  --st-released: var(--accent);
+  --st-planned: var(--text-muted);
+  --st-progress: var(--accent);
+  --st-completed: var(--text-muted);
+
+  /* Names used by components written before the token rename. They resolve to the tokens above. */
+  --bg-2: var(--bg-subtle);
+  --muted: var(--text-muted);
+  --line: var(--border);
+  --blue: var(--accent-solid);
+  --blue-2: var(--accent);
+  --glass: var(--surface);
+  --glass-strong: var(--surface);
+  --font-display: var(--font-body);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0b1320;
+    --bg-subtle: #101b2d;
+    --surface: #132036;
+    --border: #263750;
+    --border-strong: #5b6f8a;
+    --text: #e7edf4;
+    --text-muted: #a3b2c5;
+    --accent: #78aeff;
+    --accent-hover: #a3c8ff;
+    --accent-solid: #2f6fed;
+    --accent-solid-hover: #2a62d3;
+    --on-accent: #ffffff;
+    --accent-bg: #152a4d;
+    --cyan: #67d3e3;
+    --cyan-bg: #0f2f3b;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #0b1320;
+  --bg-subtle: #101b2d;
+  --surface: #132036;
+  --border: #263750;
+  --border-strong: #5b6f8a;
+  --text: #e7edf4;
+  --text-muted: #a3b2c5;
+  --accent: #78aeff;
+  --accent-hover: #a3c8ff;
+  --accent-solid: #2f6fed;
+  --accent-solid-hover: #2a62d3;
+  --on-accent: #ffffff;
+  --accent-bg: #152a4d;
+  --cyan: #67d3e3;
+  --cyan-bg: #0f2f3b;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
   color-scheme: dark;
 }
 
 @theme {
-  --color-bg: #060b1b;
-  --color-bg-2: #0b1b3a;
-  --color-blue: #2563eb;
-  --color-blue-2: #3b82f6;
-  --color-purple: #7c3aed;
-  --color-lavender: #a78bfa;
-  --color-ink: #e2e8f0;
-  --color-muted: #94a3b8;
-  --font-display: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
   --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
 }
@@ -80,11 +128,10 @@
   body {
     margin: 0;
     min-height: 100vh;
-    /* html supplies the base colour so the fixed Starfield layer (z-index -1) stays visible. */
-    background: transparent;
+    background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
-    font-size: 1.0625rem;
+    font-size: var(--fs-body);
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -93,23 +140,34 @@
   h2,
   h3,
   h4 {
-    font-family: var(--font-display);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
+    font-family: var(--font-body);
+    font-weight: 650;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
     margin: 0;
     text-wrap: balance;
+  }
+  h1 {
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  h3,
+  h4 {
+    font-weight: 600;
+    letter-spacing: 0;
   }
   p {
     margin: 0;
     text-wrap: pretty;
   }
   a {
-    color: var(--lavender);
+    color: var(--accent);
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
+    transition: color var(--ease);
   }
   a:hover {
-    color: #c4b5fd;
+    color: var(--accent-hover);
   }
   code,
   kbd,
@@ -121,13 +179,13 @@
     height: auto;
   }
   :focus-visible {
-    outline: 2px solid var(--lavender);
-    outline-offset: 3px;
-    border-radius: 6px;
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
   }
   ::selection {
-    background: rgb(124 58 237 / 0.55);
-    color: #fff;
+    background: var(--accent-solid);
+    color: var(--on-accent);
   }
 }
 
@@ -142,104 +200,76 @@
 @layer components {
   .section {
     position: relative;
-    padding-block: clamp(4rem, 9vw, 7.5rem);
+    padding-block: clamp(var(--space-8), 8vw, var(--space-9));
   }
+  /* Small line above a section title. Sentence case, no tracking. */
   .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--lavender);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--text-muted);
   }
   .section-title {
-    font-size: clamp(1.9rem, 4.2vw, 3rem);
-    font-weight: 600;
-    margin-top: 0.5rem;
+    font-size: var(--fs-section-title);
+    margin-top: var(--space-1);
   }
   .section-lead {
-    color: var(--muted);
-    max-width: 62ch;
-    margin-top: 1rem;
+    color: var(--text-muted);
+    max-width: 68ch;
+    margin-top: var(--space-3);
   }
-  .grad-text {
-    /* Lighter middle stop than --grad so large gradient text keeps at least 3:1 on the nebula. */
-    background: linear-gradient(135deg, #60a5fa, #9b7bf7 55%, #c4b5fd);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  /* Glass card with a gradient border drawn by a mask, so content stays readable. */
+  /* Bordered surface. The class name is historical: there is no blur or translucency. */
   .glass {
     position: relative;
-    background: var(--glass);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    backdrop-filter: blur(14px) saturate(140%);
+    background: var(--surface);
     border-radius: var(--radius);
-    border: 1px solid var(--line);
-  }
-  .gradient-border {
-    position: relative;
-  }
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(140deg, rgb(59 130 246 / 0.7), rgb(124 58 237 / 0.55) 50%, rgb(167 139 250 / 0.7));
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    opacity: 0.55;
-    transition: opacity 0.35s ease;
-  }
-  .gradient-border:hover::before,
-  .gradient-border:focus-within::before {
-    opacity: 1;
+    border: 1px solid var(--border);
   }
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-    padding: 0.8rem 1.35rem;
-    border-radius: 999px;
-    font-family: var(--font-display);
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 40px;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius);
     font-weight: 600;
-    font-size: 0.98rem;
+    font-size: 0.9375rem;
+    line-height: 1.3;
     text-decoration: none;
-    border: 1px solid var(--line);
+    border: 1px solid var(--border-strong);
     color: var(--text);
-    background: rgb(255 255 255 / 0.04);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    background: transparent;
+    transition:
+      background-color var(--ease),
+      border-color var(--ease),
+      color var(--ease);
     cursor: pointer;
   }
   .btn:hover {
-    color: #fff;
-    transform: translateY(-2px);
-    border-color: rgb(167 139 250 / 0.6);
-    background: rgb(124 58 237 / 0.18);
+    color: var(--text);
+    border-color: var(--text);
+    background: var(--bg-subtle);
   }
   .btn-primary {
-    background: linear-gradient(135deg, #2563eb, #6d3df0);
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 8px 28px -8px rgb(79 70 229 / 0.7);
+    background: var(--accent-solid);
+    border-color: var(--accent-solid);
+    color: var(--on-accent);
   }
   .btn-primary:hover {
-    background: linear-gradient(135deg, #2563eb, #7c3aed);
-    box-shadow: 0 12px 34px -8px rgb(124 58 237 / 0.85);
+    background: var(--accent-solid-hover);
+    border-color: var(--accent-solid-hover);
+    color: var(--on-accent);
   }
   .chip {
     display: inline-flex;
     align-items: center;
-    padding: 0.18rem 0.65rem;
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    color: #c7d2fe;
-    background: rgb(59 130 246 / 0.12);
-    border: 1px solid rgb(99 102 241 / 0.3);
+    padding: 0.125rem var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-label);
+    line-height: 1.5;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border);
   }
   .sr-only {
     position: absolute;
@@ -254,22 +284,22 @@
   }
   .skip-link {
     position: absolute;
-    left: 1rem;
+    left: var(--space-4);
     top: -4rem;
     z-index: 100;
-    background: var(--purple);
-    color: #fff;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    transition: top 0.2s;
+    background: var(--accent-solid);
+    color: var(--on-accent);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius);
   }
   .skip-link:focus {
-    top: 1rem;
+    top: var(--space-4);
+    color: var(--on-accent);
   }
 }
 
 /* ---------------------------------------------------------------------------------------------
-   Shared patterns for the multi-page site: cards, status pills, page heroes, link-with-arrow.
+   Shared patterns for the multi-page site: cards, status labels, page heroes, link-with-arrow.
    Unlayered like .container so they win over Tailwind utilities on the same element.
    --------------------------------------------------------------------------------------------- */
 
@@ -282,44 +312,31 @@
   gap: var(--space-3);
   min-width: 0;
   height: 100%;
-  padding: clamp(1.1rem, 2.2vw, 1.5rem);
+  padding: var(--space-5);
   border-radius: var(--radius);
-  border: 1px solid var(--line);
-  background: linear-gradient(155deg, rgb(17 36 76 / 0.62), rgb(9 20 44 / 0.62));
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 22px 50px -34px rgb(0 0 0 / 0.85);
-  transition:
-    transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color var(--ease);
 }
 .card:hover,
 .card:focus-within {
-  transform: translateY(-4px);
-  border-color: rgb(167 139 250 / 0.5);
-  box-shadow:
-    0 28px 56px -32px rgb(0 0 0 / 0.9),
-    0 0 38px rgb(59 130 246 / 0.18),
-    0 0 60px rgb(124 58 237 / 0.2);
+  border-color: var(--border-strong);
 }
 .card__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2) var(--space-3);
-  font-family: var(--font-mono);
   font-size: var(--fs-label);
-  color: var(--muted);
+  color: var(--text-muted);
 }
 .card__kind {
-  letter-spacing: 0.04em;
-  color: #b4c0d4;
+  color: var(--text-muted);
 }
 .card__title {
   font-size: var(--fs-card-title);
   font-weight: 600;
-  line-height: 1.22;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 .card__title a {
@@ -333,25 +350,25 @@
   border-radius: var(--radius);
 }
 .card:hover .card__title a {
-  color: #fff;
+  color: var(--accent);
 }
 .card__title a:focus-visible {
   outline: none;
 }
 .card:has(.card__title a:focus-visible) {
-  outline: 2px solid var(--lavender);
-  outline-offset: 3px;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .card__role {
   font-size: var(--fs-small);
   line-height: 1.5;
-  color: #c4b5fd;
+  color: var(--text-muted);
 }
 .card__summary {
-  max-width: 72ch;
-  font-size: 0.97rem;
+  max-width: 68ch;
+  font-size: 0.9375rem;
   line-height: 1.6;
-  color: #cbd5e1;
+  color: var(--text);
 }
 .card__tags {
   display: flex;
@@ -366,14 +383,14 @@
   align-items: center;
   margin-top: auto;
   padding-top: var(--space-3);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--border);
 }
 
 /* Grid used by every list of cards. */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-  gap: clamp(1rem, 2.4vw, 1.5rem);
+  gap: var(--space-5);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -382,36 +399,29 @@
   min-width: 0;
 }
 
-/* Status pill. Variants: live, released, planned, progress, completed. Without a variant it is neutral. */
+/* Status label: a dot and text. Variants: live, released, planned, progress, completed.
+   The class keeps the name "pill" because the markup uses it, but it has no pill shape. */
 .status-pill {
   --pill: var(--st-completed);
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--space-2);
   max-width: 100%;
-  padding: 0.18rem 0.7rem;
-  border-radius: 999px;
-  font-family: var(--font-mono);
   font-size: var(--fs-label);
+  font-weight: 500;
   line-height: 1.4;
-  letter-spacing: 0.04em;
-  color: var(--pill);
-  background: color-mix(in srgb, var(--pill) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--pill) 38%, transparent);
+  color: var(--text);
 }
 .status-pill::before {
   content: '';
   flex: none;
-  width: 0.45rem;
-  height: 0.45rem;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--pill);
 }
 .status-pill--live {
   --pill: var(--st-live);
-}
-.status-pill--live::before {
-  box-shadow: 0 0 8px var(--pill);
 }
 .status-pill--released {
   --pill: var(--st-released);
@@ -421,7 +431,7 @@
 }
 .status-pill--planned::before {
   background: transparent;
-  border: 1.5px dashed var(--pill);
+  box-shadow: inset 0 0 0 1.5px var(--pill);
 }
 .status-pill--progress {
   --pill: var(--st-progress);
@@ -433,38 +443,28 @@
 /* Page hero used at the top of every section page. */
 .page-hero {
   position: relative;
-  padding-block: clamp(2.25rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 2.75rem);
+  padding-block: clamp(var(--space-6), 5vw, var(--space-8)) var(--space-6);
+  border-bottom: 1px solid var(--border);
 }
 .page-hero__title {
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
   font-size: var(--fs-page-title);
-  font-weight: 700;
-  line-height: 1.07;
-  letter-spacing: -0.03em;
-  background: linear-gradient(100deg, #f8fafc 0%, #e2e8f0 40%, #c4b5fd 80%, #93c5fd 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text);
 }
 .page-hero__lead {
   margin-top: var(--space-4);
-  max-width: 62ch;
+  max-width: 68ch;
   font-size: var(--fs-lead);
   line-height: 1.6;
-  color: #cbd5e1;
+  color: var(--text-muted);
 }
 .page-hero__rule {
-  display: block;
-  width: 4rem;
-  height: 3px;
-  margin-top: var(--space-5);
-  border-radius: 3px;
-  background: var(--grad);
+  display: none;
 }
 
 /* Breadcrumb trail. */
 .breadcrumb {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
   font-size: var(--fs-small);
 }
 .breadcrumb ol {
@@ -475,12 +475,12 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  color: var(--muted);
+  color: var(--text-muted);
 }
 .breadcrumb li:not(:last-child)::after {
   content: '/';
   margin-left: var(--space-3);
-  opacity: 0.7;
+  color: var(--border-strong);
 }
 .breadcrumb a {
   display: inline-flex;
@@ -495,7 +495,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--space-3) var(--space-5);
-  margin-bottom: clamp(1.5rem, 3.5vw, 2.25rem);
+  margin-bottom: var(--space-5);
 }
 .section-head__text {
   min-width: 0;
@@ -504,60 +504,33 @@
   font-size: var(--fs-section-title);
 }
 
-/* Link with an arrow that nudges right on hover. */
+/* Text link followed by an arrow icon. */
 .link-arrow {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   min-height: 44px;
-  font-family: var(--font-display);
   font-weight: 600;
-  font-size: 0.98rem;
-  color: #c4b5fd;
+  font-size: 0.9375rem;
+  color: var(--accent);
   text-decoration: none;
 }
-.link-arrow svg {
-  transition: transform 0.25s ease;
-}
 .link-arrow:hover {
-  color: #fff;
-}
-.link-arrow:hover svg {
-  transform: translateX(4px);
+  color: var(--accent-hover);
+  text-decoration: underline;
 }
 
 /* Neutral line for a section with nothing published. */
 .empty-note {
   padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-sm);
-  border: 1px dashed rgb(148 163 184 / 0.4);
-  color: var(--muted);
+  border-radius: var(--radius);
+  border: 1px dashed var(--border-strong);
+  color: var(--text-muted);
 }
 
 /* Block spacing for pages built from several .block elements. */
 .block {
-  padding-block: clamp(2rem, 5vw, 3.5rem);
-}
-
-/* Scroll reveal. Content stays visible without JavaScript (html.js is added by an inline script). */
-.js .reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-  transition-delay: calc(var(--i, 0) * 70ms);
-}
-.js .reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* Cross-document page transitions where supported. */
-@view-transition {
-  navigation: auto;
-}
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.35s;
+  padding-block: clamp(var(--space-6), 5vw, var(--space-7));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -572,26 +545,14 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .js .reveal {
-    opacity: 1;
-    transform: none;
-  }
-  @view-transition {
-    navigation: none;
-  }
-  .card:hover,
-  .card:focus-within,
-  .link-arrow:hover svg {
-    transform: none;
-  }
 }
 
-/* Keyboard focus: a visible ring on every control, including inside cards and glass panels. */
+/* Keyboard focus: a visible ring on every control. */
 a:focus-visible,
 button:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--lavender);
-  outline-offset: 3px;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* Never let a page scroll sideways. */
@@ -615,44 +576,26 @@ body {
     color: #111 !important;
     font-size: 11pt;
   }
-  .cosmos,
   .nav,
   .skip-link,
-  .footer [class*='perry'],
   [class*='perry'],
-  .hero__motif,
   .hero__scroll,
   .btn,
   .filter-chip,
-  [data-project-filter] {
+  [data-project-filter],
+  [data-theme-toggle] {
     display: none !important;
   }
   .glass,
   .card {
     background: none !important;
     border: 1px solid #999 !important;
-    box-shadow: none !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
     break-inside: avoid;
-  }
-  .reveal,
-  .js .reveal {
-    opacity: 1 !important;
-    transform: none !important;
   }
   h1,
   h2,
   h3,
   h4,
-  .page-hero__title,
-  .hero__name,
-  .hero__headline,
-  .grad-text {
-    color: #000 !important;
-    background: none !important;
-    -webkit-text-fill-color: #000 !important;
-  }
   a {
     color: #000 !important;
   }

@@ -106,71 +106,69 @@ const first = images[0];
 
 <style>
   .gal {
-    padding: clamp(1.1rem, 3vw, 1.6rem);
-    background: var(--glass-strong);
+    padding: var(--space-5);
+    background: var(--surface);
   }
   .gal-head :global(h2),
   .gal-head :global(h3),
   .gal-head :global(h4) {
-    font-size: 1.15rem;
+    font-size: var(--fs-card-title);
     font-weight: 600;
-    color: #fff;
+    color: var(--text);
   }
   .gal-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem 1rem;
-    margin-top: 0.35rem;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: #cbd5e1;
+    gap: var(--space-1) var(--space-4);
+    margin-top: var(--space-1);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .gal-pending {
-    margin-top: 0.9rem;
-    padding: 0.9rem 1rem;
-    border: 1px dashed rgb(148 163 184 / 0.4);
-    border-radius: 12px;
-    color: #cbd5e1;
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius);
+    color: var(--text-muted);
   }
   .gal-note {
-    margin-top: 0.7rem;
-    color: var(--muted);
-    font-size: 0.95rem;
+    margin-top: var(--space-3);
+    color: var(--text-muted);
+    font-size: var(--fs-small);
   }
   .gal-pending .gal-note {
-    margin-top: 0.5rem;
+    margin-top: var(--space-2);
   }
 
   .gal-grid {
     list-style: none;
-    margin: 1rem 0 0;
+    margin: var(--space-4) 0 0;
     padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 10.5rem), 1fr));
-    gap: 0.6rem;
+    gap: var(--space-3);
   }
   /* One or two photographs: show them large instead of as small thumbnails. */
   .gal-grid--few {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 26rem));
-    gap: 0.9rem;
+    gap: var(--space-4);
   }
   .gal-thumb {
     display: block;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    border-radius: 10px;
-    border: 1px solid var(--line);
-    background: var(--bg-2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-subtle);
   }
   .gal-thumb img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
   }
-  .gal-thumb:hover img {
-    transform: scale(1.04);
+  .gal-thumb:hover {
+    border-color: var(--border-strong);
   }
 
   .gal-dialog {
@@ -179,8 +177,8 @@ const first = images[0];
     max-height: 94vh;
     margin: auto;
     padding: 0;
-    border: 1px solid rgb(167 139 250 / 0.5);
-    border-radius: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     background: var(--bg);
     color: var(--text);
   }
@@ -189,47 +187,50 @@ const first = images[0];
     flex-direction: column;
   }
   .gal-dialog::backdrop {
-    background: rgb(2 6 18 / 0.88);
+    background: color-mix(in srgb, var(--navy) 85%, transparent);
   }
   .gal-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding: 0.4rem 0.75rem 0.4rem 1rem;
-    border-bottom: 1px solid var(--line);
+    gap: var(--space-4);
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+    border-bottom: 1px solid var(--border);
   }
   .gal-count {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
   }
   .gal-btn {
     min-height: 44px;
     min-width: 44px;
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: rgb(255 255 255 / 0.06);
-    color: #fff;
-    font-family: var(--font-display);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
+    transition:
+      background-color var(--ease),
+      border-color var(--ease);
   }
   .gal-btn:hover {
-    border-color: rgb(167 139 250 / 0.7);
-    background: rgb(124 58 237 / 0.2);
+    border-color: var(--text);
+    background: var(--bg-subtle);
   }
   .gal-stage {
     flex: 1 1 auto;
     min-height: 0;
     margin: 0;
-    padding: 0.75rem;
+    padding: var(--space-3);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     overflow: auto;
   }
   .gal-stage img {
@@ -239,11 +240,11 @@ const first = images[0];
     width: auto;
     height: auto;
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: var(--radius);
   }
   .gal-stage figcaption {
-    font-size: 0.9rem;
-    color: #cbd5e1;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
     text-align: center;
   }
   .gal-stage figcaption:empty {
@@ -252,17 +253,8 @@ const first = images[0];
   .gal-nav {
     display: flex;
     justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.5rem 0.75rem 0.75rem;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .gal-thumb img {
-      transition: none;
-    }
-    .gal-thumb:hover img {
-      transform: none;
-    }
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3) var(--space-3);
   }
 </style>
 

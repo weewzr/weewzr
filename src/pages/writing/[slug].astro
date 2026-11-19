@@ -97,7 +97,7 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
 
     {
       sourceUrl && (
-        <aside class="source glass gradient-border" aria-labelledby="source-title">
+        <aside class="source glass" aria-labelledby="source-title">
           <p class="eyebrow" id="source-title">Source document</p>
           <p class="source-label">{sourceLabel ?? sourceUrl}</p>
           <p class="source-url">{sourceUrl.replace(/^https?:\/\//, '')}</p>
@@ -124,128 +124,130 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
   .note {
     width: min(100% - 2rem, 50rem);
     margin-inline: auto;
-    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(4rem, 8vw, 6.5rem);
+    padding-block: var(--space-6) var(--space-8);
   }
 
   /* Breadcrumb. */
   .crumbs {
-    margin-bottom: clamp(1rem, 3vw, 1.75rem);
-    font-size: 0.9rem;
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-small);
   }
   .crumbs ol {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.1rem 0.6rem;
+    gap: 0 var(--space-3);
     margin: 0;
     padding: 0;
     list-style: none;
-    color: var(--muted);
+    color: var(--text-muted);
   }
   .crumbs li:not(:last-child)::after {
     content: '/';
-    margin-left: 0.6rem;
-    opacity: 0.7;
+    margin-left: var(--space-3);
+    color: var(--border-strong);
   }
   .crumbs a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    color: var(--lavender);
   }
 
   /* Header and meta row. */
   .note-head h1 {
-    margin-top: 0.6rem;
-    font-size: clamp(1.8rem, 4.8vw, 2.85rem);
-    font-weight: 600;
-    line-height: 1.12;
+    margin-top: var(--space-2);
+    font-size: var(--fs-page-title);
+    color: var(--text);
     overflow-wrap: anywhere;
   }
   .note-lead {
-    margin-top: 1.1rem;
-    max-width: 62ch;
-    font-size: 1.12rem;
-    color: var(--muted);
+    margin-top: var(--space-4);
+    max-width: 68ch;
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    color: var(--text-muted);
   }
   .meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem 2rem;
-    margin: 1.75rem 0 0;
-    padding: 1rem 0;
-    border-block: 1px solid var(--line);
+    gap: var(--space-4) var(--space-6);
+    margin: var(--space-5) 0 0;
+    padding: var(--space-4) 0;
+    border-block: 1px solid var(--border);
   }
   .meta > div {
     min-width: 0;
   }
   .meta dt {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
   }
   .meta dd {
     display: flex;
     align-items: center;
     min-height: 44px;
     margin: 0;
-    font-size: 0.97rem;
+    font-size: var(--fs-body);
   }
   .meta-tags ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
-    margin: 0.3rem 0 0;
+    gap: var(--space-2);
+    margin: var(--space-1) 0 0;
     padding: 0;
     list-style: none;
   }
 
   /* Typography for the rendered Markdown. Selectors use :global because the content is injected. */
   .prose {
-    margin-top: clamp(1.75rem, 4vw, 2.5rem);
-    font-size: 1.0625rem;
-    line-height: 1.75;
+    max-width: 68ch;
+    margin-top: var(--space-6);
+    font-size: var(--fs-body);
+    line-height: 1.68;
     color: var(--text);
     overflow-wrap: break-word;
   }
   .prose > :global(* + *) {
-    margin-top: 1.1rem;
+    margin-top: var(--space-4);
   }
   .prose :global(h2) {
-    margin-top: 2.5rem;
-    font-size: clamp(1.35rem, 2.8vw, 1.7rem);
-    font-weight: 600;
+    margin-top: var(--space-7);
+    font-size: var(--fs-section-title);
+    font-weight: 650;
     scroll-margin-top: calc(var(--nav-h) + 12px);
   }
   .prose :global(h3) {
-    margin-top: 1.9rem;
-    font-size: 1.2rem;
+    margin-top: var(--space-6);
+    font-size: 1.125rem;
     font-weight: 600;
   }
-  .prose :global(h2 + *),
+  .prose :global(h2 + *) {
+    margin-top: var(--space-4);
+  }
   .prose :global(h3 + *) {
-    margin-top: 0.8rem;
+    margin-top: var(--space-3);
   }
   .prose :global(a) {
+    color: var(--accent);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
+  .prose :global(a:hover) {
+    color: var(--accent-hover);
+  }
   .prose :global(strong) {
-    color: #fff;
     font-weight: 600;
   }
   .prose :global(ul),
   .prose :global(ol) {
-    padding-left: 1.4rem;
+    padding-left: var(--space-5);
   }
   .prose :global(li + li) {
-    margin-top: 0.55rem;
+    margin-top: var(--space-2);
   }
   .prose :global(li::marker) {
-    color: var(--lavender);
+    color: var(--text-muted);
   }
   .prose :global(sup),
   .prose :global(sub) {
@@ -254,33 +256,38 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
   }
   .prose :global(blockquote) {
     margin-inline: 0;
-    padding: 0.2rem 0 0.2rem 1.1rem;
-    border-left: 3px solid var(--purple);
-    color: var(--muted);
+    padding: var(--space-1) 0 var(--space-1) var(--space-4);
+    border-left: 3px solid var(--accent);
+    color: var(--text-muted);
   }
   .prose :global(hr) {
     border: 0;
-    border-top: 1px solid var(--line);
-    margin-block: 2rem;
+    border-top: 1px solid var(--border);
+    margin-block: var(--space-6);
   }
   .prose :global(code) {
     padding: 0.08em 0.4em;
-    border: 1px solid rgb(99 102 241 / 0.25);
-    border-radius: 6px;
-    background: rgb(59 130 246 / 0.12);
-    color: #c7d2fe;
-    font-size: 0.88em;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+    color: var(--text);
+    font-size: 0.9em;
     overflow-wrap: anywhere;
   }
+  /* Astro highlights fenced code with a dark theme and inline colours; page tokens replace them. */
   .prose :global(pre) {
     overflow-x: auto;
-    padding: 1rem 1.15rem;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    background-color: rgb(6 11 27 / 0.85) !important;
-    font-size: 0.9rem;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--bg-subtle) !important;
+    color: var(--text) !important;
+    font-size: 0.9em;
     line-height: 1.6;
     -webkit-overflow-scrolling: touch;
+  }
+  .prose :global(pre span) {
+    color: inherit !important;
   }
   .prose :global(pre code) {
     padding: 0;
@@ -292,71 +299,62 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
   }
   .prose :global(.table-scroll) {
     overflow-x: auto;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    background: rgb(11 27 58 / 0.4);
     -webkit-overflow-scrolling: touch;
   }
   .prose :global(table) {
     width: 100%;
     min-width: 22rem;
     border-collapse: collapse;
-    font-size: 0.95rem;
+    font-size: var(--fs-small);
     line-height: 1.5;
   }
   .prose :global(th),
   .prose :global(td) {
-    padding: 0.7rem 0.9rem;
-    border-bottom: 1px solid var(--line);
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border);
     text-align: left;
     vertical-align: top;
   }
   .prose :global(thead th) {
-    background: rgb(59 130 246 / 0.12);
-    font-family: var(--font-display);
+    background: var(--bg-subtle);
     font-weight: 600;
-  }
-  .prose :global(tbody tr:last-child td) {
-    border-bottom: 0;
   }
 
   /* Source block and back links. */
   .source {
     display: grid;
-    gap: 0.5rem;
+    gap: var(--space-2);
     justify-items: start;
-    margin-top: clamp(2.25rem, 5vw, 3.25rem);
-    padding: 1.3rem 1.4rem;
+    margin-top: var(--space-7);
+    padding: var(--space-5);
     border-radius: var(--radius);
-    background: linear-gradient(155deg, rgb(17 36 76 / 0.62), rgb(9 20 44 / 0.62));
+    background: var(--surface);
   }
   .source-label {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
+    font-size: var(--fs-card-title);
     font-weight: 600;
   }
   .source-url {
     max-width: 100%;
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--muted);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
     overflow-wrap: anywhere;
   }
   .source .btn {
-    margin-top: 0.6rem;
+    margin-top: var(--space-2);
   }
   .back {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem 1.75rem;
-    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+    gap: var(--space-1) var(--space-5);
+    margin-top: var(--space-6);
   }
   .back a {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     min-height: 44px;
-    font-family: var(--font-display);
     font-weight: 600;
   }
   .back :global(.flip) {

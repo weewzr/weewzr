@@ -28,8 +28,8 @@ const shown = limit ? entries.slice(0, limit) : entries;
     <p class="empty-note">{emptyText}</p>
   ) : (
     <ul class="card-grid" role="list">
-      {shown.map((entry, i) => (
-        <li class="reveal" style={`--i:${i}`}>
+      {shown.map((entry) => (
+        <li>
           <WorkCard
             href={`${basePath}${entry.id}/`}
             title={entry.data.shortTitle}

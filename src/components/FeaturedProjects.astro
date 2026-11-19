@@ -32,7 +32,7 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
   <div class="container">
     {
       showHead && (
-        <header class="proj-head reveal">
+        <header class="proj-head">
           <p class="eyebrow">Engineering projects</p>
           <h2 id="projects-title" class="section-title">Featured engineering projects</h2>
           <p class="section-lead">{section?.lead}</p>
@@ -62,7 +62,7 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
     <ol class="project-list" role="list" data-project-list>
       {
         projects.map((project, i) => (
-          <li class="reveal" style={`--i:${i}`} data-areas={project.areas.join(' ')}>
+          <li data-areas={project.areas.join(' ')}>
             <ProjectCard project={project} index={i} headingLevel={headingLevel} />
           </li>
         ))
@@ -71,10 +71,10 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
 
     {
       showHead && (
-        <p class="proj-more reveal">
+        <p class="proj-more">
           <a class="link-arrow" href={withBase('projects/')}>
             All projects, with filters by research area
-            <Icon name="arrow-right" size={18} />
+            <Icon name="arrow-right" size={20} />
           </a>
         </p>
       )
@@ -85,20 +85,20 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
 <style>
   .proj-head {
     position: relative;
-    margin-bottom: clamp(2rem, 5vw, 3.25rem);
+    margin-bottom: var(--space-6);
   }
   /* From 900px PerryAgent is absolute in the top-right corner (width clamp(120px, 11vw, 150px), about 0.8 of that
      in height). Reserve that corner so the text never runs underneath it. Below 900px Perry sits in the flow. */
   @media (min-width: 900px) {
     .proj-head {
-      padding-right: calc(clamp(120px, 11vw, 150px) + 1.5rem);
+      padding-right: calc(clamp(120px, 11vw, 150px) + var(--space-5));
       min-height: 9rem;
     }
   }
   /* The filter needs JavaScript, so it stays hidden until the `js` class from BaseLayout is present. */
   .proj-filter {
     display: none;
-    margin: 0 0 clamp(1.5rem, 4vw, 2.25rem);
+    margin: 0 0 var(--space-5);
   }
   :global(.js) .proj-filter {
     display: block;
@@ -106,50 +106,50 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
   .chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
   .filter-chip {
     min-height: 44px;
-    padding: 0.35rem 1rem;
-    border-radius: 999px;
-    border: 1px solid rgb(148 163 184 / 0.3);
-    background: rgb(11 27 58 / 0.55);
-    color: #cbd5e1;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
+    padding: var(--space-1) var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
     cursor: pointer;
     transition:
-      background-color 0.2s ease,
-      border-color 0.2s ease,
-      color 0.2s ease;
+      background-color var(--ease),
+      border-color var(--ease),
+      color var(--ease);
   }
   .filter-chip:hover {
-    border-color: rgb(167 139 250 / 0.6);
-    color: #fff;
+    border-color: var(--text);
+    background: var(--bg-subtle);
   }
   .filter-chip[aria-pressed='true'] {
-    color: #fff;
-    background: rgb(124 58 237 / 0.3);
-    border-color: rgb(167 139 250 / 0.6);
+    color: var(--accent);
+    background: var(--accent-bg);
+    border-color: var(--accent);
   }
   .filter-status {
     min-height: 1.5em;
-    margin: 0.6rem 0 0;
-    font-size: 0.88rem;
-    color: var(--muted);
+    margin: var(--space-2) 0 0;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
   .project-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    gap: clamp(1.75rem, 4vw, 2.75rem);
+    gap: var(--space-6);
   }
   .project-list > li[hidden] {
     display: none;
   }
   .proj-more {
-    margin-top: clamp(1.25rem, 3vw, 2rem);
+    margin-top: var(--space-5);
   }
 </style>
 
