@@ -14,6 +14,18 @@ I build computational models of chemical and energy systems, from fission-produc
 
 ## Projects
 
+### AmCraX: Ammonia Cracking Simulation and Optimisation Platform
+
+Aspen Plus simulation and interactive platform | [Live app](https://weewzr.github.io/AmCraX/) | [Repository](https://github.com/weewzr/AmCraX) | [Case study](https://weewzr.github.io/weewzr/projects/amcrax/)
+
+Developed from my CN5190 Hydrogen Energy and Technology review essay at NUS. A process simulation and optimisation platform for hydrogen production through ammonia cracking, integrating Aspen Plus V15 with independent Python models to investigate reactor performance, heat integration, hydrogen purification and techno-economic feasibility.
+
+- Automated Aspen Plus simulations with 279 converged runs, independently cross-checked against Python thermodynamic and process models.
+- Kinetic modelling of nickel- and ruthenium-based catalysts, alongside sensitivity studies of operating temperature, pressure and ammonia conversion.
+- Interactive dashboard for process visualisation, optimisation, techno-economic analysis and model validation.
+
+Stack: Aspen Plus V15, Python, FastAPI, React, TypeScript, SciPy, Cantera, GitHub Pages
+
 ### KASCO: Kalimantan SAF Supply Chain Optimiser
 
 Live prototype | [Live app](https://weewzr.github.io/KASCO/) | [Repository](https://github.com/weewzr/KASCO) | [Case study](https://weewzr.github.io/weewzr/projects/kasco/)
