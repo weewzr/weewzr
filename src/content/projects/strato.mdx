@@ -33,7 +33,7 @@ roadmap:
   - id: phase2-code
     title: "Phase 2 implementation"
     status: upcoming
-    summary: "The review package states that implementation starts only after the decisions are made. The README plans a comparison with measured AGR-1 release data for v2.0."
+    summary: "The review package states that implementation starts only after the decisions are made. The README plans publication of experimental comparison results for v2.0."
   - id: web-demo
     title: "Interactive web demonstration"
     status: upcoming
@@ -121,7 +121,7 @@ The README states the objective as a transparent and verifiable model of fission
 
 - Solve the same multilayer diffusion problem by two independent methods, a conservative finite-volume method and an exact eigenfunction series, so that each checks the other.
 - Document every equation from its physical basis to the Rust line that implements it, in the Full Mathematical Derivation and the Final Deliverable.
-- Keep verification apart from validation. Phase 1 shows that the code solves its equations correctly. Whether the equations and inputs match real particles is a separate question, which the README assigns to a comparison with measured AGR-1 release data planned for v2.0.
+- Keep verification apart from validation. Phase 1 shows that the code solves its equations correctly. Whether the equations and inputs match real particles is a separate question. An internal comparison against experimental release data has been conducted at SNRSI, and its publication is pending. The README plans publication of experimental comparison results for v2.0.
 - Extend the model in Phase 2 with first-order decay, a kernel source from fission, an inventory account that includes decay, Arrhenius diffusivities and temperature histories. The review package fixes the mathematics and the checks before any code is written.
 
 ## Architecture
@@ -199,11 +199,11 @@ The two methods check each other, and a regression test compares the build with 
 
 Python scripts under `scripts/derivation_checks/` re-implement the equations and numbers quoted in the documents and check them. They confirm the algebra and the numbers they contain, and they do not prove the Rust code correct, because they re-implement the arithmetic in Python. The Phase 2 review package records that its 17 section scripts exit cleanly with 251 passes and no failure line. Every Phase 2 number in the change document comes from such a Python transcription, since no Phase 2 Rust exists.
 
-These checks show that the code solves its equations correctly. They say nothing about whether the equations or the inputs match real particles, because two methods can agree and still rest on the same wrong physics. Comparison with release data measured in AGR-1, the first irradiation test of the Advanced Gas Reactor Fuel Development and Qualification Program, is planned for v2.0.
+These checks show that the code solves its equations correctly. On their own they say nothing about whether the equations or the inputs match real particles, because two methods can agree and still rest on the same wrong physics. A separate internal comparison against experimental release data was conducted at SNRSI. The early release curve agreed within 2%, with increasing deviation at later stages. Those results are not yet public, and this page reports numerical verification only. Comparison with release data measured in AGR-1, the first irradiation test of the Advanced Gas Reactor Fuel Development and Qualification Program, remains a planned public-validation objective for v2.0.
 
 ## Results
 
-Every figure below comes from the synthetic five-layer case, so it describes the numerics and makes no physical prediction.
+Every figure below comes from the public synthetic five-layer demonstration case, so it describes the numerics and makes no physical prediction. None of them shows the unpublished SNRSI comparison.
 
 | Quantity | Value | Source document |
 |---|---|---|
@@ -232,7 +232,7 @@ Each doubling of the cell count divides the error by four, which is second-order
 
 ## What it does not cover
 
-- The inputs are synthetic. A register of literature parameters sits in `data/` and the program does not read it yet.
+- The inputs of the public demonstration case are synthetic. A register of literature parameters sits in `data/` and the program does not read it yet.
 - Temperature is constant and diffusivity does not depend on it. The input temperature is recorded only.
 - There is no radioactive decay and no fission-product generation, so all inventory starts in the kernel.
 - Interfaces are in perfect contact with no partition coefficients, and the outer surface is a perfect sink.
