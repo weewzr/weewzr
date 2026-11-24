@@ -93,6 +93,27 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
   .projects-block--home {
     padding-block: var(--space-6);
   }
+  /* Home: a one-line lead and a tighter head, so the first project row stays above the fold at 1440 x 900. */
+  .projects-block--home .section-head {
+    margin-bottom: var(--space-4);
+  }
+  .projects-block--home .section-lead {
+    margin-top: var(--space-2);
+    font-size: var(--fs-small);
+  }
+  @media (min-width: 1024px) {
+    .projects-block--home .section-head__text {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-5);
+    }
+    .projects-block--home .section-lead {
+      margin-top: 0;
+    }
+  }
+  .projects-block--home .project-list > li:first-child :global(.prow) {
+    padding-top: var(--space-5);
+  }
   /* The filter needs JavaScript, so it stays hidden until the `js` class from BaseLayout is present. */
   .proj-filter {
     display: none;

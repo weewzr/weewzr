@@ -11,12 +11,10 @@ export const site = {
   /** Full public URL of the site (used for canonical links, Open Graph and the sitemap). */
   url: 'https://weewzr.github.io/weewzr/',
   /**
-   * The home-page statement: one sentence of fact, built only from statements already on the site
-   * (README and `aboutParagraphs`). `statementAlternative` is the second candidate, kept for the owner to choose.
+   * The home-page statement, chosen by the owner: one sentence of fact, built only from statements already on the
+   * site (README, `aboutParagraphs`, `affiliations` and the four projects).
    */
   statement:
-    'I build computational models of nuclear fuel, hydrogen production and fuel supply networks, and check each one against an independent method where one exists.',
-  statementAlternative:
     'Chemical Engineering student at the National University of Singapore, with research involvement in nuclear engineering and four public modelling projects on nuclear fuel, hydrogen and fuel supply networks.',
   /** One factual line under the name, used on the home page and in the footer. */
   identity: 'Chemical Engineering student at the National University of Singapore (NUS)',
@@ -128,7 +126,7 @@ export const education = {
 export const aboutParagraphs = [
   'I am a Chemical Engineering student at the National University of Singapore with a minor in Hydrogen and Low Carbon Technology and a specialisation in Safety and Sustainability.',
   'My research involvement is in nuclear engineering. Alongside it I build computational models of chemical and energy systems, from fission-product transport in fuel particles to low-carbon hydrogen plants and fuel supply networks.',
-  'I care about models that can be checked. Each project below states its assumptions and checks its results against an independent method where one exists. The write-ups also say what each model leaves out.',
+  'I care about models that can be checked. Each project on this site states its assumptions and checks its results against an independent method where one exists. The write-ups also say what each model leaves out.',
 ] as const;
 
 /** People and units named with the owner's permission. Keep wording factual. */

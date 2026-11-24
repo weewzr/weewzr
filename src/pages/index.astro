@@ -7,7 +7,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import FeaturedProjects from '../components/FeaturedProjects.astro';
 import OutputsLedger from '../components/OutputsLedger.astro';
 import Contact from '../components/Contact.astro';
-import { site, social, education, affiliations } from '../data/site';
+import { site, social, education } from '../data/site';
 import { withBase } from '../lib/url';
 
 const personLd = {
@@ -19,7 +19,6 @@ const personLd = {
   sameAs: [social.github, social.linkedin],
   affiliation: { '@type': 'CollegeOrUniversity', name: education.institution },
 };
-const research = affiliations[0];
 ---
 
 <BaseLayout path="" jsonLd={personLd}>
@@ -27,11 +26,6 @@ const research = affiliations[0];
     <div class="container">
       <p class="intro__name">{site.name}</p>
       <h1 id="intro-title" class="intro__statement">{site.statement}</h1>
-      <p class="intro__meta">
-        <span>{education.degree}, {education.institution}</span>
-        <span class="intro__sep" aria-hidden="true">·</span>
-        <span>Research involvement: {research.unit}</span>
-      </p>
       <p class="intro__links">
         <a href={withBase('about/')}>About me</a>
         <a href={withBase('writing/')}>Writing</a>
@@ -48,45 +42,29 @@ const research = affiliations[0];
 
 <style>
   .intro {
-    padding-block: clamp(var(--space-6), 4vw, var(--space-7)) 0;
+    padding-block: var(--space-5) 0;
   }
   .intro__name {
     font-size: var(--fs-small);
     font-weight: 600;
     color: var(--text);
   }
+  /* The statement already names the degree, the university and the research involvement, so no separate meta
+     line repeats them. The measure is wide enough to keep the sentence to four lines at 1440 px, so the first
+     project row (figure and checked result) stays above the fold of a 1440 x 900 window. */
   .intro__statement {
     margin-top: var(--space-3);
-    max-width: 36ch;
+    max-width: 42ch;
     font-size: var(--fs-statement);
     line-height: 1.15;
     letter-spacing: -0.01em;
     text-wrap: balance;
   }
-  .intro__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1) var(--space-2);
-    margin-top: var(--space-4);
-    font-size: var(--fs-small);
-    color: var(--text-muted);
-  }
-  .intro__sep {
-    color: var(--border-strong);
-  }
-  @media (max-width: 639.98px) {
-    .intro__sep {
-      display: none;
-    }
-    .intro__meta {
-      flex-direction: column;
-    }
-  }
   .intro__links {
     display: flex;
     flex-wrap: wrap;
     gap: 0 var(--space-5);
-    margin-top: var(--space-2);
+    margin-top: var(--space-3);
   }
   .intro__links a {
     display: inline-flex;
