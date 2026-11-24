@@ -1,8 +1,8 @@
 ---
 title: "AmCraX: ammonia cracking simulation and optimisation platform"
-summary: "Grows out of my CN5190 Hydrogen Energy and Technology review essay at NUS. Lecturers: Prof Wang Lei and Prof Lum Yanwei. AmCraX couples an Aspen Plus V15 flowsheet with independent Python models, a FastAPI service and a React dashboard. The public site shows the published results and does not run Aspen Plus."
+summary: "Grows out of my CN5190 Hydrogen Energy and Technology review essay at NUS. Lecturers: Prof Wang Lei and Prof Lum Yanwei. AmCraX couples an Aspen Plus V15 flowsheet with independent Python models, a FastAPI service and a React dashboard. The public site opens on a process simulator that runs in the browser from the stored results. It does not run Aspen Plus."
 order: 4
-statusNote: "First public version, published on 21 November 2026. The public site is a static build of stored results. Live Aspen Plus runs need the local platform and an Aspen Plus licence."
+statusNote: "First public version published on 21 November 2026; Phase 2 (browser simulator, one reference cost scenario and four hypothesis tests) published on 23 November 2026. This page describes the AmCraX main branch at commit 70993a5 (24 November 2026). The public site is a static build of stored results. Live Aspen Plus runs need the local platform and an Aspen Plus licence."
 roadmap:
   - id: scoping
     title: "Literature review of ammonia cracking"
@@ -16,33 +16,48 @@ roadmap:
     summary: "The repository was published on 21 November 2026 with the flowsheet, the automation layer, the independent models, the dashboard, the technical report and the pitch deck."
     items:
       - label: "Aspen Plus V15 flowsheet driven from Python"
-        detail: "279 Aspen runs stand behind the published results: two baselines, 8 scenarios, 10 optimisation candidates, 91 sensitivity runs and a 168-point equilibrium grid. All converged."
+        detail: "279 Aspen runs stand behind the stored results. All converged."
       - label: "Independent Python models"
         detail: "Thermochemistry, Peng-Robinson equilibrium, a process model, pinch analysis, catalyst kinetics in a plug-flow reactor, levelised cost of hydrogen and a simplified carbon account."
       - label: "Validation matrix"
         detail: "137 items: 105 pass, 22 fail and 10 are informational. The failures are reported, not hidden."
-      - label: "Public site on GitHub Pages"
-        detail: "Nine sections, an interactive process flow diagram and an in-browser ideal-gas equilibrium calculator."
+  - id: phase-2
+    title: "Browser simulator, one reference scenario and four hypothesis tests"
+    period: "23 November 2026"
+    status: done
+    summary: "Phase 2 puts an interactive process simulator on the first page of the public site, moves all economics onto one reference scenario and tests four hypotheses for Singapore under a documented verdict rule."
+    items:
+      - label: "Process simulator in the browser"
+        detail: "Stored Aspen Plus results are used where an input matches a stored case, and a browser port of the Python models elsewhere. Every value is labelled as a stored Aspen Plus result, an interpolation, a browser-model value, an extrapolation or an assumption."
+      - label: "One reference scenario"
+        detail: "Itemised capital cost in 2024 USD, 8000 h per year, a 10% discount rate, 25 years and grey ammonia at 450 USD/t."
+      - label: "Four hypotheses with an evidence matrix"
+        detail: "End use, ammonia feedstock, catalyst and heat integration, and purification, each judged under verdict rule version 2, which was fixed before the analyses."
   - id: open
     title: "Limits recorded in the repository"
     status: upcoming
-    summary: "The repository lists these as limitations and gives no date for them."
+    summary: "The repository lists these as limitations and ranks the next research steps without dates."
     items:
-      - label: "The Aspen reactor is an equilibrium block"
-        detail: "The catalyst kinetics run in a separate Python reactor model. They were fitted at 1 atm and are extrapolated to 20 bar."
-      - label: "The purification step is a component splitter with an assumed split"
-        detail: "Ammonia polishing is not modelled."
-      - label: "Costs are a preliminary estimate"
-        detail: "The capital cost correlation does not see exchanger area, purification size or catalyst volume."
+      - label: "No rate law is validated at 20 bar"
+        detail: "Three rate laws are validated against literature inside their own fitting data and two are extrapolated. Ni/CeO2, Ru/CeO2 and Ru-K/CaO have no rate law and are not modelled."
+      - label: "The purification step is a reduced-order splitter"
+        detail: "Its hydrogen recovery is an input, and the ranking of PSA against a Pd-Ag membrane turns on it."
+      - label: "Missing sourced inputs"
+        detail: "There is no supplier price for any cracking catalyst, no sourced exchanger coefficient at 20 bar and no sourced turbine efficiency for the hydrogen and nitrogen fuel of a fired cracker."
 figures:
+  - src: "projects/amcrax/simulator.webp"
+    alt: "The AmCraX process simulator page: preset and export buttons, a controls panel, four labelled results (ammonia conversion, hydrogen production, hydrogen cost and carbon intensity) and the process flow diagram of the cracker with stream flows and unit duties."
+    caption: "The process simulator, the first page of the public site since Phase 2. Each value carries its source label (Aspen or browser model). Captured on 24 November 2026."
+    width: 1440
+    height: 900
   - src: "projects/amcrax/site-home.webp"
-    alt: "Home page of the AmCraX public site, with the project title, a short description and the baseline results."
-    caption: "Home page of the public site. Captured on 21 November 2026."
+    alt: "Home page of the AmCraX public site as first published, with the project title, a short description and the baseline results."
+    caption: "Home page of the public site as first published. Captured on 21 November 2026, before Phase 2 made the simulator the first page."
     width: 1440
     height: 900
   - src: "projects/amcrax/interactive-pfd.webp"
     alt: "Interactive process flow diagram of the ammonia cracking flowsheet, from the liquid ammonia feed through the cracker and purification to the hydrogen product, with the tail gas burner."
-    caption: "Interactive process flow diagram. Each stream and unit shows stored Aspen Plus results and their source."
+    caption: "Interactive process flow diagram of the dashboard. Each stream and unit shows stored Aspen Plus results and their source."
     width: 1440
     height: 900
   - src: "projects/amcrax/aspen-flowsheet.webp"
@@ -56,12 +71,18 @@ figures:
     width: 1440
     height: 648
 sources:
+  - label: "AmCraX README, main branch"
+    url: "https://github.com/weewzr/AmCraX/blob/main/README.md"
   - label: "Baseline results: results/simulations/baseline.json"
     url: "https://github.com/weewzr/AmCraX/blob/main/results/simulations/baseline.json"
+  - label: "Reference scenario baseline: results/research/reference_scenario/baseline.json"
+    url: "https://github.com/weewzr/AmCraX/blob/main/results/research/reference_scenario/baseline.json"
   - label: "Validation matrix: docs/validation/validation_matrix.md"
     url: "https://github.com/weewzr/AmCraX/blob/main/docs/validation/validation_matrix.md"
-  - label: "Cost of hydrogen: results/simulations/economics_baseline.json"
-    url: "https://github.com/weewzr/AmCraX/blob/main/results/simulations/economics_baseline.json"
+  - label: "Evidence matrix and verdicts: docs/research/evidence_matrix.md"
+    url: "https://github.com/weewzr/AmCraX/blob/main/docs/research/evidence_matrix.md"
+  - label: "Verdict rule: docs/research/verdict_methodology_v2.md"
+    url: "https://github.com/weewzr/AmCraX/blob/main/docs/research/verdict_methodology_v2.md"
   - label: "Known limitations: docs/known_limitations.md"
     url: "https://github.com/weewzr/AmCraX/blob/main/docs/known_limitations.md"
   - label: "Technical report (PDF)"
@@ -76,32 +97,44 @@ My CN5190 essay found that the viability of ammonia cracking depends on several 
 
 AmCraX answers questions of the kind the essay raises. How do operating temperature and pressure change conversion and the heat duty? What does heat recovery save? How do ammonia price and operating conditions change the cost of hydrogen on a consistent boundary? Every published number is traceable to a stored result file.
 
-The [public site](https://weewzr.github.io/AmCraX/) shows the published results. The [repository](https://github.com/weewzr/AmCraX) holds the code, the Aspen Plus model files, the results, the [technical report](https://weewzr.github.io/AmCraX/downloads/AmCraX_Technical_Report.pdf) and the pitch deck.
+The [public site](https://weewzr.github.io/AmCraX/) opens on the process simulator and shows the published results. The [repository](https://github.com/weewzr/AmCraX) holds the code, the Aspen Plus model files, the results, the [technical report](https://weewzr.github.io/AmCraX/downloads/AmCraX_Technical_Report.pdf) and the pitch deck.
 
 ## Architecture
 
 - **Aspen Plus V15 flowsheet.** Liquid ammonia is pumped, vaporised, preheated against the reactor effluent and cracked at 600 °C and 20 bar. The product is cooled and purified, and the tail gas is burned for heat. The property method is Peng-Robinson.
 - **Automation.** Python generates each Aspen input file from a typed case definition and runs Aspen Plus through its COM interface, one instance at a time.
-- **Independent Python models.** They cover thermochemistry, equilibrium, the process, heat integration, kinetics, costs and carbon intensity, and they check the Aspen results.
+- **Independent Python models.** They cover thermochemistry, equilibrium, the process, heat integration, kinetics, purification, costs and carbon intensity, and they check the Aspen results.
 - **Platform.** A FastAPI service and a React dashboard with a React Flow process diagram. It runs locally next to Aspen Plus.
-- **Public site.** A static build of the stored results on GitHub Pages. It never contacts Aspen Plus or a server. Its equilibrium calculator runs an ideal-gas model in the browser and is labelled as such.
+- **Public site.** A static build of the stored results on GitHub Pages. It never contacts Aspen Plus or a server. Its first page is a process simulator: where an input matches a stored case it shows the stored Aspen Plus result, and elsewhere it uses a browser port of the Python models. Each value says which of the two it is. The animation shows flow direction only and is not a transient simulation.
 
 ## Approach
 
 The baseline case feeds 100 kmol/h of ammonia. Aspen Plus gives an ammonia conversion of 98.1% and 251.6 kg/h of hydrogen. The feed and effluent exchanger recovers 612 kW, which lowers the external heating from 2,905 kW to 2,293 kW.
 
-The equilibrium results were checked like for like against the independent Python model. The largest difference in conversion is 0.045 percentage points with ideal-gas properties in both models and 0.185 percentage points with Peng-Robinson in both.
+Phase 2 moved every research result onto one reference scenario: itemised capital cost in 2024 USD, 8000 operating hours per year, a 10% discount rate over 25 years, and grey ammonia at 450 USD/t.
 
-The validation matrix has 137 items: 105 pass, 22 fail and 10 are informational. Twenty of the failures are flowsheet cross-checks where the two models use different property models in the feed section. Two are kinetics curves reproduced within about 0.11 against a tolerance of 0.05.
+## Results
 
-The preliminary levelised cost of hydrogen is 3.92 USD/kg at an ammonia price of 450 USD/t, and the ammonia feed is 3.04 USD/kg of that. Ten optimised designs were re-solved in Aspen Plus. All converged, and their primary results agree with the Python model within 1.15%.
+On the reference scenario the baseline levelised cost of hydrogen is 4.015 USD/kg (5.174 SGD/kg), of which the ammonia feed is 3.040 USD/kg. The earlier figure of 3.92 USD/kg comes from the legacy plant-level cost correlation. It is kept as a stored core result and is not the basis of any research result. Ten optimised designs were re-solved in Aspen Plus. All converged, and their primary results agree with the Python model within 1.15%.
+
+Four hypotheses from the essay are tested for Singapore: end use, ammonia feedstock, catalyst and heat integration, and purification. Each verdict follows a documented rule (version 2) that was fixed before the analyses, and is printed with its envelope beside the version 1 verdict. The verdicts are kept in the [evidence matrix](https://github.com/weewzr/AmCraX/blob/main/docs/research/evidence_matrix.md), which the AmCraX README names as the reference if any summary differs from it. They describe model results and are not experimental validation.
+
+## Verification
+
+AmCraX keeps four kinds of evidence apart: numerical verification, comparison of the Python models with Aspen Plus, comparison with published literature, and independent experimental validation. It has the first three and none of the fourth.
+
+The equilibrium results were checked like for like against the independent Python model over a 168-point grid. The largest difference in conversion is 0.045 percentage points with ideal-gas properties in both models and 0.185 percentage points with Peng-Robinson in both.
+
+The validation matrix has 137 items: 105 pass, 22 fail and 10 are informational. Twenty of the failures are flowsheet cross-checks where the two models use different property models in the feed section; they keep their 2% tolerance. Two are kinetics prediction items, where the published curves are reproduced only approximately.
+
+The browser simulator is a port of the Python models. It agrees with them on 82 stored test vectors to about 1e-7. This is numerical verification of the port, recorded in `results/research/simulator/parity_report.json`.
 
 ## What it does not cover
 
-- It is not a validated digital twin. No plant data were used.
+- It is not a validated digital twin. No plant data were used, and there is no independent experimental validation.
 - Steady state only.
-- The Aspen reactor is an equilibrium block. The kinetics were fitted at 1 atm and are extrapolated to 20 bar.
-- The purification step is a component splitter. The product purity of 99.96 mol% follows from the assumed split and is below the limit for fuel-cell hydrogen. Ammonia polishing is not modelled.
-- The costs are a preliminary estimate, below published values of 5.1 to 6.4 USD/kg at comparable ammonia prices. The model omits NOx treatment, ammonia polishing, compression and installed-cost factors.
-- The carbon intensity is a simplified account, not a life-cycle assessment.
-- The public site does not run Aspen Plus.
+- The Aspen reactor is an equilibrium block, so conversion is an upper bound. No rate law is validated at 20 bar.
+- The purification step is a reduced-order splitter with its recovery as an input. The product purity of 99.961 mol% follows from the assumed split and is below the 99.97% limit quoted for fuel-cell hydrogen. Ammonia polishing is not modelled.
+- The reference capital cost comes from one paper's itemised table. No supplier price exists for any cracking catalyst.
+- The carbon intensity is a simplified account, not a life-cycle assessment. Under the actual Singapore carbon tax the tax is zero for every route; any price on embodied emissions is hypothetical.
+- The public site does not run Aspen Plus or Python.

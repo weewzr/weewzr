@@ -1,16 +1,21 @@
 ---
 /**
- * Research and academic work index: the case studies from the `research` collection, then the technical notes.
+ * Research and academic work index: the case studies from the `research` collection. The technical notes have
+ * their own section, Writing; this page points to it instead of listing the notes a second time. The
+ * "technical-notes" id is kept so that older links to research/#technical-notes still land on the pointer.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import WorkGrid from '../../components/WorkGrid.astro';
-import ResearchWriting from '../../components/ResearchWriting.astro';
+import Icon from '../../components/Icon.astro';
 import { getWork } from '../../components/home/collections';
+import { getCollection } from 'astro:content';
 import { sections } from '../../data/site';
+import { withBase } from '../../lib/url';
 
 const section = sections.find((s) => s.id === 'research')!;
 const entries = await getWork('research');
+const notes = await getCollection('notes', ({ data }) => !data.draft);
 const crumbs = [
   { label: 'Home', path: '' },
   { label: section.label, path: section.path },
@@ -29,5 +34,22 @@ const crumbs = [
       <WorkGrid entries={entries} basePath={section.path} headingLevel="h2" />
     </div>
   </section>
-  <ResearchWriting heading="Technical notes" sectionId="technical-notes" />
+  {
+    notes.length > 0 && (
+      <section id="technical-notes" class="block" aria-labelledby="technical-notes-title">
+        <div class="container">
+          <h2 id="technical-notes-title" class="section-title">Technical notes</h2>
+          <p class="section-lead">
+            The {notes.length} technical notes on the methods behind the projects are listed once, under Writing.
+          </p>
+          <p>
+            <a class="link-arrow" href={withBase('writing/')}>
+              Go to Writing
+              <Icon name="arrow-right" size={20} />
+            </a>
+          </p>
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>

@@ -50,8 +50,7 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
     <nav class="crumbs" aria-label="Breadcrumb">
       <ol>
         <li><a href={withBase('')}>Home</a></li>
-        <li><a href={withBase('research/')}>Research</a></li>
-        <li><a href={withBase('writing/')}>Notes and studies</a></li>
+        <li><a href={withBase('writing/')}>Writing</a></li>
         <li aria-current="page">{category}</li>
       </ol>
     </nav>
@@ -113,7 +112,7 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
     <nav class="back" aria-label="More notes">
       <a href={withBase('writing/')}>
         <Icon name="arrow-right" size={18} class="flip" />
-        All notes and studies
+        All writing
       </a>
       <a href={withBase('')}>Home</a>
     </nav>

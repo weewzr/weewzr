@@ -37,7 +37,7 @@ export const social = {
  * `collection` names the content collection in src/content.config.ts that feeds the section, if any.
  */
 export type Section = {
-  id: 'projects' | 'research' | 'community' | 'innovation' | 'about';
+  id: 'projects' | 'research' | 'writing' | 'community' | 'innovation' | 'about';
   label: string;
   path: string;
   eyebrow: string;
@@ -64,6 +64,15 @@ export const sections: readonly Section[] = [
     title: 'Research and academic work',
     lead: 'Coursework case studies and review essays, presented with their methods, findings and limits.',
     collection: 'research',
+  },
+  {
+    id: 'writing',
+    label: 'Writing',
+    path: 'writing/',
+    eyebrow: 'Technical notes',
+    title: 'Writing',
+    lead: 'Technical notes and computational studies, grouped by topic. Each entry links to the public source it is based on.',
+    collection: null,
   },
   {
     id: 'community',
@@ -338,21 +347,21 @@ export const projects: readonly Project[] = [
     name: 'AmCraX',
     tagline: 'Ammonia cracking simulation and optimisation platform',
     description:
-      'Grows out of my CN5190 Hydrogen Energy and Technology review essay at NUS. Lecturers: Prof Wang Lei and Prof Lum Yanwei. An Aspen Plus V15 flowsheet of an ammonia cracker, driven from Python and checked by independent Python models for equilibrium, heat integration, kinetics and cost. The baseline converts 98.1% of the ammonia and makes 251.6 kg/h of hydrogen. The public site shows the published results and does not run Aspen Plus.',
+      'Grows out of my CN5190 Hydrogen Energy and Technology review essay at NUS. Lecturers: Prof Wang Lei and Prof Lum Yanwei. An Aspen Plus V15 flowsheet of an ammonia cracker, driven from Python and checked by independent Python models for equilibrium, heat integration, kinetics and cost. The baseline converts 98.1% of the ammonia and makes 251.6 kg/h of hydrogen. The public site opens on a process simulator that runs in the browser from the stored results and labels every value with its source. It does not run Aspen Plus.',
     status: 'Live site',
     stage: 'live',
     tech: ['Aspen Plus V15', 'Python', 'FastAPI', 'React', 'React Flow', 'GitHub Pages'],
     areas: ['hydrogen', 'process'],
     features: [
-      'Aspen Plus flowsheet generated and run from Python: 279 converged runs behind the published results',
+      'Aspen Plus flowsheet generated and run from Python: 279 converged runs behind the stored results',
       'Independent checks: a 137-item validation matrix that reports its 22 failures',
-      'Interactive process flow diagram and an in-browser ideal-gas equilibrium calculator',
+      'Browser process simulator: the browser port of the Python models agrees with them on 82 stored test vectors to about 1e-7',
     ],
     repoUrl: 'https://github.com/weewzr/AmCraX',
     siteUrl: 'https://weewzr.github.io/AmCraX/',
     image: 'projects/amcrax.webp',
-    imageAlt: 'Home page of the AmCraX public site with the project title and baseline results.',
-    imageCaption: 'Screenshot of the AmCraX public site.',
+    imageAlt: 'The AmCraX process simulator page: controls on the left, four labelled results and the process flow diagram of the ammonia cracker.',
+    imageCaption: 'Screenshot of the AmCraX public site, simulator page, captured on 24 November 2026.',
   },
 ] as const;
 

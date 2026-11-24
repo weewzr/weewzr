@@ -13,20 +13,23 @@ import Contact from '../../components/Contact.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import Icon from '../../components/Icon.astro';
 import { getWork } from '../../components/home/collections';
+import { getCollection } from 'astro:content';
 import { sections, projects, cv, site, social, education } from '../../data/site';
 import { withBase } from '../../lib/url';
 
 const section = sections.find((s) => s.id === 'about')!;
-const [research, community, innovation] = await Promise.all([
+const [research, community, innovation, notes] = await Promise.all([
   getWork('research'),
   getWork('community'),
   getWork('innovation'),
+  getCollection('notes', ({ data }) => !data.draft),
 ]);
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 const counts: Record<string, string> = {
   projects: plural(projects.length, 'project', 'projects'),
   research: plural(research.length, 'case study', 'case studies'),
+  writing: plural(notes.length, 'note', 'notes'),
   community: plural(community.length, 'project', 'projects'),
   innovation: plural(innovation.length, 'entry', 'entries'),
 };

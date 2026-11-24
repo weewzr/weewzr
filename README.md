@@ -22,7 +22,7 @@ Developed from my CN5190 Hydrogen Energy and Technology review essay at NUS. A p
 
 - Automated Aspen Plus simulations with 279 converged runs, independently cross-checked against Python thermodynamic and process models.
 - Kinetic modelling of nickel- and ruthenium-based catalysts, alongside sensitivity studies of operating temperature, pressure and ammonia conversion.
-- Interactive dashboard for process visualisation, optimisation, techno-economic analysis and model validation.
+- Interactive dashboard for process visualisation, optimisation, techno-economic analysis and model validation. The public site opens on a process simulator that runs in the browser and labels every value with its source.
 
 Stack: Aspen Plus V15, Python, FastAPI, React, TypeScript, SciPy, Cantera, GitHub Pages
 
@@ -88,8 +88,8 @@ Listed without proficiency ratings. The repositories above show how each one is 
 
 ## More on the website
 
-- **Research and academic work:** [a low-carbon data centre case study for Singapore](https://weewzr.github.io/weewzr/research/cn5303-low-carbon-data-centre/) and [a review essay on ammonia cracking for hydrogen](https://weewzr.github.io/weewzr/research/cn5190-ammonia-cracking/).
-- **Planned project:** [AmCraX](https://weewzr.github.io/weewzr/projects/amcrax/), an ammonia cracking and hydrogen production simulation platform that grows out of my CN5190 Hydrogen Energy and Technology review essay at NUS (lecturers: Prof Wang Lei and Prof Lum Yanwei). No code yet.
+- **Research and academic work:** [a low-carbon data centre case study for Singapore](https://weewzr.github.io/weewzr/research/cn5303-low-carbon-data-centre/) and [a review essay on ammonia cracking for hydrogen](https://weewzr.github.io/weewzr/research/cn5190-ammonia-cracking/), the essay that AmCraX grew out of.
+- **Writing:** [technical notes](https://weewzr.github.io/weewzr/writing/) on the methods behind STRATO, NUS-H2 and KASCO.
 - **Community engagement:** [Grant A Wish XXIV](https://weewzr.github.io/weewzr/community/grant-a-wish-xxiv/), which I lead as Project Director.
 - **Innovation and competitions:** [ThickSense](https://weewzr.github.io/weewzr/innovation/thicksense/), an iDEATE 2026 semifinalist concept for checking thickened drinks.
 

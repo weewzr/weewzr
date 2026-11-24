@@ -15,12 +15,10 @@ import Icon from './Icon.astro';
 const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
 const here = Astro.url.pathname.startsWith(base) ? Astro.url.pathname.slice(base.length) : Astro.url.pathname;
 const current = `/${here.replace(/^\/+/, '')}`;
-// The technical notes are listed under Research, so that tab stays lit on those pages.
-const extraPrefixes: Record<string, string[]> = { research: ['/writing/'] };
 const items = nav.map((item) => {
   const prefix = `/${item.path}`;
   const exact = current === prefix;
-  const inside = !exact && (current.startsWith(prefix) || (extraPrefixes[item.id] ?? []).some((p) => current.startsWith(p)));
+  const inside = !exact && current.startsWith(prefix);
   return { ...item, state: (exact ? 'page' : inside ? 'true' : undefined) as 'page' | 'true' | undefined };
 });
 ---
