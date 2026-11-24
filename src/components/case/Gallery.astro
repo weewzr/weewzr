@@ -187,7 +187,8 @@ const first = images[0];
     flex-direction: column;
   }
   .gal-dialog::backdrop {
-    background: color-mix(in srgb, var(--navy) 85%, transparent);
+    /* A fixed dark scrim in both themes; the --navy token it used was retired in the redesign. */
+    background: rgb(20 18 15 / 0.82);
   }
   .gal-bar {
     display: flex;

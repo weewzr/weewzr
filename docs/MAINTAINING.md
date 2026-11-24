@@ -292,14 +292,16 @@ All builds went to a directory outside the repository through `ASTRO_OUT_DIR` an
 
 The site moved from the navy-to-violet night page to the "editorial notebook" identity in `docs/DESIGN_SYSTEM.md` part B: light paper by default, following the system setting, with a flat dark variant and the same header toggle. Newsreader (OFL, Fontsource) sets page and section titles; Inter and JetBrains Mono stay. `src/styles/fonts.css` declares only the subsets the site uses and a metric-matched local fallback for each face, computed from the font files with fontTools.
 
-Layout shift from font swap, measured with headless Edge over the DevTools protocol, a local static server that held every `woff2` back by 800 ms so the swap happens after first paint, and true 1440 x 900 and 390 x 844 viewports (one load per page and width):
+Layout shift from font swap after the redesign, measured with headless Edge over the DevTools protocol, a local static server that held every `woff2` back by 800 ms so the swap happens after first paint, and true 1440 x 900 and 390 x 844 viewports. The same values were obtained in three independent runs (the last with three loads per page and width):
 
-| Page | Before, 1440 | After, 1440 | Before, 390 | After, 390 |
-| --- | --- | --- | --- | --- |
-| Home | 0.0013 | 0.0002 | 0.0015 | 0.0001 |
-| STRATO case study | 0.0031 | 0.0015 | 0.0102 | 0.0000 |
-| KASCO case study | 0.0007 | 0.0002 | 0.0003 | 0.0207 |
-| STRATO note | 0.0088 | 0.0063 | 0.0384 | 0.0251 |
-| About | 0.0030 | 0.0003 | 0.0063 | 0.0000 |
+| Page | 1440 | 390 |
+| --- | --- | --- |
+| Home | 0.0001 to 0.0002 | 0.0001 |
+| STRATO case study | 0.0015 | 0.0000 |
+| KASCO case study | 0.0002 | 0.0207 |
+| STRATO note | 0.0063 | 0.0251 |
+| About | 0.0003 | 0.0000 |
 
-The remaining shifts (at most 0.025) come from a title that wraps one word differently in Newsreader than in its Georgia fallback. The 0.18 to 0.21 recorded earlier on the STRATO page did not reappear in this set-up, before or after; it was measured with Lighthouse, which was not rerun.
+The remaining shifts (at most 0.025) come from a title that wraps one word differently in Newsreader than in its Georgia fallback.
+
+No "before" figure is given, because the values for the site before the redesign (`bdbb3e2`) did not reproduce between set-ups: the same method gave at most 0.0384 in one run, up to 0.105 in a second, independent run and at most 0.0013 in a third. They are not comparable with each other, so no size of improvement is claimed. The 0.18 to 0.21 recorded earlier on the STRATO page was measured with Lighthouse, which was not rerun.

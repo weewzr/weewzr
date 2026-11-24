@@ -53,3 +53,13 @@ const crumbs = [
     )
   }
 </BaseLayout>
+
+<script>
+  // Links made when the technical notes were listed here: #cat-* now lives on the Writing page, which keeps the
+  // same category ids.
+  const hash = window.location.hash;
+  if (/^#cat-[a-z0-9-]+$/.test(hash)) {
+    const base = document.querySelector<HTMLAnchorElement>('a.nav__brand')?.getAttribute('href') ?? '/';
+    window.location.replace(base.replace(/\/?$/, '/') + 'writing/' + hash);
+  }
+</script>

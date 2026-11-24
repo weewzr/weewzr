@@ -107,7 +107,8 @@ const url = withBase(src);
     flex-direction: column;
   }
   .fig-dialog::backdrop {
-    background: color-mix(in srgb, var(--navy) 85%, transparent);
+    /* A fixed dark scrim in both themes; the --navy token it used was retired in the redesign. */
+    background: rgb(20 18 15 / 0.82);
   }
   .fig-dialog-bar {
     display: flex;

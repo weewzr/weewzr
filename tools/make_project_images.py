@@ -2,16 +2,19 @@
 
 Only real project material is used, never an invented screenshot:
   kasco.webp   _work/kasco.png (screenshot of the live KASCO app), resized to 16:10 only.
-  nush2.webp   _work/NUSH2_process_flow.svg (figure from the NUS-H2 repository), rendered with
-               Edge headless and placed unmodified on a flat navy panel.
-  strato.webp  _work/triso_cross_section.png (figure from the STRATO documentation), placed
-               unmodified on the same kind of panel.
+  nush2.webp   public/projects/nush2/process-flow.webp (the process-flow figure from the NUS-H2
+               repository, as published in the case study), placed unmodified on a flat paper panel.
+  strato.webp  public/projects/strato/triso-cross-section.webp (figure from the STRATO documentation, as
+               published in the case study), placed unmodified on the same kind of panel.
+  The AmCraX images are screen captures made separately (see docs/CREDITS.md); this script does not
+  touch them.
 
 Each image is written at 1280x800 and as a 640px-wide variant (name-640.webp) for srcset.
 
 Run from the repository root:  python -I tools/make_project_images.py
-Requires Pillow. The NUS-H2 render needs Microsoft Edge (used only when the PNG render is missing
-or older than the SVG).
+Requires Pillow. The KASCO image needs the screenshot in _work/ (kept outside git); without it the
+committed kasco images are kept and a message says so. render_svg() needs Microsoft Edge and is kept
+for figures that exist only as SVG.
 """
 from __future__ import annotations
 
@@ -28,7 +31,7 @@ OUT = ROOT / "public" / "projects"
 
 W, H = 1280, 800  # 16:10
 SMALL_W = 640
-PANEL = (0x0B, 0x1F, 0x3A)  # --navy in src/styles/global.css
+PANEL = (0xEF, 0xEB, 0xE2)  # --bg-subtle (light theme) in src/styles/global.css
 EDGE_CANDIDATES = [
     Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
     Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
@@ -55,12 +58,12 @@ def save_webp(img: Image.Image, stem: str) -> None:
 
 
 def panel_background(width: int, height: int) -> Image.Image:
-    """Flat navy panel. No gradient and no glow, so the figure is the only thing with colour."""
+    """Flat paper panel. No gradient and no glow, so the figure is the only thing with colour."""
     return Image.new("RGB", (width, height), PANEL)
 
 
 def place_on_panel(figure: Image.Image, max_w: int, max_h: int, radius: int = 8) -> Image.Image:
-    """Centre an unmodified figure (only scaled) on the navy panel as a light card with 8px corners."""
+    """Centre an unmodified figure (only scaled) on the paper panel as a white card with 8px corners."""
     fig = figure.convert("RGB")
     scale = min(max_w / fig.width, max_h / fig.height)
     new_size = (round(fig.width * scale), round(fig.height * scale))
@@ -75,6 +78,9 @@ def place_on_panel(figure: Image.Image, max_w: int, max_h: int, radius: int = 8)
 
 def make_kasco() -> None:
     """The source is already a 1440x900 (16:10) screenshot; resize only."""
+    if not (WORK / "kasco.png").exists():
+        print("skipped kasco.webp: _work/kasco.png is not present, the committed images are kept")
+        return
     src = Image.open(WORK / "kasco.png").convert("RGB")
     # Crop to exactly 16:10 if the source ever changes, then resize. No other edits.
     target = W / H
@@ -116,21 +122,13 @@ def render_svg(svg: Path, png: Path, width: int, height: int, scale: int = 2) ->
 
 
 def make_nush2() -> None:
-    svg = WORK / "NUSH2_process_flow.svg"
-    png = SCRATCH / "nush2_flow.png"
-    vb_w, vb_h = 2070, 1000  # viewBox of the SVG
-    if not png.exists() or png.stat().st_mtime < svg.stat().st_mtime:
-        render_svg(svg, png, vb_w, vb_h)
-    shot = Image.open(png).convert("RGB")
-    # The window is taller than the figure; keep only the figure area (top-left, device-scaled).
-    k = shot.width / vb_w
-    fig = shot.crop((0, 0, round(vb_w * k), round(vb_h * k)))
+    fig = Image.open(OUT / "nush2" / "process-flow.webp")
     pad = 30
     save_webp(place_on_panel(fig, W - 2 * pad, H - 2 * pad), "nush2")
 
 
 def make_strato() -> None:
-    fig = Image.open(WORK / "triso_cross_section.png")
+    fig = Image.open(OUT / "strato" / "triso-cross-section.webp")
     if fig.mode == "RGBA":  # opaque white in the source, flatten on white to be safe
         flat = Image.new("RGB", fig.size, (255, 255, 255))
         flat.paste(fig, mask=fig.getchannel("A"))

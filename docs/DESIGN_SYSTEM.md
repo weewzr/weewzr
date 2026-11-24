@@ -3,7 +3,7 @@
 This document has two parts.
 
 - **Part A, shared core** (sections A1 to A13), is the rule set for all five of the owner's sites: this portfolio, STRATO, NUS-H2, AmCraX and KASCO, and for their READMEs. It fixes the logic (scales, breakpoints, focus, motion, accessibility, figures, tables, mathematics, code, writing) and leaves each site its own colours, typefaces and density.
-- **Part B, portfolio identity** (sections B1 to B8), is the look of this site, <https://weewzr.github.io/weewzr/>.
+- **Part B, portfolio identity** (sections B1 to B9), is the look of this site, <https://weewzr.github.io/weewzr/>.
 
 Each repository carries a copy of [`src/styles/tokens.core.css`](../src/styles/tokens.core.css), the tokens Part A names, and a short identity sheet of its own. There is no shared component library and no shared npm package: the stacks differ (Astro, React with Vite, vanilla JavaScript with WebAssembly), and the Astryx evaluation recorded in `docs/MAINTAINING.md` measured what a shared component runtime costs.
 
@@ -216,7 +216,7 @@ Scale ratio about 1.25, rem on a 16 px root.
 
 | Role | Face | Size | Line height | Notes |
 | --- | --- | --- | --- | --- |
-| Home statement | Newsreader 500 | clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem) | 1.15 | one factual sentence; -0.01em |
+| Home statement | Newsreader 500 | clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem) | 1.15 | one factual sentence; -0.01em |
 | Page title (h1) | Newsreader 500 | clamp(2rem, 1.7rem + 1.3vw, 2.625rem) | 1.15 | |
 | Section title (h2) | Newsreader 500 | clamp(1.5rem, 1.3rem + 0.8vw, 1.75rem) | 1.25 | |
 | Sub-section (h3) | Inter 600 | 1.125rem | 1.35 | |
@@ -227,7 +227,7 @@ Scale ratio about 1.25, rem on a 16 px root.
 | Data, code, units | JetBrains Mono 400 | 0.875em | inherit | tabular by construction |
 
 - Newsreader is used at 24 px and above only. Numbers stay in Inter (with `tabular-nums` in tables) or JetBrains Mono.
-- All three faces are self-hosted from Fontsource packages, latin and latin-ext subsets only, with metric-matched local fallbacks (`Newsreader fallback` from Georgia, `Inter fallback` from Arial, `JetBrains Mono fallback` from Consolas or Courier New). The repository measured a layout shift of 0.18 to 0.21 from font swap on the STRATO page before these fallbacks existed (`docs/MAINTAINING.md`).
+- All three faces are self-hosted from Fontsource packages, latin and latin-ext subsets (plus greek for JetBrains Mono only; Greek letters in Inter text use the fallback face, see B8), with metric-matched local fallbacks (`Newsreader fallback` from Georgia, `Inter fallback` from Arial, `JetBrains Mono fallback` from Consolas or Courier New). The repository measured a layout shift of 0.18 to 0.21 from font swap on the STRATO page before these fallbacks existed (`docs/MAINTAINING.md`).
 - Space Grotesk is retired.
 
 ## B3. Layout
@@ -243,7 +243,7 @@ Top bar, labelled "Primary", with three labelled groups: **Work** (Projects, Res
 
 - **Project row** (home): a figure from the project's own output, the name and one sentence on what it computes, a status dot with its word, one verified result with its unit and provenance label, and one link row (Case study, Live site, Code). Area tags are plain text separated by middle dots; technology tags are small outlined tags.
 - **Card** (one system): 1 px `--border`, `--radius`, `--surface` fill, no shadow, no hover lift. Padding 24 px (16 px on phones). The whole card is one link through its title; hover and focus change the border colour only.
-- **Outputs ledger**: one table of every project, document and note, with columns Date, Type, Title and Section, hairline rows, mono dates.
+- **Outputs ledger**: one table of every project, case study, published document and note, grouped by section (Projects, Research, Writing, Community, Innovation), with columns Title, Type, Date or status and Format, hairline rows and tabular figures. Below 640 px each row becomes a two-line entry (title, then type, date or status and format), so no column is hidden off-screen.
 - **Buttons**: one primary per view (accent fill, `--on-accent` text, 40 px high, 44 px on touch); secondary is an outline in `--border-strong`.
 - **Status**: a 6 px dot plus its word ("Live site", "Released", "Planned"). "Website coming soon" is plain muted text, never a button shape.
 - **Callout**: 1 px border with a 3 px accent rule on the left.
@@ -262,7 +262,20 @@ Top bar, labelled "Primary", with three labelled groups: **Work** (Projects, Res
 - 16 px inline with text, 20 px in buttons and navigation. An icon goes with a label, except the GitHub and LinkedIn marks, which carry an `aria-label`.
 - No emoji in headings, lists or badges.
 
-## B8. Where the rules come from
+## B8. Recorded differences from design direction A
+
+Part B follows direction A of the Stage A design review (2026-11-24), with these deliberate differences. Each one can be revisited; none is an oversight.
+
+| Direction A | This site | Reason |
+| --- | --- | --- |
+| Home statement 36 to 52 px | 28 to 36 px (`--fs-statement`), measure 42ch | The owner's chosen statement is one long sentence (28 words). At the larger sizes it pushes the first project row below the fold of a 1440 x 900 window; at 36 px it takes four lines and the first row's figure and checked result stay visible. |
+| Container 1200 px | 1120 px (`--maxw`), the width the site already used | At 1120 px the text column of a project row (7 of 12 columns) is already close to the 68ch measure; a wider container would add empty margin, not readable width. |
+| Case-study pages with a 220 px margin column | No margin column; the existing tabbed layout with "On this page" contents and a facts block at the top | The case studies kept their tested tab, contents and figure components in the redesign. A margin column is an open item, not a rejected one. |
+| Cards only for galleries and documents | Bordered cards also for the About research interests, the Writing note list and "Selected work" | Each of these is a list of separately linked items with a short description; the card gives each item one clear hover and focus target. Plain rows would also work. |
+| Ledger columns Date, Type, Title, Project, Format/size, mono dates | Title, Type, Date or status, Format, grouped by section; dates in Inter with tabular figures | Projects have a status (for example "Live site"), not a date, so the column holds either. The section group rows replace a Project column. Numbers in running tables stay in Inter (B2). |
+| Greek subsets for the body face | No Inter greek subset; Greek letters fall back to `Inter fallback` (Arial) and then the system sans-serif | Keeps every page under the 150 kB font budget. The Inter greek subset (19 kB) took the CN5303, CN5190 and NUS-H2 pages to about 162 kB. JetBrains Mono keeps its small greek subset. |
+
+## B9. Where the rules come from
 
 Values were read from each project's source on 2026-11-19 and the Stage A design review of 2026-11-24. They were used as reference points. No code or component was copied.
 

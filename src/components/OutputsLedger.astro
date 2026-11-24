@@ -97,31 +97,31 @@ const total = groups.reduce((n, g) => n + g.rows.length, 0);
     </header>
 
     <div class="table-scroll" role="region" tabindex="0" aria-labelledby="outputs-title">
-      <table class="data-table ledger__table">
-        <thead>
-          <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Type</th>
-            <th scope="col">Date or status</th>
-            <th scope="col">Format</th>
+      <table class="data-table ledger__table" role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Title</th>
+            <th scope="col" role="columnheader">Type</th>
+            <th scope="col" role="columnheader">Date or status</th>
+            <th scope="col" role="columnheader">Format</th>
           </tr>
         </thead>
         {
           groups.map((g) => (
-            <tbody id={g.id}>
-              <tr class="ledger__group">
-                <th scope="colgroup" colspan="4">
+            <tbody id={g.id} role="rowgroup">
+              <tr class="ledger__group" role="row">
+                <th scope="colgroup" colspan="4" role="columnheader">
                   {g.label}
                 </th>
               </tr>
               {g.rows.map((r) => (
-                <tr>
-                  <td class="ledger__title">
+                <tr role="row">
+                  <td class="ledger__title" role="cell">
                     <a href={withBase(r.href)}>{r.title}</a>
                   </td>
-                  <td>{r.type}</td>
-                  <td class="ledger__when">{r.iso ? <time datetime={r.iso}>{r.when}</time> : r.when}</td>
-                  <td class="ledger__format">{r.format}</td>
+                  <td class="ledger__type" role="cell">{r.type}</td>
+                  <td class="ledger__when" role="cell">{r.iso ? <time datetime={r.iso}>{r.when}</time> : r.when}</td>
+                  <td class="ledger__format" role="cell">{r.format}</td>
                 </tr>
               ))}
             </tbody>
@@ -165,5 +165,59 @@ const total = groups.reduce((n, g) => n + g.rows.length, 0);
   }
   tbody {
     scroll-margin-top: calc(var(--nav-h) + 12px);
+  }
+
+  /* Phones: a four-column table does not fit 390 px without hiding columns off-screen, so each row becomes a
+     two-line entry: the title, then type, date or status and format on one muted line. The explicit ARIA roles
+     in the markup keep the table semantics when the display type changes. */
+  @media (max-width: 639.98px) {
+    .ledger__table {
+      min-width: 0;
+    }
+    .ledger__table,
+    .ledger__table tbody,
+    .ledger__table tr,
+    .ledger__table th {
+      display: block;
+    }
+    .ledger__table thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .ledger__table tr:not(.ledger__group) {
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .ledger__table td {
+      display: inline;
+      padding: 0;
+      border: 0;
+      white-space: normal;
+    }
+    .ledger__table .ledger__title {
+      display: block;
+      min-width: 0;
+      margin-bottom: var(--space-1);
+    }
+    .ledger__type,
+    .ledger__when,
+    .ledger__format {
+      color: var(--text-muted);
+      font-size: var(--fs-label);
+    }
+    .ledger__when::before,
+    .ledger__format::before {
+      content: '·';
+      content: '·' / '';
+      margin-inline: 0.4em;
+      color: var(--border-strong);
+    }
+    .ledger__group th {
+      padding: var(--space-4) 0 var(--space-2);
+    }
   }
 </style>

@@ -1,7 +1,10 @@
 /* Self-hosted web fonts (SIL Open Font License 1.1, see THIRD_PARTY_NOTICES.md), from the Fontsource packages.
-   Only the subsets the site uses are declared: latin and latin-ext for all three faces, and greek for Inter and
-   JetBrains Mono, which the case studies use for symbols. A browser downloads a subset only when the page uses a
-   character in its unicode-range.
+   Only the subsets the site uses are declared: latin and latin-ext for all three faces, and greek for JetBrains
+   Mono. A browser downloads a subset only when the page uses a character in its unicode-range.
+   Inter has no greek face on purpose: the few Greek symbols in body text (for example on the CN5303, CN5190 and
+   NUS-H2 pages) are drawn by the next font in the stack, the metric-matched 'Inter fallback' (Arial, which has
+   Greek), then the system sans-serif. That keeps every page under the 150 kB font budget; the 19 kB Inter greek
+   subset had taken those pages to about 162 kB.
 
    Each face has a metric-matched local fallback, so that text set in the fallback before the web font arrives
    takes up nearly the same width and the swap does not move the layout. The overrides were computed from the
@@ -24,14 +27,6 @@
   font-weight: 100 900;
   src: url('../../node_modules/@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2') format('woff2-variations');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Inter Variable';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 900;
-  src: url('../../node_modules/@fontsource-variable/inter/files/inter-greek-wght-normal.woff2') format('woff2-variations');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
 }
 
 @font-face {
