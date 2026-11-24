@@ -2,7 +2,7 @@
 
 <img align="right" src="assets/readme/perry.png" width="130" title="Perry the Platypus (Disney). Unofficial fan tribute." alt="Perry the Platypus as Agent P, crouching in a dark maroon fedora, shown as fan artwork">
 
-I am a Chemical Engineering student at the National University of Singapore (NUS), with a minor in Hydrogen and Low Carbon Technology and a specialisation in Safety and Sustainability. I am involved in nuclear engineering research at NUS.
+I am a Chemical Engineering student at the National University of Singapore (NUS), with a minor in Hydrogen and Low Carbon Technology, Physics and Community Engagement and Leadership and a specialisation in Safety and Sustainability. I am involved in nuclear engineering research at NUS.
 
 I build computational models of chemical and energy systems, from fission-product transport in fuel particles to low-carbon hydrogen and aviation fuel systems. I care about models that can be checked. Each project below states its assumptions and checks its results against an independent method where one exists. The write-ups also say what each model leaves out.
 
