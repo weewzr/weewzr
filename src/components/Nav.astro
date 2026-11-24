@@ -1,10 +1,10 @@
-﻿---
+---
 /**
  * Sticky solid navigation bar.
  * - Links come from `nav` in site.ts and point at real pages through withBase().
  * - The current section is worked out at build time from the URL: aria-current="page" on the exact page,
  *   aria-current="true" (same highlight) when the page is inside that section.
- * - Below 860px the links move into a fade panel opened by a menu button.
+ * - Below 1024px the links move into a fade panel opened by a menu button.
  * - A colour-mode button (moon when light, sun when dark) sits beside the social icons; it is hidden without JavaScript.
  * - Without JavaScript the panel stays visible as a static block, so every link is reachable.
  */
@@ -21,6 +21,15 @@ const items = nav.map((item) => {
   const inside = !exact && current.startsWith(prefix);
   return { ...item, state: (exact ? 'page' : inside ? 'true' : undefined) as 'page' | 'true' | undefined };
 });
+// Labelled groups: the labels are visible in the phone menu and read by screen readers on wide screens.
+const groupOf: Record<string, string> = { projects: 'work', research: 'work', writing: 'work', community: 'beyond', innovation: 'beyond', about: 'about' };
+const groups = [
+  { id: 'work', label: 'Work' },
+  { id: 'beyond', label: 'Beyond the lab' },
+  { id: 'about', label: 'Profile' },
+]
+  .map((g) => ({ ...g, items: items.filter((item) => (groupOf[item.id] ?? 'about') === g.id) }))
+  .filter((g) => g.items.length > 0);
 ---
 
 <header class="nav" data-site-nav>
@@ -46,17 +55,26 @@ const items = nav.map((item) => {
     </button>
 
     <nav class="nav__panel" id="site-menu" aria-label="Primary">
-      <ul class="nav__links">
+      <div class="nav__groups">
         {
-          items.map((item) => (
-            <li>
-              <a class="nav__link" href={withBase(item.path)} aria-current={item.state}>
-                {item.label}
-              </a>
-            </li>
+          groups.map((group) => (
+            <div class="nav__group" role="group" aria-labelledby={`nav-group-${group.id}`}>
+              <span class="nav__group-label" id={`nav-group-${group.id}`}>
+                {group.label}
+              </span>
+              <ul class="nav__links">
+                {group.items.map((item) => (
+                  <li>
+                    <a class="nav__link" href={withBase(item.path)} aria-current={item.state}>
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))
         }
-      </ul>
+      </div>
       <div class="nav__social">
         <a
           class="nav__icon"
@@ -132,11 +150,34 @@ const items = nav.map((item) => {
     gap: var(--space-4);
     margin-left: var(--space-2);
   }
+  .nav__groups {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+  }
+  .nav__group {
+    display: flex;
+    align-items: center;
+  }
+  .nav__group + .nav__group {
+    margin-left: var(--space-2);
+    padding-left: var(--space-2);
+    border-left: 1px solid var(--border);
+  }
+  /* Wide screens: the group label is for screen readers; the hairline shows the grouping. */
+  .nav__group-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
   .nav__links {
     display: flex;
     align-items: center;
     gap: var(--space-1);
-    margin: 0 auto;
+    margin: 0;
     padding: 0;
     list-style: none;
   }
@@ -191,20 +232,29 @@ const items = nav.map((item) => {
     background-color: var(--bg-subtle);
   }
 
-  /* Colour-mode icon: sun on the default night page, moon when the page is light. */
+  /* Colour-mode icon: a moon on the light page (switch to dark), a sun on the dark page (switch to light).
+     The page is dark when data-theme="dark", or when the system asks for dark and no light choice was saved. */
   .nav__theme-moon {
-    display: none;
+    display: grid;
     place-items: center;
   }
   .nav__theme-sun {
-    display: grid;
+    display: none;
     place-items: center;
   }
-  :global(:root[data-theme='light']) .nav__theme-moon {
+  :global(:root[data-theme='dark']) .nav__theme-moon {
+    display: none;
+  }
+  :global(:root[data-theme='dark']) .nav__theme-sun {
     display: grid;
   }
-  :global(:root[data-theme='light']) .nav__theme-sun {
-    display: none;
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .nav__theme-moon {
+      display: none;
+    }
+    :global(:root:not([data-theme='light'])) .nav__theme-sun {
+      display: grid;
+    }
   }
   :global(html:not(.js)) [data-theme-toggle] {
     display: none;
@@ -245,7 +295,7 @@ const items = nav.map((item) => {
   }
 
   /* Mobile layout. */
-  @media (max-width: 859.98px) {
+  @media (max-width: 1023.98px) {
     .nav__toggle {
       display: inline-grid;
     }
@@ -278,6 +328,31 @@ const items = nav.map((item) => {
       opacity: 1;
       visibility: visible;
       transition-delay: 0s;
+    }
+    .nav__groups {
+      flex-direction: column;
+      align-items: stretch;
+      margin: 0;
+    }
+    .nav__group {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .nav__group + .nav__group {
+      margin: var(--space-3) 0 0;
+      padding: 0;
+      border-left: 0;
+    }
+    .nav__group-label {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      padding: var(--space-3) var(--space-1) var(--space-1);
+      font-size: var(--fs-label);
+      font-weight: 500;
+      color: var(--text-muted);
     }
     .nav__links {
       flex-direction: column;
@@ -315,7 +390,7 @@ const items = nav.map((item) => {
   }
 
   /* Without JavaScript the panel is a plain block under the bar and the header is not sticky. */
-  @media (max-width: 859.98px) {
+  @media (max-width: 1023.98px) {
     :global(html:not(.js)) .nav {
       position: relative;
       height: auto;
@@ -387,14 +462,21 @@ const items = nav.map((item) => {
     });
 
     // Reset when the layout switches to the desktop bar.
-    window.matchMedia('(min-width: 860px)').addEventListener('change', () => setOpen(false));
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', () => setOpen(false));
   }
 
-  // Colour-mode toggle: night is the default; data-theme="light" on <html> switches to the white page.
+  // Colour-mode toggle. Without a saved choice the page follows the system setting (light paper by default);
+  // the button sets data-theme on <html> to the opposite of what is shown and remembers it.
   const themeButton = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
   if (themeButton) {
     const root = document.documentElement;
-    const effective = () => (root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const effective = () => {
+      const chosen = root.getAttribute('data-theme');
+      if (chosen === 'light' || chosen === 'dark') return chosen;
+      return systemDark.matches ? 'dark' : 'light';
+    };
+    systemDark.addEventListener('change', () => sync());
     const sync = () => {
       themeButton.setAttribute('aria-label', effective() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
     };

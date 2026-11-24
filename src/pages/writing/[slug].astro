@@ -24,6 +24,7 @@ const html = note.rendered?.html ? wrapTables(note.rendered.html) : null;
 
 const iso = date.toISOString().slice(0, 10);
 const shown = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
+const categoryLabel = category.charAt(0) + category.slice(1).toLowerCase();
 const categorySlug = category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const path = `writing/${note.id}/`;
 
@@ -51,7 +52,7 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
       <ol>
         <li><a href={withBase('')}>Home</a></li>
         <li><a href={withBase('writing/')}>Writing</a></li>
-        <li aria-current="page">{category}</li>
+        <li aria-current="page">{categoryLabel}</li>
       </ol>
     </nav>
 
@@ -63,7 +64,7 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
       <dl class="meta" aria-label="Note details">
         <div>
           <dt>Category</dt>
-          <dd><a href={withBase(`writing/#cat-${categorySlug}`)}>{category}</a></dd>
+          <dd><a href={withBase(`writing/#cat-${categorySlug}`)}>{categoryLabel}</a></dd>
         </div>
         <div>
           <dt>Type</dt>
@@ -211,8 +212,9 @@ const jsonLdText = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
   }
   .prose :global(h2) {
     margin-top: var(--space-7);
+    font-family: var(--font-display);
     font-size: var(--fs-section-title);
-    font-weight: 650;
+    font-weight: 500;
     scroll-margin-top: calc(var(--nav-h) + 12px);
   }
   .prose :global(h3) {

@@ -133,7 +133,7 @@ When a planned project gets a repository, set `repoUrl`, change `stage` and `sta
 
 ## Add a technical note
 
-Create `src/content/notes/<slug>.md` with `title`, `description`, `category`, `kind`, `date`, and `sourceUrl` with `sourceLabel`. The Research page and `writing/` list it.
+Create `src/content/notes/<slug>.md` with `title`, `description`, `category`, `kind`, `date`, and `sourceUrl` with `sourceLabel`. The Writing section (`writing/`) and the outputs list on the home page show it.
 
 ## Add a section
 

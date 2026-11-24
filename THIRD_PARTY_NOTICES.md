@@ -8,10 +8,11 @@ The site self-hosts variable fonts from the Fontsource packages. The `woff2` fil
 
 | Font | Used for | Copyright notice |
 | --- | --- | --- |
-| Inter | Headings and body text | Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter) |
+| Inter | Body text, labels and small headings | Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter) |
+| Newsreader | Page and section titles | Copyright 2020 The Newsreader Project Authors (http://github.com/productiontype/Newsreader) |
 | JetBrains Mono | Technical text | Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono) |
 
-Both fonts are licensed under the SIL Open Font License, Version 1.1, reproduced here without alteration (the text is taken from the `LICENSE` file shipped in each Fontsource package, which is identical in both).
+All three fonts are licensed under the SIL Open Font License, Version 1.1, reproduced here without alteration (the text is taken from the `LICENSE` file shipped in each Fontsource package, which is identical in all three apart from the copyright line).
 
 ```text
 -----------------------------------------------------------

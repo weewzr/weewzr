@@ -1,55 +1,49 @@
 @import 'tailwindcss';
 /* Shared core tokens (spacing, radii, motion, focus, type floors, categorical palette). docs/DESIGN_SYSTEM.md part A. */
 @import './tokens.core.css';
-@import '@fontsource-variable/inter';
-@import '@fontsource-variable/jetbrains-mono';
+/* Self-hosted fonts and their metric-matched fallbacks. */
+@import './fonts.css';
 
-/* Design tokens. The full system is described in docs/DESIGN_SYSTEM.md.
-   Night is the default: a navy to violet page background with navy surfaces on top of it.
-   The header toggle sets data-theme="light" for a white page, and the choice is remembered. */
+/* Portfolio identity, "editorial notebook" (docs/DESIGN_SYSTEM.md part B).
+   Light paper is the default. The dark variant follows prefers-color-scheme: dark unless the visitor chose light
+   with the header button, and data-theme="dark" forces it. Both modes are flat: no gradient, no texture.
+   Every text pair below reaches at least 4.5:1; the ratios are listed in DESIGN_SYSTEM.md B1. */
 :root {
-  --bg: #070d20;
-  /* The one gradient on the site. It is fixed to the viewport behind every page (see body::before). */
-  --page-bg:
-    radial-gradient(60rem 40rem at 88% -10%, rgb(59 130 246 / 0.16), transparent 62%),
-    radial-gradient(52rem 42rem at -5% 105%, rgb(124 58 237 / 0.2), transparent 62%),
-    linear-gradient(135deg, #060b1b 0%, #0a1838 40%, #241462 76%, #3f1b85 100%);
-  --bg-subtle: #0b1431;
-  --surface: #0f1a3e;
-  --border: #27365c;
-  --border-strong: #7f8fb0;
-  --text: #e7edf4;
-  --text-muted: #b4c0d4;
-  --accent: #8ab8ff;
-  --accent-hover: #b3d0ff;
-  --accent-solid: #2f6fed;
-  --accent-solid-hover: #2a62d3;
+  --bg: #f7f5f0;
+  --bg-subtle: #efebe2;
+  --surface: #ffffff;
+  --border: #d9d4c8;
+  --border-strong: #8a8478;
+  --text: #1b1a17;
+  --text-muted: #5a564d;
+  --accent: #a1301c;
+  --accent-hover: #7d2414;
+  --accent-bg: #f6e6e1;
   --on-accent: #ffffff;
-  --accent-bg: #1a2f66;
-  --cyan: #67d3e3;
-  --cyan-bg: #0f2f3b;
-  --navy: #0b1f3a;
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
-  color-scheme: dark;
+  --focus: #1f5fbf;
+  --st-live: #2f6b3a;
+  --shadow-sm: 0 1px 2px rgb(27 26 23 / 0.08);
+  color-scheme: light;
 
-  --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: 'Newsreader Variable', 'Newsreader fallback', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter Variable', 'Inter fallback', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono fallback', ui-monospace, Consolas, monospace;
   /* Spacing, radii and durations come from tokens.core.css. */
   --maxw: 1120px;
   --nav-h: 64px;
   --ease: var(--dur-base) var(--ease-standard);
 
-  /* Type scale. */
-  --fs-page-title: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
-  --fs-section-title: clamp(1.5rem, 1.35rem + 0.6vw, 1.75rem);
-  --fs-lead: 1.125rem;
+  /* Type scale, ratio about 1.25 on a 16 px root. */
+  --fs-statement: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  --fs-page-title: clamp(2rem, 1.7rem + 1.3vw, 2.625rem);
+  --fs-section-title: clamp(1.5rem, 1.3rem + 0.8vw, 1.75rem);
+  --fs-lead: 1.1875rem;
   --fs-card-title: 1.125rem;
-  --fs-body: 1rem;
+  --fs-body: 1.0625rem;
   --fs-small: 0.875rem;
   --fs-label: 0.8125rem;
 
-  /* Status colours. Each status also has its own dot shape or text, so colour never carries it alone. */
-  --st-live: var(--cyan);
+  /* Status colours. Each status also has its word next to the dot, so colour never carries it alone. */
   --st-released: var(--accent);
   --st-planned: var(--text-muted);
   --st-progress: var(--accent);
@@ -59,37 +53,57 @@
   --bg-2: var(--bg-subtle);
   --muted: var(--text-muted);
   --line: var(--border);
-  --blue: var(--accent-solid);
+  --accent-solid: var(--accent);
+  --accent-solid-hover: var(--accent-hover);
+  --cyan: var(--st-live);
+  --cyan-bg: var(--accent-bg);
+  --blue: var(--accent);
   --blue-2: var(--accent);
   --glass: var(--surface);
   --glass-strong: var(--surface);
-  --font-display: var(--font-body);
 }
 
-:root[data-theme='light'] {
-  --bg: #ffffff;
-  --page-bg: #ffffff;
-  --bg-subtle: #f4f7fa;
-  --surface: #ffffff;
-  --border: #d5dde6;
-  --border-strong: #8794a3;
-  --text: #101a2b;
-  --text-muted: #4b5b6f;
-  --accent: #1d4fd7;
-  --accent-hover: #173ea8;
-  --accent-solid: #1d4fd7;
-  --accent-solid-hover: #173ea8;
-  --on-accent: #ffffff;
-  --accent-bg: #e9f1fe;
-  --cyan: #0b6b85;
-  --cyan-bg: #e3f4f8;
-  --shadow-sm: 0 1px 2px rgb(16 26 43 / 0.06);
-  color-scheme: light;
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #14130f;
+    --bg-subtle: #1a1915;
+    --surface: #1d1c18;
+    --border: #34312a;
+    --border-strong: #77715f;
+    --text: #ece8df;
+    --text-muted: #a8a296;
+    --accent: #e8836a;
+    --accent-hover: #f2a691;
+    --accent-bg: #3a2219;
+    --on-accent: #14130f;
+    --focus: #8fb4ff;
+    --st-live: #86c08f;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #14130f;
+  --bg-subtle: #1a1915;
+  --surface: #1d1c18;
+  --border: #34312a;
+  --border-strong: #77715f;
+  --text: #ece8df;
+  --text-muted: #a8a296;
+  --accent: #e8836a;
+  --accent-hover: #f2a691;
+  --accent-bg: #3a2219;
+  --on-accent: #14130f;
+  --focus: #8fb4ff;
+  --st-live: #86c08f;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  color-scheme: dark;
 }
 
 @theme {
-  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Inter Variable', 'Inter fallback', system-ui, sans-serif;
+  --font-serif: 'Newsreader Variable', 'Newsreader fallback', Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono fallback', ui-monospace, monospace;
 }
 
 @layer base {
@@ -102,34 +116,37 @@
   body {
     margin: 0;
     min-height: 100vh;
-    /* html supplies the base colour and body::before the page background, so body stays clear. */
-    background: transparent;
+    background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
     font-size: var(--fs-body);
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    display: flex;
+    flex-direction: column;
+  }
+  body > main {
+    flex: 1 0 auto;
+    padding-bottom: var(--space-8);
   }
   h1,
   h2,
   h3,
   h4 {
     font-family: var(--font-body);
-    font-weight: 650;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0;
     margin: 0;
     text-wrap: balance;
   }
+  /* The serif voice: page titles and section titles, 24 px and above only. */
   h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
     line-height: 1.15;
-    letter-spacing: -0.02em;
-  }
-  h3,
-  h4 {
-    font-weight: 600;
-    letter-spacing: 0;
+    letter-spacing: -0.01em;
   }
   p {
     margin: 0;
@@ -146,32 +163,26 @@
   }
   code,
   kbd,
-  pre {
+  pre,
+  samp {
     font-family: var(--font-mono);
+  }
+  table {
+    font-variant-numeric: tabular-nums;
   }
   img {
     max-width: 100%;
     height: auto;
   }
   :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+    outline: var(--focus-width) solid var(--focus);
+    outline-offset: var(--focus-offset);
     border-radius: var(--radius-sm);
   }
   ::selection {
-    background: var(--accent-solid);
+    background: var(--accent);
     color: var(--on-accent);
   }
-}
-
-/* Page background, fixed to the viewport so it does not stretch with page length. */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: var(--page-bg);
-  pointer-events: none;
 }
 
 /* Unlayered on purpose: Tailwind 4 ships its own .container utility, and unlayered rules beat layered ones. */
@@ -181,25 +192,34 @@ body::before {
   margin-inline: auto;
   padding-inline: 0;
 }
+@media (min-width: 640px) {
+  .container {
+    width: min(100% - 3rem, var(--maxw));
+  }
+}
 
 @layer components {
   .section {
     position: relative;
     padding-block: clamp(var(--space-8), 8vw, var(--space-9));
   }
-  /* Small line above a section title. Sentence case, no tracking. */
+  /* Small line above a title. Sentence case, no tracking, no uppercase. */
   .eyebrow {
-    font-size: var(--fs-small);
+    font-size: var(--fs-label);
     font-weight: 500;
+    line-height: 1.4;
     color: var(--text-muted);
   }
   .section-title {
+    font-family: var(--font-display);
+    font-weight: 500;
     font-size: var(--fs-section-title);
+    line-height: 1.25;
     margin-top: var(--space-1);
   }
   .section-lead {
     color: var(--text-muted);
-    max-width: 68ch;
+    max-width: var(--measure);
     margin-top: var(--space-3);
   }
   /* Bordered surface. The class name is historical: there is no blur or translucency. */
@@ -236,19 +256,20 @@ body::before {
     background: var(--bg-subtle);
   }
   .btn-primary {
-    background: var(--accent-solid);
-    border-color: var(--accent-solid);
+    background: var(--accent);
+    border-color: var(--accent);
     color: var(--on-accent);
   }
   .btn-primary:hover {
-    background: var(--accent-solid-hover);
-    border-color: var(--accent-solid-hover);
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
     color: var(--on-accent);
   }
+  /* Outlined small tag: technologies and keywords. Research areas use .areas-line (plain text). */
   .chip {
     display: inline-flex;
     align-items: center;
-    padding: 0.125rem var(--space-2);
+    padding: 0.0625rem var(--space-2);
     border-radius: var(--radius-sm);
     font-size: var(--fs-label);
     line-height: 1.5;
@@ -272,7 +293,7 @@ body::before {
     left: var(--space-4);
     top: -4rem;
     z-index: 100;
-    background: var(--accent-solid);
+    background: var(--accent);
     color: var(--on-accent);
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius);
@@ -284,12 +305,13 @@ body::before {
 }
 
 /* ---------------------------------------------------------------------------------------------
-   Shared patterns for the multi-page site: cards, status labels, page heroes, link-with-arrow.
+   Shared patterns: cards, status labels, page heroes, tables, link-with-arrow.
    Unlayered like .container so they win over Tailwind utilities on the same element.
    --------------------------------------------------------------------------------------------- */
 
-/* Work card. Markup: <article class="card"> with .card__meta, .card__title (a link stretched over the
-   whole card), .card__summary, .card__tags and .card__foot. WorkCard.astro writes this markup. */
+/* The one card. Markup: <article class="card"> with .card__meta, .card__title (a link stretched over the
+   whole card), .card__summary, .card__tags and .card__foot. Border, radius and fill are the same everywhere;
+   hover and focus change the border colour only. */
 .card {
   position: relative;
   display: flex;
@@ -302,6 +324,11 @@ body::before {
   border: 1px solid var(--border);
   background: var(--surface);
   transition: border-color var(--ease);
+}
+@media (max-width: 639.98px) {
+  .card {
+    padding: var(--space-4);
+  }
 }
 .card:hover,
 .card:focus-within {
@@ -319,6 +346,7 @@ body::before {
   color: var(--text-muted);
 }
 .card__title {
+  font-family: var(--font-body);
   font-size: var(--fs-card-title);
   font-weight: 600;
   line-height: 1.35;
@@ -341,8 +369,8 @@ body::before {
   outline: none;
 }
 .card:has(.card__title a:focus-visible) {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: var(--focus-offset);
 }
 .card__role {
   font-size: var(--fs-small);
@@ -350,8 +378,8 @@ body::before {
   color: var(--text-muted);
 }
 .card__summary {
-  max-width: 68ch;
-  font-size: 0.9375rem;
+  max-width: var(--measure);
+  font-size: var(--fs-small);
   line-height: 1.6;
   color: var(--text);
 }
@@ -384,7 +412,7 @@ body::before {
   min-width: 0;
 }
 
-/* Status label: a dot and text. Variants: live, released, planned, progress, completed.
+/* Status label: a dot and its word. Variants: live, released, planned, progress, completed.
    The class keeps the name "pill" because the markup uses it, but it has no pill shape. */
 .status-pill {
   --pill: var(--st-completed);
@@ -425,6 +453,23 @@ body::before {
   --pill: var(--st-completed);
 }
 
+/* Research areas: plain text separated by middle dots (technologies use outlined .chip tags). */
+.areas-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-label);
+  color: var(--text-muted);
+}
+.areas-line li + li::before {
+  content: '\00b7';
+  margin-right: var(--space-2);
+  color: var(--border-strong);
+}
+
 /* Page hero used at the top of every section page. */
 .page-hero {
   position: relative;
@@ -438,9 +483,9 @@ body::before {
 }
 .page-hero__lead {
   margin-top: var(--space-4);
-  max-width: 68ch;
+  max-width: var(--measure);
   font-size: var(--fs-lead);
-  line-height: 1.6;
+  line-height: 1.55;
   color: var(--text-muted);
 }
 .page-hero__rule {
@@ -505,6 +550,39 @@ body::before {
   text-decoration: underline;
 }
 
+/* Data table outside the MDX prose: hairlines, header on bg-subtle, numbers right aligned in tabular figures.
+   Wrap it in .table-scroll so it scrolls inside its own box on phones. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) var(--bg-subtle);
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+.data-table th,
+.data-table td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.data-table thead th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.data-table .num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  white-space: nowrap;
+}
+
 /* Neutral line for a section with nothing published. */
 .empty-note {
   padding: var(--space-4) var(--space-5);
@@ -535,9 +613,10 @@ body::before {
 /* Keyboard focus: a visible ring on every control. */
 a:focus-visible,
 button:focus-visible,
+summary:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: var(--focus-offset);
 }
 
 /* Never let a page scroll sideways. */
@@ -550,7 +629,7 @@ body {
 @media (pointer: coarse) {
   .btn,
   .link-arrow {
-    min-height: 44px;
+    min-height: var(--touch-min);
   }
 }
 
@@ -561,11 +640,8 @@ body {
     color: #111 !important;
     font-size: 11pt;
   }
-  body::before,
   .nav,
   .skip-link,
-  [class*='perry'],
-  .hero__scroll,
   .btn,
   .filter-chip,
   [data-project-filter],

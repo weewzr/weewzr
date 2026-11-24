@@ -1,9 +1,9 @@
 ---
 import Icon from './Icon.astro';
-import { education, aboutParagraphs, affiliations, researchInterests } from '../data/site';
+import { education, aboutParagraphs, affiliations } from '../data/site';
 
 /**
- * Profile block: about paragraphs, a fact strip, education and affiliations.
+ * Profile block: about paragraphs, education and affiliations.
  * `heading` false drops the block header (the About page has its own h1) and lifts the card titles to h2.
  */
 interface Props {
@@ -14,17 +14,8 @@ const CardTitle = heading ? 'h3' : 'h2';
 
 // Everything below is derived from src/data/site.ts at build time.
 const strip = (value: string, prefix: RegExp) => value.replace(prefix, '').trim();
-const institutionShort = education.institution.match(/\(([^)]+)\)/)?.[1] ?? education.institution;
 const minor = strip(education.minor, /^Minor in\s+/i);
 const specialisation = strip(education.specialisation, /^Specialisation in\s+/i);
-const involvement = researchInterests.find((r) => r.kind === 'involvement');
-
-const facts = [
-  { label: 'Institution', value: institutionShort },
-  { label: 'Field', value: education.degree },
-  ...(involvement ? [{ label: 'Research', value: `${involvement.title.split(' ')[0]} research involvement` }] : []),
-  { label: 'Focus', value: specialisation },
-];
 ---
 
 <section id={heading ? 'about' : 'profile'} class="block" aria-labelledby={heading ? 'about-title' : undefined} aria-label={heading ? undefined : 'Profile'}>
@@ -50,16 +41,7 @@ const facts = [
           }
         </div>
 
-        <ul class="ab-facts" role="list" aria-label="At a glance">
-          {
-            facts.map((fact) => (
-              <li class="ab-fact">
-                <span class="ab-fact-label">{fact.label}</span>
-                <span class="ab-fact-value">{fact.value}</span>
-              </li>
-            ))
-          }
-        </ul>
+
       </div>
 
       <div class="ab-side">
@@ -156,35 +138,6 @@ const facts = [
     color: var(--text);
     font-size: var(--fs-lead);
     line-height: 1.6;
-  }
-
-  /* Facts as a definition grid with hairlines. */
-  .ab-facts {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 var(--space-5);
-  }
-  .ab-fact {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    min-width: 0;
-    padding: var(--space-3) 0;
-    border-top: 1px solid var(--border);
-  }
-  .ab-fact-label {
-    font-size: var(--fs-label);
-    color: var(--text-muted);
-  }
-  .ab-fact-value {
-    font-weight: 500;
-    font-size: var(--fs-body);
-    line-height: 1.3;
-    color: var(--text);
-    overflow-wrap: anywhere;
   }
 
   /* Side column cards */

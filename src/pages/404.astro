@@ -1,28 +1,44 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import PerryImage from '../components/PerryImage.astro';
+import { sections, mascot } from '../data/site';
 import { withBase } from '../lib/url';
 ---
 
 <BaseLayout title="Page not found" description="The page you asked for does not exist on this site." noindex>
   <section class="lost" aria-labelledby="lost-title">
     <div class="container lost-inner">
-      <p class="eyebrow">Error 404</p>
-      <h1 id="lost-title" class="lost-title">This page drifted out of orbit.</h1>
-      <p class="lost-lead">
-        The address does not match anything on this site. It may have moved, or the link may have a typo. The home page and the project list are a short hop away.
-      </p>
-
-      <div class="lost-actions">
-        <a class="btn btn-primary" href={withBase('')}>
-          Back to the home page
-          <Icon name="arrow-right" size={20} />
-        </a>
-        <a class="btn" href={withBase('projects/')}>
-          See the projects
-          <Icon name="grid" size={20} />
-        </a>
+      <div class="lost-text">
+        <p class="eyebrow">Error 404</p>
+        <h1 id="lost-title" class="lost-title">Page not found</h1>
+        <p class="lost-lead">
+          No page exists at this address. It may have moved, or the link may have a typo. Every section of the site is
+          listed below.
+        </p>
+        <ul class="lost-links">
+          <li>
+            <a href={withBase('')}>
+              Home
+              <Icon name="arrow-right" size={16} />
+            </a>
+          </li>
+          {
+            sections.map((s) => (
+              <li>
+                <a href={withBase(s.path)}>
+                  {s.label}
+                  <Icon name="arrow-right" size={16} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
       </div>
+      <figure class="lost-perry">
+        <PerryImage slot="footer" loading="eager" />
+        <figcaption>{mascot.name}, an unofficial fan tribute. Disney owns the character.</figcaption>
+      </figure>
     </div>
   </section>
 </BaseLayout>
@@ -32,8 +48,14 @@ import { withBase } from '../lib/url';
     padding-block: var(--space-8);
   }
   .lost-inner {
-    max-width: 40rem;
-    margin-inline: 0;
+    display: grid;
+    gap: var(--space-6);
+  }
+  @media (min-width: 768px) {
+    .lost-inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
   }
   .lost-title {
     margin-top: var(--space-1);
@@ -45,13 +67,34 @@ import { withBase } from '../lib/url';
     font-size: var(--fs-lead);
     color: var(--text-muted);
   }
-  .lost-actions {
+  .lost-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-top: var(--space-5);
+    gap: 0 var(--space-5);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
   }
-  .lost-actions .btn {
-    min-height: 44px;
+  .lost-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--touch-min);
+    font-weight: 600;
+  }
+  .lost-perry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    max-width: 12rem;
+  }
+  .lost-perry :global(.perry-img) {
+    width: 112px;
+  }
+  .lost-perry figcaption {
+    font-size: var(--fs-label);
+    line-height: 1.4;
+    color: var(--text-muted);
   }
 </style>

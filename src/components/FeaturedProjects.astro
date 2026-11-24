@@ -1,16 +1,16 @@
 ---
 /**
- * Engineering projects. Loops over `projects` in src/data/site.ts, so adding a project there (plus a preview image
+ * The project list. Loops over `projects` in src/data/site.ts, so adding a project there (plus a preview image
  * under public/projects) needs no change here.
  * Props:
- *   showHead   draw the block header with the Perry mascot (home page). The projects index page has its own page hero.
- *   filter     show the research-area filter chips (projects index page)
- *   headingLevel  heading element for the card titles ('h3' under a block h2, 'h2' under a page h1)
- *   id         section id (home keeps "projects" for old links)
+ *   showHead      draw the block header (home page). The projects index page has its own page hero.
+ *   filter        show the research-area filter (projects index page)
+ *   headingLevel  heading element for the project titles ('h3' under a block h2, 'h2' under a page h1)
+ *   variant       'row' (home: one sentence and one checked result) or 'full' (projects page)
+ *   id            section id (home keeps "projects" for old links)
  */
 import ProjectCard from './ProjectCard.astro';
-import PerryAgent from './PerryAgent.astro';
-import { projects, researchInterests, sections } from '../data/site';
+import { projects, researchInterests } from '../data/site';
 import { withBase } from '../lib/url';
 import Icon from './Icon.astro';
 
@@ -18,25 +18,36 @@ interface Props {
   showHead?: boolean;
   filter?: boolean;
   headingLevel?: 'h2' | 'h3';
+  variant?: 'row' | 'full';
   id?: string;
 }
-const { showHead = false, filter = false, headingLevel = 'h3', id } = Astro.props;
-const section = sections.find((s) => s.id === 'projects');
+const { showHead = false, filter = false, headingLevel = 'h3', variant = 'row', id } = Astro.props;
 
 // Chips come from the research areas that at least one project uses, in researchInterests order.
-// Adding a project (with its `areas` ids) in src/data/site.ts needs no change here.
 const areaChips = researchInterests.filter((area) => projects.some((p) => p.areas.includes(area.id)));
 ---
 
-<section id={id} class:list={['projects-block', { section: showHead, block: !showHead }]} aria-labelledby={showHead ? 'projects-title' : undefined} aria-label={showHead ? undefined : 'Projects'}>
+<section
+  id={id}
+  class:list={['projects-block', showHead ? 'section projects-block--home' : 'block']}
+  aria-labelledby={showHead ? 'projects-title' : undefined}
+  aria-label={showHead ? undefined : 'Projects'}
+>
   <div class="container">
     {
       showHead && (
-        <header class="proj-head">
-          <p class="eyebrow">Engineering projects</p>
-          <h2 id="projects-title" class="section-title">Featured engineering projects</h2>
-          <p class="section-lead">{section?.lead}</p>
-          <PerryAgent />
+        <header class="section-head">
+          <div class="section-head__text">
+            <h2 id="projects-title" class="section-title">Projects</h2>
+            <p class="section-lead">
+              Four open models. Each row shows the project's own figure and one checked result, with the kind of check
+              and where it is recorded.
+            </p>
+          </div>
+          <a class="link-arrow" href={withBase('projects/')}>
+            All projects, by research area
+            <Icon name="arrow-right" size={20} />
+          </a>
         </header>
       )
     }
@@ -44,17 +55,24 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
     {
       filter && areaChips.length > 1 && (
         <div class="proj-filter" data-project-filter>
-          <div class="chips" role="group" aria-label="Filter projects by research area">
+          <p class="proj-filter__label" id="proj-filter-label">
+            Filter by research area
+          </p>
+          <div class="chips" role="group" aria-labelledby="proj-filter-label">
             <button type="button" class="filter-chip" data-area="all" aria-pressed="true">
               All projects
+              <span class="filter-chip__count">{projects.length}</span>
             </button>
             {areaChips.map((area) => (
               <button type="button" class="filter-chip" data-area={area.id} data-label={area.short} aria-pressed="false">
                 {area.short}
+                <span class="filter-chip__count">{projects.filter((p) => p.areas.includes(area.id)).length}</span>
               </button>
             ))}
           </div>
-          <p class="filter-status" role="status" data-filter-status />
+          <p class="filter-status" role="status" data-filter-status>
+            Showing all {projects.length} projects.
+          </p>
         </div>
       )
     }
@@ -63,37 +81,17 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
       {
         projects.map((project, i) => (
           <li data-areas={project.areas.join(' ')}>
-            <ProjectCard project={project} index={i} headingLevel={headingLevel} />
+            <ProjectCard project={project} headingLevel={headingLevel} variant={variant} eager={i === 0} />
           </li>
         ))
       }
     </ol>
-
-    {
-      showHead && (
-        <p class="proj-more">
-          <a class="link-arrow" href={withBase('projects/')}>
-            All projects, with filters by research area
-            <Icon name="arrow-right" size={20} />
-          </a>
-        </p>
-      )
-    }
   </div>
 </section>
 
 <style>
-  .proj-head {
-    position: relative;
-    margin-bottom: var(--space-6);
-  }
-  /* From 900px PerryAgent is absolute in the top-right corner (width clamp(120px, 11vw, 150px), about 0.8 of that
-     in height). Reserve that corner so the text never runs underneath it. Below 900px Perry sits in the flow. */
-  @media (min-width: 900px) {
-    .proj-head {
-      padding-right: calc(clamp(120px, 11vw, 150px) + var(--space-5));
-      min-height: 9rem;
-    }
+  .projects-block--home {
+    padding-block: var(--space-6);
   }
   /* The filter needs JavaScript, so it stays hidden until the `js` class from BaseLayout is present. */
   .proj-filter {
@@ -103,13 +101,22 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
   :global(.js) .proj-filter {
     display: block;
   }
+  .proj-filter__label {
+    margin-bottom: var(--space-2);
+    font-size: var(--fs-label);
+    font-weight: 500;
+    color: var(--text-muted);
+  }
   .chips {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
   }
   .filter-chip {
-    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch-min);
     padding: var(--space-1) var(--space-4);
     border-radius: var(--radius);
     border: 1px solid var(--border-strong);
@@ -131,6 +138,15 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
     color: var(--accent);
     background: var(--accent-bg);
     border-color: var(--accent);
+    font-weight: 600;
+  }
+  .filter-chip__count {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
+  }
+  .filter-chip[aria-pressed='true'] .filter-chip__count {
+    color: var(--accent);
   }
   .filter-status {
     min-height: 1.5em;
@@ -142,19 +158,16 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    gap: var(--space-6);
+    border-bottom: 1px solid var(--border);
   }
   .project-list > li[hidden] {
     display: none;
   }
-  .proj-more {
-    margin-top: var(--space-5);
-  }
 </style>
 
 <script>
-  // Project filter by research area. The list is complete HTML; this only hides non-matching items.
+  // Project filter by research area. The list is complete HTML; this only hides non-matching items and says
+  // how many remain.
   const root = document.querySelector<HTMLElement>('[data-project-filter]');
   const list = document.querySelector<HTMLElement>('[data-project-list]');
   if (root && list) {
@@ -167,16 +180,14 @@ const areaChips = researchInterests.filter((area) => projects.some((p) => p.area
       for (const item of items) {
         const match = area === 'all' || (item.dataset.areas ?? '').split(' ').includes(area);
         item.hidden = !match;
-        if (match) {
-          // Keep the left/right image alternation correct for the cards that remain.
-          item.querySelector('.pcard')?.setAttribute('data-flip', shown % 2 === 1 ? 'true' : 'false');
-          shown += 1;
-        }
+        if (match) shown += 1;
       }
       for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.area === area));
       if (status) {
         status.textContent =
-          area === 'all' ? '' : `Showing ${shown} of ${items.length} projects in ${label}.`;
+          area === 'all'
+            ? `Showing all ${items.length} projects.`
+            : `Showing ${shown} of ${items.length} projects in ${label}.`;
       }
     };
 

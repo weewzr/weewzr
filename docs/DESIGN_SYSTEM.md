@@ -216,7 +216,7 @@ Scale ratio about 1.25, rem on a 16 px root.
 
 | Role | Face | Size | Line height | Notes |
 | --- | --- | --- | --- | --- |
-| Home statement | Newsreader 500 | clamp(2rem, 1.6rem + 1.8vw, 3rem) | 1.15 | one factual sentence; -0.01em |
+| Home statement | Newsreader 500 | clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem) | 1.15 | one factual sentence; -0.01em |
 | Page title (h1) | Newsreader 500 | clamp(2rem, 1.7rem + 1.3vw, 2.625rem) | 1.15 | |
 | Section title (h2) | Newsreader 500 | clamp(1.5rem, 1.3rem + 0.8vw, 1.75rem) | 1.25 | |
 | Sub-section (h3) | Inter 600 | 1.125rem | 1.35 | |
@@ -232,12 +232,12 @@ Scale ratio about 1.25, rem on a 16 px root.
 
 ## B3. Layout
 
-- Container 1120 px. Case-study prose 68ch.
+- Container 1120 px. Case-study prose 68ch. The navigation collapses into the phone menu below 1024 px.
 - Home: statement, project rows, outputs ledger, contact. Section pages: page hero (breadcrumb, h1, lead), then content.
 
 ## B4. Navigation
 
-Top bar, labelled "Primary", with two groups: **Work** (Projects, Research, Writing) and **Beyond the lab** (Community, Innovation), then About. On wide screens the groups are separated by a hairline and each carries its label for screen readers; in the phone menu the labels are visible. Current page: brick underline and `aria-current`. The colour-mode toggle and the GitHub and LinkedIn icons sit at the right. No command palette.
+Top bar, labelled "Primary", with three labelled groups: **Work** (Projects, Research, Writing), **Beyond the lab** (Community, Innovation) and **Profile** (About). On wide screens the groups are separated by a hairline and each carries its label for screen readers; in the phone menu the labels are visible. Current page: brick underline and `aria-current`. The colour-mode toggle and the GitHub and LinkedIn icons sit at the right. No command palette.
 
 ## B5. Components
 

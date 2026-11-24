@@ -35,7 +35,8 @@ Direct production dependencies, with the versions installed when this page was w
 | @astrojs/sitemap | 3.7.4 | MIT | Generates `sitemap-index.xml` |
 | tailwindcss | 4.3.5 | MIT | Utility CSS and design tokens |
 | @tailwindcss/vite | 4.3.5 | MIT | Tailwind plugin for the build |
-| @fontsource-variable/inter | 5.3.0 | OFL-1.1 | Inter, headings and body text |
+| @fontsource-variable/inter | 5.3.0 | OFL-1.1 | Inter, body text and small headings |
+| @fontsource-variable/newsreader | 5.3.0 | OFL-1.1 | Newsreader, page and section titles |
 | @fontsource-variable/jetbrains-mono | 5.3.0 | OFL-1.1 | JetBrains Mono, technical text |
 
 Development-only tools: `@astrojs/check` (MIT) and `typescript` (Apache-2.0).
@@ -44,11 +45,11 @@ The fonts are self-hosted: the built site contains their `woff2` files. The copy
 
 ### Whole production tree
 
-`npm ls --omit=dev --all` lists 213 installed packages besides this project. By declared licence they are: 177 MIT, 9 ISC, 8 BSD-2-Clause, 4 Apache-2.0, 3 BlueOak-1.0.0, 3 BSD-3-Clause, 3 OFL-1.1 (the fonts above), 2 MPL-2.0, 2 CC0-1.0, 1 0BSD and 1 Apache-2.0 AND LGPL-3.0-or-later. The two MPL-2.0 packages are the platform builds of `lightningcss`, which Tailwind uses to process CSS. The LGPL entry is `@img/sharp-win32-x64`, the Windows binary package of `sharp`, an optional image library that bundles libvips. The lockfile lists the matching libvips packages (LGPL-3.0-or-later) for other platforms. These are build-time tools and none of them is part of the published files. No package in the tree is licensed under the GPL or AGPL.
+`npm ls --omit=dev --all --parseable` listed 212 installed packages besides this project on 2026-11-24 (after Newsreader was added), each counted once by its install directory. By the licence declared in each `package.json` they are: 176 MIT, 9 ISC, 8 BSD-2-Clause, 4 Apache-2.0, 3 OFL-1.1 (the three font packages above), 3 BlueOak-1.0.0, 3 BSD-3-Clause, 2 MPL-2.0, 2 CC0-1.0, 1 Apache-2.0 AND LGPL-3.0-or-later and 1 0BSD. The two MPL-2.0 packages are the platform builds of `lightningcss`, which Tailwind uses to process CSS. The LGPL entry is `@img/sharp-win32-x64`, the Windows binary package of `sharp`, an optional image library that bundles libvips. The lockfile lists the matching libvips packages (LGPL-3.0-or-later) for other platforms. These are build-time tools and none of them is part of the published files. No package in the tree is licensed under the GPL or AGPL.
 
 ### Audit
 
-`npm audit --omit=dev` was run on 2026-11-10 against the installed lockfile and reported `found 0 vulnerabilities`. The result describes that date and the registry data at that time. Rerun it before relying on it.
+`npm audit --omit=dev` was run on 2026-11-24 against the installed lockfile and reported `found 0 vulnerabilities` (the run of 2026-11-10 reported the same). The result describes that date and the registry data at that time. Rerun it before relying on it.
 
 ## Project preview images
 

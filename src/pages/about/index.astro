@@ -14,7 +14,8 @@ import SectionHeader from '../../components/SectionHeader.astro';
 import Icon from '../../components/Icon.astro';
 import { getWork } from '../../components/home/collections';
 import { getCollection } from 'astro:content';
-import { sections, projects, cv, site, social, education } from '../../data/site';
+import PerryImage from '../../components/PerryImage.astro';
+import { sections, projects, cv, site, social, education, mascot } from '../../data/site';
 import { withBase } from '../../lib/url';
 
 const section = sections.find((s) => s.id === 'about')!;
@@ -64,6 +65,10 @@ const personLd = {
   jsonLd={personLd}
 >
   <PageHero eyebrow={section.eyebrow} title={section.title} lead={section.lead}>
+    <figure class="about-perry">
+      <PerryImage slot="research" loading="eager" />
+      <figcaption>{mascot.name}, an unofficial fan tribute. Disney owns the character.</figcaption>
+    </figure>
     {
       showDownload && (
         <p class="about-download">
@@ -115,6 +120,40 @@ const personLd = {
 </BaseLayout>
 
 <style>
+  /* Perry, small: in the flow under the lead on phones, in the right-hand corner of the page hero from 768 px. */
+  .about-perry {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-3);
+    margin: var(--space-5) 0 0;
+  }
+  .about-perry :global(.perry-img) {
+    width: 72px;
+    flex: none;
+  }
+  .about-perry figcaption {
+    max-width: 22ch;
+    font-size: var(--fs-label);
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+  @media (min-width: 768px) {
+    :global(.page-hero) {
+      padding-right: 13rem;
+    }
+    .about-perry {
+      position: absolute;
+      right: 0;
+      bottom: var(--space-6);
+      flex-direction: column;
+      align-items: flex-end;
+      margin: 0;
+      text-align: right;
+    }
+    .about-perry :global(.perry-img) {
+      width: 96px;
+    }
+  }
   .about-download {
     margin-top: var(--space-4);
   }

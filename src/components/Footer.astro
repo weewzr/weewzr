@@ -1,12 +1,11 @@
-﻿---
+---
 /**
- * Site footer. position:relative with no overflow clipping, because <PerryFooter /> peeks above the top edge.
- * The right-hand side is kept free on desktop and the top padding grows on phones so the mascot never covers copy.
+ * Site footer: name and identity line, the sections in the same labelled groups as the top navigation,
+ * outside links, and the credit and licence line.
  */
 import { site, social, sections, mascot } from '../data/site';
 import { withBase } from '../lib/url';
 import Icon from './Icon.astro';
-import PerryFooter from './PerryFooter.astro';
 
 const year = new Date().getFullYear();
 const creditsUrl = `${social.github}/weewzr/blob/main/docs/CREDITS.md`;
@@ -14,6 +13,12 @@ const built = [
   { label: 'Astro', href: 'https://astro.build' },
   { label: 'Tailwind CSS', href: 'https://tailwindcss.com' },
 ] as const;
+const pick = (ids: string[]) => sections.filter((s) => ids.includes(s.id));
+const groups = [
+  { label: 'Work', items: pick(['projects', 'research', 'writing']) },
+  { label: 'Beyond the lab', items: pick(['community', 'innovation']) },
+  { label: 'Profile', items: pick(['about']) },
+];
 ---
 
 <footer class="footer">
@@ -23,88 +28,91 @@ const built = [
       <p class="footer__identity">{site.identity}</p>
     </div>
 
-    <nav class="footer__col" aria-label="Footer">
-      <p class="footer__label">Explore</p>
-      <ul class="footer__list">
-        {
-          sections.map((item) => (
-            <li>
-              <a class="footer__link" href={withBase(item.path)}>
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+    <nav class="footer__nav" aria-label="Footer">
+      {
+        groups.map((g) => (
+          <div class="footer__col">
+            <p class="footer__label">{g.label}</p>
+            <ul class="footer__list">
+              {g.items.map((item) => (
+                <li>
+                  <a class="footer__link" href={withBase(item.path)}>
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+      <div class="footer__col">
+        <p class="footer__label">Elsewhere</p>
+        <ul class="footer__list">
+          <li>
+            <a class="footer__link" href={social.github} target="_blank" rel="noopener noreferrer">
+              <Icon name="github" size={16} />
+              GitHub
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </li>
+          <li>
+            <a class="footer__link" href={social.linkedin} target="_blank" rel="noopener noreferrer">
+              <Icon name="linkedin" size={16} />
+              LinkedIn
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </li>
+          {
+            social.email && (
+              <li>
+                <a class="footer__link" href={withBase('about/#contact')}>
+                  <Icon name="mail" size={16} />
+                  Email (see Contact)
+                </a>
+              </li>
+            )
+          }
+        </ul>
+      </div>
     </nav>
-
-    <div class="footer__col">
-      <p class="footer__label">Elsewhere</p>
-      <ul class="footer__list">
-        <li>
-          <a class="footer__link" href={social.github} target="_blank" rel="noopener noreferrer">
-            <Icon name="github" size={16} />
-            GitHub
-            <span class="sr-only">(opens in a new tab)</span>
-          </a>
-        </li>
-        <li>
-          <a class="footer__link" href={social.linkedin} target="_blank" rel="noopener noreferrer">
-            <Icon name="linkedin" size={16} />
-            LinkedIn
-            <span class="sr-only">(opens in a new tab)</span>
-          </a>
-        </li>
-        {
-          social.email && (
-            <li>
-              <a class="footer__link" href={withBase('about/#contact')}>
-                <Icon name="mail" size={16} />
-                Email (see Contact)
-              </a>
-            </li>
-          )
-        }
-      </ul>
-    </div>
 
     <div class="footer__legal">
       {mascot.enabled && <p class="footer__credit">{mascot.credit}</p>}
       <p class="footer__meta">
-        Built with{' '}
-        <a href={built[0].href} target="_blank" rel="noopener noreferrer">{built[0].label}</a>{' '}
-        and{' '}
-        <a href={built[1].href} target="_blank" rel="noopener noreferrer">{built[1].label}</a>.
-      </p>
-      <p class="footer__meta">
         <span>&copy; {year} {site.name}</span>
+        <span class="footer__dot" aria-hidden="true">&middot;</span>
+        <span>
+          Built with{' '}
+          <a href={built[0].href} target="_blank" rel="noopener noreferrer">
+            {built[0].label}
+          </a>{' '}
+          and{' '}
+          <a href={built[1].href} target="_blank" rel="noopener noreferrer">
+            {built[1].label}
+          </a>
+        </span>
         <span class="footer__dot" aria-hidden="true">&middot;</span>
         <a href={creditsUrl} target="_blank" rel="noopener noreferrer">Credits and licences</a>
       </p>
     </div>
   </div>
-
-  <PerryFooter />
 </footer>
 
 <style>
   .footer {
-    position: relative;
-    padding-block: var(--space-8) var(--space-6);
+    padding-block: var(--space-7) var(--space-6);
     background: var(--bg-subtle);
     border-top: 1px solid var(--border);
   }
-
   .footer__inner {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
   }
-
   .footer__name {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: var(--fs-card-title);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.5rem;
     color: var(--text);
     text-decoration: none;
   }
@@ -118,9 +126,18 @@ const built = [
     line-height: 1.55;
     color: var(--text-muted);
   }
-
+  .footer__nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  @media (min-width: 768px) {
+    .footer__nav {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
   .footer__label {
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
     font-size: var(--fs-label);
     font-weight: 600;
     color: var(--text-muted);
@@ -128,7 +145,6 @@ const built = [
   .footer__list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -137,7 +153,7 @@ const built = [
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    min-height: 44px;
+    min-height: var(--touch-min);
     font-size: var(--fs-small);
     color: var(--text);
     text-decoration: none;
@@ -145,9 +161,9 @@ const built = [
     transition: color var(--ease);
   }
   .footer__link:hover {
+    color: var(--accent);
     text-decoration: underline;
   }
-
   .footer__legal {
     display: flex;
     flex-direction: column;
@@ -159,57 +175,33 @@ const built = [
     color: var(--text-muted);
   }
   .footer__credit {
-    max-width: 68ch;
+    max-width: var(--measure);
   }
   .footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--space-2);
     margin: 0;
   }
   .footer__meta a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
     color: var(--text);
-    text-underline-offset: 3px;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: var(--border-strong);
   }
   .footer__meta a:hover {
-    text-decoration: underline;
+    color: var(--accent);
   }
-  .footer__dot {
-    margin-inline: var(--space-2);
-  }
-
-  /* Phones: the mascot sits above the top edge, a little extra headroom keeps copy clear of its tail and bubble. */
-  @media (max-width: 899.98px) {
-    .footer {
-      padding-top: var(--space-8);
-    }
-  }
-
-  @media (min-width: 640px) {
+  @media (min-width: 1024px) {
     .footer__inner {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .footer__brand,
-    .footer__legal {
-      grid-column: 1 / -1;
-    }
-  }
-
-  /* Desktop: three columns, with the right side left open for the footer mascot. */
-  @media (min-width: 900px) {
-    .footer__inner {
-      grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.8fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
       column-gap: var(--space-7);
-      padding-right: min(10rem, 12vw);
-    }
-    .footer__brand {
-      grid-column: auto;
     }
     .footer__legal {
       grid-column: 1 / -1;
-    }
-  }
-  @media (min-width: 1200px) {
-    .footer__inner {
-      padding-right: 14rem;
     }
   }
 </style>

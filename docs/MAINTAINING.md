@@ -24,10 +24,10 @@ The Python tools need Pillow (tested with Pillow 11.1.0 on Python 3.10). `tools/
 | What | Where |
 | --- | --- |
 | Personal info, links, the section list (`sections`), nav, skills, projects, mascot settings, the CV switch (`cv`, off) | `src/data/site.ts` (single source of truth) |
-| Home page blocks | `src/components/` (Hero, ResearchInterests, FeaturedProjects, Contact) and `src/components/home/` (previews of each section) |
+| Home page blocks | `src/pages/index.astro` (the statement), `src/components/FeaturedProjects.astro` with `ProjectCard.astro` (project rows), `src/components/OutputsLedger.astro` (every output in one table) and `Contact.astro` |
 | Section pages | `src/pages/projects/index.astro`, `research/`, `community/`, `innovation/`, `about/`, built with `PageHero`, `WorkGrid` and `WorkCard` in `src/components/` |
 | Layout, SEO tags, breadcrumbs, global shell | `src/layouts/BaseLayout.astro`, `src/components/SEO.astro`, `Nav.astro`, `Footer.astro` |
-| Design tokens, cards, status pills, page hero, helper classes | `src/styles/global.css` (CSS variables on `:root`) |
+| Design tokens, cards, status pills, page hero, helper classes | `src/styles/tokens.core.css` (shared core, copied unchanged into the other repositories), `src/styles/fonts.css` (self-hosted fonts and metric-matched fallbacks) and `src/styles/global.css` (portfolio colours, type scale, components) |
 | Project case-study pages | `src/pages/projects/[slug].astro`, MDX in `src/content/projects/` |
 | Research, community and innovation case studies | `src/pages/<section>/[slug].astro`, MDX in `src/content/<section>/`, shared layout `src/components/case/CaseStudy.astro` |
 | Case-study building blocks | `src/components/case/` (Toc, Facts, Timeline, Roadmap, Gallery, DocumentViewer, Figure, Callout, RelatedLinks, SourceList), scripts in `src/scripts/case-*.ts`, helpers in `src/lib/case.ts` |
@@ -38,7 +38,7 @@ The Python tools need Pillow (tested with Pillow 11.1.0 on Python 3.10). `tools/
 | Project filter and area badges | `areas` on each project in `src/data/site.ts`, `src/components/FeaturedProjects.astro` (chips and script), `src/components/ProjectCard.astro` (badges) |
 | Research notes | `src/content/notes/*.md` or `*.mdx`; the index and note pages are in `src/pages/writing/` |
 | Colours, type, spacing and radii | Tokens at the top of `src/styles/global.css`; the rules are in `docs/DESIGN_SYSTEM.md` |
-| Night and light mode | Night is the default: its tokens and the page gradient (`--page-bg`, drawn by `body::before`) are under `:root` in `src/styles/global.css`, and the light tokens are under `:root[data-theme='light']`. The toggle and its script are in `src/components/Nav.astro`; the saved choice is restored by the inline script in `src/layouts/BaseLayout.astro` |
+| Light and dark mode | Light paper is the default. The dark tokens are under `@media (prefers-color-scheme: dark)` (when no light choice is saved) and under `:root[data-theme='dark']` in `src/styles/global.css`. The toggle and its script are in `src/components/Nav.astro`; the saved choice is restored by the inline script in `src/layouts/BaseLayout.astro`. |
 | Content schemas | `src/content.config.ts` |
 | Not-found page | `src/pages/404.astro` |
 | Images and static files | `public/` (copied unchanged to the site root) |
@@ -113,6 +113,7 @@ Write in plain, precise prose. Quote a number only if it is in the cited source,
 
 Perry the Platypus and the Phineas and Ferb artwork belong to Disney (see `LICENSE` and `docs/CREDITS.md`).
 
+- Placements: Perry appears twice, small, once on the About page and once on the 404 page (`src/pages/about/index.astro` and `src/pages/404.astro`, through `PerryImage.astro`). There are no speech bubbles, no console and no motion.
 - Disable: set `mascot.enabled` to `false` in `src/data/site.ts`. Every placement then renders `public/mascot/silhouette.svg`, and the footer credit line is hidden because it is no longer needed.
 - Swap: replace the files in `public/mascot/` and update `mascot.assets` (paths, `width`, `height`) in `site.ts`. Each placement needs a `.webp` and a `.png` fallback. Update `mascot.credit` if the artwork changes.
 - Remove completely: set `enabled` to `false`, delete `public/mascot/*` except `silhouette.svg`, delete `assets/readme/perry.png`, and remove the Perry line and image from `README.md`. Honour any takedown request promptly.
@@ -284,5 +285,21 @@ All builds went to a directory outside the repository through `ASTRO_OUT_DIR` an
 - The tabs are built in the browser by an inline script, not by a Markdown plugin. Astro 7 runs Markdown through Satteri by default, and `markdown.rehypePlugins` needs the unified processor installed for the whole site. If that processor is adopted later, a rehype plugin could build the panels at build time and `case-tabs.js` would only handle behaviour.
 - The area tags in `src/data/site.ts` are editorial. They follow the wording of the research interest summaries and project descriptions. The `safety` area has no project yet, so it has no chip.
 - The filter keeps no state in the address bar. Tab changes do update the hash (`#tab-results`).
-- The STRATO case study at 1440 px has one layout shift of about 0.18 to 0.21, present on `main` before this work. It happens about 290 ms after navigation, when the web fonts replace the fallback faces and a line of the header text wraps differently. Preloading the Latin subsets of Space Grotesk, Inter and JetBrains Mono (all three were needed) brought it to 0 on every case study at both widths, but Lighthouse blocking time rose on all six page and device combinations in a 24-run comparison (for example home on mobile 1,896 ms to 3,387 ms) and stayed near the baseline when the preload was left out of a second, rotated comparison. The preload was reverted (see the commit history). A fallback `@font-face` with matched `size-adjust` metrics is the next thing to try.
+- (Resolved in the November 2026 editorial redesign by metric-matched fallback faces in `src/styles/fonts.css`; see the note at the end of this file.) The STRATO case study at 1440 px had one layout shift of about 0.18 to 0.21, present on `main` before this work. It happens about 290 ms after navigation, when the web fonts replace the fallback faces and a line of the header text wraps differently. Preloading the Latin subsets of Space Grotesk, Inter and JetBrains Mono (all three were needed) brought it to 0 on every case study at both widths, but Lighthouse blocking time rose on all six page and device combinations in a 24-run comparison (for example home on mobile 1,896 ms to 3,387 ms) and stayed near the baseline when the preload was left out of a second, rotated comparison. The preload was reverted (see the commit history). A fallback `@font-face` with matched `size-adjust` metrics is the next thing to try.
 - Lighthouse scores on this shared machine vary by 10 points or more between runs of the same page, so only same-session A/B runs are compared and small differences should not be read as real.
+
+## Editorial redesign (November 2026)
+
+The site moved from the navy-to-violet night page to the "editorial notebook" identity in `docs/DESIGN_SYSTEM.md` part B: light paper by default, following the system setting, with a flat dark variant and the same header toggle. Newsreader (OFL, Fontsource) sets page and section titles; Inter and JetBrains Mono stay. `src/styles/fonts.css` declares only the subsets the site uses and a metric-matched local fallback for each face, computed from the font files with fontTools.
+
+Layout shift from font swap, measured with headless Edge over the DevTools protocol, a local static server that held every `woff2` back by 800 ms so the swap happens after first paint, and true 1440 x 900 and 390 x 844 viewports (one load per page and width):
+
+| Page | Before, 1440 | After, 1440 | Before, 390 | After, 390 |
+| --- | --- | --- | --- | --- |
+| Home | 0.0013 | 0.0002 | 0.0015 | 0.0001 |
+| STRATO case study | 0.0031 | 0.0015 | 0.0102 | 0.0000 |
+| KASCO case study | 0.0007 | 0.0002 | 0.0003 | 0.0207 |
+| STRATO note | 0.0088 | 0.0063 | 0.0384 | 0.0251 |
+| About | 0.0030 | 0.0003 | 0.0063 | 0.0000 |
+
+The remaining shifts (at most 0.025) come from a title that wraps one word differently in Newsreader than in its Georgia fallback. The 0.18 to 0.21 recorded earlier on the STRATO page did not reappear in this set-up, before or after; it was measured with Lighthouse, which was not rerun.

@@ -10,11 +10,16 @@ export const site = {
   title: 'Wee Zhern Ray | Chemical Engineering, Nuclear and Low-Carbon Energy',
   /** Full public URL of the site (used for canonical links, Open Graph and the sitemap). */
   url: 'https://weewzr.github.io/weewzr/',
-  headline: 'Engineering a More Sustainable Future.',
-  identity:
-    'Chemical Engineering @ NUS | Nuclear & Low-Carbon Energy Research | Process Modelling | Computational Engineering',
-  subtitle:
-    'Exploring the intersection of nuclear engineering, low-carbon energy systems, chemical process modelling and computational engineering.',
+  /**
+   * The home-page statement: one sentence of fact, built only from statements already on the site
+   * (README and `aboutParagraphs`). `statementAlternative` is the second candidate, kept for the owner to choose.
+   */
+  statement:
+    'I build computational models of nuclear fuel, hydrogen production and fuel supply networks, and check each one against an independent method where one exists.',
+  statementAlternative:
+    'Chemical Engineering student at the National University of Singapore, with research involvement in nuclear engineering and four public modelling projects on nuclear fuel, hydrogen and fuel supply networks.',
+  /** One factual line under the name, used on the home page and in the footer. */
+  identity: 'Chemical Engineering student at the National University of Singapore (NUS)',
   description:
     'Wee Zhern Ray is a Chemical Engineering student at the National University of Singapore working across nuclear engineering, low-carbon energy, chemical process modelling and computational engineering.',
   locale: 'en',
@@ -160,7 +165,7 @@ export type ResearchInterest = {
 export const researchInterests: readonly ResearchInterest[] = [
   {
     id: 'nuclear',
-    title: 'Nuclear Engineering & Energy Systems',
+    title: 'Nuclear engineering and energy systems',
     short: 'Nuclear',
     summary:
       'Research involvement at NUS in nuclear engineering, and a public computational project on fission-product release from TRISO (tristructural isotropic) fuel particles.',
@@ -170,7 +175,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   },
   {
     id: 'hydrogen',
-    title: 'Hydrogen & Low-Carbon Technologies',
+    title: 'Hydrogen and low-carbon technologies',
     short: 'Hydrogen and low carbon',
     summary:
       'Low-carbon hydrogen for Singapore through nuclear-upgraded steam methane reforming with carbon capture, and sustainable aviation fuel supply chains across Kalimantan.',
@@ -180,7 +185,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   },
   {
     id: 'process',
-    title: 'Chemical Process Modelling & Simulation',
+    title: 'Chemical process modelling and simulation',
     short: 'Process modelling',
     summary:
       'Mass and energy balances and flowsheet logic in reproducible process models, with inputs traced to a source and results checked against independent calculations.',
@@ -190,7 +195,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   },
   {
     id: 'tea',
-    title: 'Techno-Economic Analysis',
+    title: 'Techno-economic analysis',
     short: 'Techno-economics',
     summary:
       'Levelised cost and abatement cost ledgers, with sensitivity and scenario studies that show which assumptions drive a result.',
@@ -200,7 +205,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   },
   {
     id: 'safety',
-    title: 'Process Safety & Sustainability',
+    title: 'Process safety and sustainability',
     short: 'Safety and sustainability',
     summary:
       'Applying process safety and sustainability principles to energy systems, following my specialisation in Safety and Sustainability at NUS.',
@@ -210,7 +215,7 @@ export const researchInterests: readonly ResearchInterest[] = [
   },
   {
     id: 'scicomp',
-    title: 'Scientific Computing & Numerical Methods',
+    title: 'Scientific computing and numerical methods',
     short: 'Scientific computing',
     summary:
       'Finite-volume and eigenfunction methods for diffusion, and mixed-integer optimisation for supply networks, written in Rust and Python and verified with convergence and balance checks.',
@@ -233,7 +238,7 @@ export const skills = [
     items: ['Process simulation', 'Process modelling', 'Engineering optimisation', 'Techno-economic analysis'],
   },
   {
-    category: 'Scientific Computing',
+    category: 'Scientific computing',
     icon: 'grid',
     items: ['Numerical modelling', 'Data analysis', 'Computational methods', 'Verification and validation'],
   },
@@ -248,6 +253,8 @@ export type Project = {
   slug: string;
   name: string;
   tagline: string;
+  /** One sentence on what the project computes, for the project row. Taken from `description`. */
+  computes: string;
   /** Verified summary, based on the repository README. */
   description: string;
   status: string;
@@ -268,6 +275,12 @@ export type Project = {
   image: string | null;
   imageAlt: string;
   imageCaption: string;
+  /**
+   * One checked result for the project row on the home page. Every value is copied from the project's public
+   * repository; `kind` says what sort of evidence it is (docs/DESIGN_SYSTEM.md A8) and `source` where it is recorded.
+   * Never an experimental-agreement figure unless the repository publishes the comparison.
+   */
+  result?: { value: string; detail: string; kind: string; source: string; sourceUrl: string };
 };
 
 /**
@@ -280,6 +293,7 @@ export const projects: readonly Project[] = [
     slug: 'kasco',
     name: 'KASCO',
     tagline: 'Kalimantan SAF Supply Chain Optimiser',
+    computes: 'Chooses refinery and depot sites for a Sustainable Aviation Fuel network across Kalimantan, and sizes and routes biomass and fuel to four international airports, in the browser.',
     description:
       'Built for Autonomous SG 2026 (Airbus Challenge 3), organised by Acacia Hackathon Society and NUS Product Club. A working planning tool for a Sustainable Aviation Fuel network across Kalimantan. It chooses refinery and depot sites and sizes and routes biomass and fuel to four international airports. It also shows the evidence behind each number. The Rust solver is compiled to WebAssembly, so the whole product runs in the browser with no server.',
     status: 'Live prototype',
@@ -296,11 +310,19 @@ export const projects: readonly Project[] = [
     image: 'projects/kasco.webp',
     imageAlt: 'KASCO overview dashboard showing annual cost, cost per tonne of SAF, refinery and depot counts, and a cost breakdown chart.',
     imageCaption: 'Screenshot of the live KASCO app.',
+    result: {
+      value: '0.75%',
+      detail: 'proven optimality gap on the base case with 70 candidate sites; on five smaller cases the Rust cost equals the HiGHS proven optimum',
+      kind: 'Computed, stored result',
+      source: 'KASCO README, Results; docs/data/official_base.json',
+      sourceUrl: 'https://github.com/weewzr/KASCO#results',
+    },
   },
   {
     slug: 'nush2',
     name: 'NUS-H2',
     tagline: 'Nuclear-upgraded steam methane reforming with carbon capture for low-carbon hydrogen in Singapore',
+    computes: 'Balances a steam methane reformer heated by a high-temperature gas-cooled reactor, with amine carbon capture, and reports the levelised abatement cost against a stated target.',
     description:
       'Built for CN4252 Hydrogen and Low Carbon Technologies: Industry Perspectives at NUS. Lecturer: Prof Yan Ning. A low-carbon hydrogen study with an open engine and a browser simulator. A high-temperature gas-cooled reactor supplies process heat to steam methane reforming, and an amine unit captures the carbon dioxide. The headline Case B plant makes 100,000 Nm3/h of purified hydrogen, and the study reports levelised abatement cost against a stated target, including where the target is missed.',
     status: 'Study with live simulator',
@@ -317,11 +339,19 @@ export const projects: readonly Project[] = [
     image: 'projects/nush2.webp',
     imageAlt: 'NUS-H2 process flow diagram: high-temperature gas-cooled reactor, helium-heated steam methane reforming, shift, amine capture and CO2 compression.',
     imageCaption: 'Process flow figure from the NUS-H2 repository.',
+    result: {
+      value: '0.20%',
+      detail: 'largest difference between the levelised cost ledger and the discounted cash flow method on the 12-point headline grid (0.47% at worst over 72 points)',
+      kind: 'Numerical verification, two cost methods',
+      source: 'NUS-H2 docs/FINAL_DESIGN_DECISIONS.md (main at cfef6d5)',
+      sourceUrl: 'https://github.com/weewzr/NUSH2/blob/main/docs/FINAL_DESIGN_DECISIONS.md',
+    },
   },
   {
     slug: 'strato',
     name: 'STRATO',
     tagline: 'Spherical TRISO Analysis and Transport Operations',
+    computes: 'Solves fission-product diffusion through the five layers of a TRISO fuel particle two independent ways, a finite-volume method and an exact eigenfunction series, so that each checks the other.',
     description:
       'A transparent, verifiable model of fission-product release from a single TRISO coated fuel particle. It solves the same multilayer spherical diffusion problem two independent ways, a conservative finite-volume method and an exact eigenfunction series, so each method checks the other. Version 1.0 covers constant temperature and constant diffusivity per layer. Phase 2 (decay, generation, Arrhenius diffusivity and temperature histories) exists as checked mathematics and pseudocode, with no code yet.',
     status: 'v1.0.1, Phase 2 in design',
@@ -341,11 +371,19 @@ export const projects: readonly Project[] = [
     imageAlt: 'Cross-section diagram of a TRISO coated fuel particle showing the kernel and four surrounding coating layers.',
     imageCaption:
       'TRISO cross-section from the STRATO documentation, drawn to scale with AGR-1 baseline dimensions. The bundled v1.0 example uses different, synthetic radii.',
+    result: {
+      value: '2.00',
+      detail: 'observed spatial order of the finite-volume solver against the exact series (100 to 1600 cells); relative inventory balance residual at most 2.8e-13',
+      kind: 'Numerical verification, STRATO v1.0 synthetic case',
+      source: 'STRATO README, Verification; tests/golden/v1.0/verify_stdout.txt',
+      sourceUrl: 'https://github.com/weewzr/STRATO#verification',
+    },
   },
   {
     slug: 'amcrax',
     name: 'AmCraX',
     tagline: 'Ammonia cracking simulation and optimisation platform',
+    computes: 'Drives an Aspen Plus V15 flowsheet of an ammonia cracker from Python and checks it with independent Python models for equilibrium, heat integration, kinetics and cost.',
     description:
       'Grows out of my CN5190 Hydrogen Energy and Technology review essay at NUS. Lecturers: Prof Wang Lei and Prof Lum Yanwei. An Aspen Plus V15 flowsheet of an ammonia cracker, driven from Python and checked by independent Python models for equilibrium, heat integration, kinetics and cost. The baseline converts 98.1% of the ammonia and makes 251.6 kg/h of hydrogen. The public site opens on a process simulator that runs in the browser from the stored results and labels every value with its source. It does not run Aspen Plus.',
     status: 'Live site',
@@ -362,6 +400,13 @@ export const projects: readonly Project[] = [
     image: 'projects/amcrax.webp',
     imageAlt: 'The AmCraX process simulator page: controls on the left, four labelled results and the process flow diagram of the ammonia cracker.',
     imageCaption: 'Screenshot of the AmCraX public site, simulator page, captured on 24 November 2026.',
+    result: {
+      value: '0.185 pp',
+      detail: 'largest difference in equilibrium ammonia conversion between Aspen Plus and the independent Python model, both with Peng-Robinson, over a 168-point grid',
+      kind: 'Python against Aspen Plus comparison',
+      source: 'AmCraX README, Scientific methodology (main at 70993a5)',
+      sourceUrl: 'https://github.com/weewzr/AmCraX#scientific-methodology',
+    },
   },
 ] as const;
 
@@ -391,7 +436,8 @@ export const noteCategories = [
 
 /**
  * Perry the Platypus belongs to Disney. These files are supplied by the site owner,
- * credited below and used as fan artwork. Set `enabled` to false to swap every
+ * credited below and used as fan artwork. The site shows Perry twice, small: once on the About page
+ * (`research` asset) and once on the 404 page (`footer` asset). Set `enabled` to false to swap every
  * placement for the neutral silhouette placeholder.
  */
 export const mascot = {
@@ -405,28 +451,18 @@ export const mascot = {
     research: { webp: 'mascot/perry-agent-head.webp', png: 'mascot/perry-agent-head.png', width: 418, height: 360 },
     footer: { webp: 'mascot/perry-walk.webp', png: 'mascot/perry-walk.png', width: 562, height: 420 },
   },
-  lines: {
-    hero: 'Agent P is on the case.',
-    projects: 'Agent P approves.',
-    research: 'Classified research console. Press to open.',
-    footer: 'Mission complete. See you next time.',
-  },
-  researchConsolePanel: [
-    'Nuclear engineering',
-    'Hydrogen technologies',
-    'Scientific computing',
-    'Process optimisation',
-  ],
 } as const;
 
-/** Brand colours for build tools (social image, favicon). The site itself reads src/styles/global.css. */
+/**
+ * Brand colours for build tools (social image, favicon). The site itself reads src/styles/global.css.
+ * Values follow the "editorial notebook" light theme (docs/DESIGN_SYSTEM.md B1).
+ */
 export const theme = {
-  navy: '#0B1F3A',
-  bgDark: '#0B1320',
-  bgLight: '#FFFFFF',
-  accent: '#1D4FD7',
-  accentDark: '#78AEFF',
-  cyan: '#0B6B85',
-  text: '#101A2B',
-  muted: '#4B5B6F',
+  paper: '#F7F5F0',
+  bgDark: '#14130F',
+  bgLight: '#F7F5F0',
+  accent: '#A1301C',
+  accentDark: '#E8836A',
+  text: '#1B1A17',
+  muted: '#5A564D',
 } as const;

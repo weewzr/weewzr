@@ -1,0 +1,169 @@
+---
+/**
+ * Outputs ledger: one table of everything the site publishes (projects, case studies, published documents and
+ * notes). Built at build time from src/data/site.ts and the content collections, so it can never list something
+ * that is not on the site. Document sizes are read from the files under /public.
+ * Each section's rows sit in their own <tbody> with the section id, so the old home anchors (#research,
+ * #community, #innovation, #writing) still land on the matching rows.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { getCollection } from 'astro:content';
+import { projects } from '../data/site';
+import { getWork, type WorkName } from './home/collections';
+import { withBase } from '../lib/url';
+import { slugify } from '../lib/case';
+
+type Row = { title: string; href: string; type: string; when: string; iso?: string; format: string };
+
+const kindLabel: Record<string, string> = {
+  report: 'Report',
+  slides: 'Slides',
+  poster: 'Poster',
+  essay: 'Essay',
+  summary: 'Summary',
+};
+const size = (rel: string) => {
+  try {
+    const bytes = fs.statSync(path.join(process.cwd(), 'public', rel)).size;
+    return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} kB`;
+  } catch {
+    return '';
+  }
+};
+const fmtDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+const projectRows: Row[] = projects.map((p) => ({
+  title: `${p.name}: ${p.tagline}`,
+  href: `projects/${p.slug}/`,
+  type: p.siteUrl ? 'Software with live site' : 'Software',
+  when: p.status,
+  format: p.siteUrl ? 'Repository, web app' : 'Repository',
+}));
+
+async function caseRows(name: WorkName): Promise<Row[]> {
+  const entries = await getWork(name);
+  return entries.flatMap((e) => {
+    const page: Row = {
+      title: e.data.shortTitle,
+      href: `${name}/${e.id}/`,
+      type: e.data.kind.split(',')[0],
+      when: e.data.period,
+      format: 'Case study page',
+    };
+    const docs: Row[] = e.data.documents
+      .filter((d) => d.published && d.pdf)
+      .map((d) => ({
+        title: d.title,
+        href: `${name}/${e.id}/#doc-${slugify(d.id)}-title`,
+        type: kindLabel[d.kind] ?? 'Document',
+        when: e.data.period,
+        format: ['PDF', size(d.pdf!)].filter(Boolean).join(', '),
+      }));
+    return [page, ...docs];
+  });
+}
+
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const noteRows: Row[] = notes.map((n) => ({
+  title: n.data.title,
+  href: `writing/${n.id}/`,
+  type: n.data.kind,
+  when: fmtDate.format(n.data.date),
+  iso: n.data.date.toISOString().slice(0, 10),
+  format: 'Web page',
+}));
+
+const groups = [
+  { id: 'ledger-projects', label: 'Projects', rows: projectRows },
+  { id: 'research', label: 'Research', rows: await caseRows('research') },
+  { id: 'writing', label: 'Writing', rows: noteRows },
+  { id: 'community', label: 'Community', rows: await caseRows('community') },
+  { id: 'innovation', label: 'Innovation', rows: await caseRows('innovation') },
+].filter((g) => g.rows.length > 0);
+const total = groups.reduce((n, g) => n + g.rows.length, 0);
+---
+
+<section id="outputs" class="section ledger" aria-labelledby="outputs-title">
+  <div class="container">
+    <header class="section-head">
+      <div class="section-head__text">
+        <h2 id="outputs-title" class="section-title">Everything on this site</h2>
+        <p class="section-lead">
+          All {total} outputs in one list: projects, case studies, published documents and notes. Status and dates are
+          as each page states them.
+        </p>
+      </div>
+    </header>
+
+    <div class="table-scroll" role="region" tabindex="0" aria-labelledby="outputs-title">
+      <table class="data-table ledger__table">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Type</th>
+            <th scope="col">Date or status</th>
+            <th scope="col">Format</th>
+          </tr>
+        </thead>
+        {
+          groups.map((g) => (
+            <tbody id={g.id}>
+              <tr class="ledger__group">
+                <th scope="colgroup" colspan="4">
+                  {g.label}
+                </th>
+              </tr>
+              {g.rows.map((r) => (
+                <tr>
+                  <td class="ledger__title">
+                    <a href={withBase(r.href)}>{r.title}</a>
+                  </td>
+                  <td>{r.type}</td>
+                  <td class="ledger__when">{r.iso ? <time datetime={r.iso}>{r.when}</time> : r.when}</td>
+                  <td class="ledger__format">{r.format}</td>
+                </tr>
+              ))}
+            </tbody>
+          ))
+        }
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ledger__table {
+    min-width: 40rem;
+  }
+  .ledger__group th {
+    padding-top: var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--fs-card-title);
+    font-weight: 500;
+    color: var(--text);
+    background: transparent;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .ledger__title {
+    min-width: 16rem;
+  }
+  .ledger__title a {
+    font-weight: 500;
+  }
+  .ledger__when,
+  .ledger__format {
+    color: var(--text-muted);
+  }
+  .ledger__when,
+  .ledger__format {
+    white-space: nowrap;
+  }
+  .ledger__when time,
+  .ledger__format {
+    font-variant-numeric: tabular-nums;
+  }
+  tbody {
+    scroll-margin-top: calc(var(--nav-h) + 12px);
+  }
+</style>

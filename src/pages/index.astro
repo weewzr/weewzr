@@ -1,20 +1,14 @@
-﻿---
+---
+/**
+ * Home: one factual statement, the four project rows (figure and one checked result each), the outputs ledger and
+ * the contact strip. Every word and number comes from src/data/site.ts and the content collections.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
-import ResearchInterests from '../components/ResearchInterests.astro';
 import FeaturedProjects from '../components/FeaturedProjects.astro';
+import OutputsLedger from '../components/OutputsLedger.astro';
 import Contact from '../components/Contact.astro';
-import Icon from '../components/Icon.astro';
-import CollectionPreview from '../components/home/CollectionPreview.astro';
-import { getWork } from '../components/home/collections';
-import { site, social, education } from '../data/site';
+import { site, social, education, affiliations } from '../data/site';
 import { withBase } from '../lib/url';
-
-const [research, community, innovation] = await Promise.all([
-  getWork('research'),
-  getWork('community'),
-  getWork('innovation'),
-]);
 
 const personLd = {
   '@context': 'https://schema.org',
@@ -25,34 +19,87 @@ const personLd = {
   sameAs: [social.github, social.linkedin],
   affiliation: { '@type': 'CollegeOrUniversity', name: education.institution },
 };
+const research = affiliations[0];
 ---
 
 <BaseLayout path="" jsonLd={personLd}>
-  <Hero />
-  <ResearchInterests compact perry />
+  <section class="intro" aria-labelledby="intro-title">
+    <div class="container">
+      <p class="intro__name">{site.name}</p>
+      <h1 id="intro-title" class="intro__statement">{site.statement}</h1>
+      <p class="intro__meta">
+        <span>{education.degree}, {education.institution}</span>
+        <span class="intro__sep" aria-hidden="true">·</span>
+        <span>Research involvement: {research.unit}</span>
+      </p>
+      <p class="intro__links">
+        <a href={withBase('about/')}>About me</a>
+        <a href={withBase('writing/')}>Writing</a>
+        <a href={social.github} target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+        <a href={social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+      </p>
+    </div>
+  </section>
+
   <FeaturedProjects showHead id="projects" />
-  <CollectionPreview section="research" entries={research}>
-    <p id="writing" class="notes-line">
-      <a class="link-arrow" href={withBase('writing/')}>
-        Technical notes and computational studies
-        <Icon name="arrow-right" size={20} />
-      </a>
-    </p>
-  </CollectionPreview>
-  <CollectionPreview section="community" entries={community} />
-  <CollectionPreview section="innovation" entries={innovation} />
+  <OutputsLedger />
   <Contact variant="strip" />
 </BaseLayout>
 
 <style>
-  .notes-line {
-    margin-top: var(--space-5);
+  .intro {
+    padding-block: clamp(var(--space-6), 4vw, var(--space-7)) 0;
+  }
+  .intro__name {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--text);
+  }
+  .intro__statement {
+    margin-top: var(--space-3);
+    max-width: 36ch;
+    font-size: var(--fs-statement);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .intro__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    margin-top: var(--space-4);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .intro__sep {
+    color: var(--border-strong);
+  }
+  @media (max-width: 639.98px) {
+    .intro__sep {
+      display: none;
+    }
+    .intro__meta {
+      flex-direction: column;
+    }
+  }
+  .intro__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-5);
+    margin-top: var(--space-2);
+  }
+  .intro__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+    font-weight: 600;
+    font-size: 0.9375rem;
   }
 </style>
 
 <script>
-  // Links made before the site had separate pages: #about and #skills now live on the About page.
-  const moved: Record<string, string> = { '#about': 'about/', '#skills': 'about/#skills' };
+  // Links made before the site had separate pages: #about, #skills and #interests now live on the About page.
+  const moved: Record<string, string> = { '#about': 'about/', '#skills': 'about/#skills', '#interests': 'about/#interests' };
   const target = moved[window.location.hash];
   if (target) {
     const base = document.querySelector<HTMLAnchorElement>('a.nav__brand')?.getAttribute('href') ?? '/';

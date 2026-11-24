@@ -1,21 +1,17 @@
 ---
-import PerryConsole from './PerryConsole.astro';
 import { researchInterests } from '../data/site';
 
 /**
+ * Research and engineering interests, in the canonical order of docs/DESIGN_SYSTEM.md A13.
  * Props:
- *   compact  home-page version: title, status and keywords only
- *   perry    show the Perry research console under the grid (home page only; one placement per page)
- *   id       section id (the home page uses "interests")
- *   title    block heading
+ *   id     section id (the About page uses "interests")
+ *   title  block heading
  */
 interface Props {
-  compact?: boolean;
-  perry?: boolean;
   id?: string;
   title?: string;
 }
-const { compact = false, perry = false, id = 'interests', title = 'Research and engineering interests' } = Astro.props;
+const { id = 'interests', title = 'Research and engineering interests' } = Astro.props;
 
 const badgeText = {
   involvement: 'Research involvement',
@@ -23,25 +19,23 @@ const badgeText = {
 } as const;
 ---
 
-<section id={id} class:list={['section', { 'is-compact': compact }]} aria-labelledby={`${id}-title`}>
-  <div class="ri-wrap">
-    <header>
-      <p class="eyebrow">Focus areas</p>
-      <h2 id={`${id}-title`} class="section-title">{title}</h2>
-      <p class="section-lead">
-        The badge on each card separates active research involvement from broader interests, which draw on my studies and public projects.
-      </p>
-    </header>
+<section id={id} class="block" aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <h2 id={`${id}-title`} class="section-title">{title}</h2>
+    <p class="section-lead">
+      Nuclear engineering is the area where I have research involvement. The others are interests that shape my studies
+      and public projects.
+    </p>
 
-    <ul class="ri-grid" role="list">
+    <ul class="card-grid ri-grid" role="list">
       {
         researchInterests.map((item) => (
-          <li class="ri-item">
-            <article class:list={['ri-card', { 'is-involvement': item.kind === 'involvement' }]}>
-              <h3 class="ri-title">{item.title}</h3>
-              <p class="ri-status">{badgeText[item.kind]}</p>
-              {!compact && <p class="ri-summary">{item.summary}</p>}
-              <ul class="ri-chips" role="list" aria-label={`Keywords for ${item.title}`}>
+          <li>
+            <article class="card">
+              <p class="card__meta">{badgeText[item.kind]}</p>
+              <h3 class="card__title">{item.title}</h3>
+              <p class="card__summary">{item.summary}</p>
+              <ul class="card__tags" aria-label={`Keywords for ${item.title}`}>
                 {item.keywords.map((kw) => (
                   <li class="chip">{kw}</li>
                 ))}
@@ -51,91 +45,11 @@ const badgeText = {
         ))
       }
     </ul>
-
-    {
-      perry && (
-        <div class="ri-egg">
-          <PerryConsole />
-        </div>
-      )
-    }
   </div>
 </section>
 
 <style>
-  .ri-wrap {
-    width: min(100% - 2rem, var(--maxw));
-    max-width: var(--maxw);
-    margin-inline: auto;
-  }
   .ri-grid {
-    list-style: none;
-    margin: var(--space-5) 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
-  }
-  @media (min-width: 640px) {
-    .ri-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  .ri-item {
-    min-width: 0;
-    display: flex;
-  }
-  .ri-card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: var(--space-4);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-  }
-  @media (min-width: 640px) {
-    .ri-card {
-      padding: var(--space-5);
-    }
-  }
-  .ri-title {
-    font-size: var(--fs-card-title);
-    font-weight: 600;
-    line-height: 1.35;
-  }
-  .ri-status {
-    margin-top: var(--space-1);
-    font-size: var(--fs-label);
-    color: var(--text-muted);
-  }
-  .ri-summary {
-    margin-top: var(--space-3);
-    max-width: 68ch;
-    color: var(--text);
-    font-size: var(--fs-small);
-    line-height: 1.6;
-  }
-  .ri-chips {
-    list-style: none;
-    margin: auto 0 0;
-    padding: var(--space-4) 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  /* Compact: no summary, less vertical padding around the block. */
-  .is-compact.section {
-    padding-block: clamp(var(--space-7), 6vw, var(--space-8));
-  }
-  .is-compact .ri-chips {
-    padding-top: var(--space-3);
-  }
-
-  .ri-egg {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--space-6);
+    margin-top: var(--space-5);
   }
 </style>

@@ -1,6 +1,6 @@
-﻿---
+---
 /**
- * Shared <picture> helper for every Perry placement.
+ * Shared <picture> helper for the two Perry placements (About and 404).
  * Reads mascot.assets from src/data/site.ts and prefixes paths with withBase().
  * When mascot.enabled is false it renders public/mascot/silhouette.svg instead.
  */
@@ -84,84 +84,4 @@ const label = enabled ? (alt ?? defaultAlt[slot]) : 'Mascot placeholder';
     object-position: 50% 100%;
   }
 
-  /* Speech bubble shared by PerryHero, PerryAgent and PerryFooter. Each component positions it. */
-  .perry-bubble {
-    position: absolute;
-    z-index: 3;
-    width: max-content;
-    max-width: min(15rem, 62vw);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: var(--fs-label);
-    font-weight: 500;
-    line-height: 1.35;
-    box-shadow: var(--shadow-sm);
-    pointer-events: none;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity var(--ease), visibility 0s linear 150ms;
-  }
-  .perry-bubble::after {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: inherit;
-    border: 0 solid var(--border);
-    transform: rotate(45deg);
-  }
-  .perry-bubble--tail-right::after {
-    right: -6px;
-    top: calc(50% - 5px);
-    border-width: 1px 1px 0 0;
-  }
-  .perry-bubble--tail-bottom::after {
-    bottom: -6px;
-    right: 1.1rem;
-    border-width: 0 1px 1px 0;
-  }
-  [data-perry-talk]:is(:hover, .is-talking):not([data-dismissed]) .perry-bubble,
-  [data-perry-talk]:has([data-perry-trigger]:focus-visible):not([data-dismissed]) .perry-bubble {
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 0s;
-  }
 </style>
-
-<script>
-  // Shared behaviour for Perry speech bubbles (PerryHero, PerryAgent, PerryFooter).
-  // Hover and keyboard focus are handled in CSS. This script adds tap support for touch devices
-  // (.is-talking for a few seconds) and lets Escape dismiss a bubble (WCAG 1.4.13).
-  const roots = document.querySelectorAll<HTMLElement>('[data-perry-talk]');
-  roots.forEach((root) => {
-    const trigger = root.querySelector<HTMLElement>('[data-perry-trigger]');
-    if (!trigger) return;
-    let timer = 0;
-    const show = () => {
-      root.removeAttribute('data-dismissed');
-      root.classList.add('is-talking');
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => root.classList.remove('is-talking'), 3200);
-    };
-    const hide = () => {
-      window.clearTimeout(timer);
-      root.classList.remove('is-talking');
-    };
-    const reset = () => root.removeAttribute('data-dismissed');
-    trigger.addEventListener('click', show);
-    trigger.addEventListener('blur', () => {
-      hide();
-      reset();
-    });
-    root.addEventListener('pointerleave', reset);
-    document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape') return;
-      hide();
-      if (root.matches(':hover, :focus-within')) root.setAttribute('data-dismissed', 'true');
-    });
-  });
-</script>

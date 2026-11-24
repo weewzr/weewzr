@@ -1,12 +1,15 @@
 ---
 /**
- * One featured-project card. All text comes from the Project object in src/data/site.ts.
+ * One project, as a row: the project's own figure on the left (5 of 12 columns on wide screens), the text on the
+ * right. All text comes from the Project object in src/data/site.ts.
  * Props:
  *   project       a Project from site.ts
- *   index         position in the list; odd indexes put the preview on the right on wide screens
  *   headingLevel  'h2' | 'h3' (default 'h3')
- * A planned project (no repository, no image) shows a labelled planned panel in place of the screenshot and no
- * repository or site button.
+ *   variant       'row' (home page: one sentence, one checked result) or 'full' (projects page: the description,
+ *                 the main features and the technologies as well)
+ *   eager         load the image eagerly (first row above the fold)
+ * Research areas are plain text separated by middle dots; technologies are outlined tags. One link row:
+ * case study, live site and code. A project with no live site says "Website coming soon" in plain text.
  */
 import Icon from './Icon.astro';
 import StatusPill from './StatusPill.astro';
@@ -16,341 +19,306 @@ import type { Project } from '../data/site';
 
 interface Props {
   project: Project;
-  index?: number;
   headingLevel?: 'h2' | 'h3';
+  variant?: 'row' | 'full';
+  eager?: boolean;
 }
 
-const { project, index = 0, headingLevel = 'h3' } = Astro.props;
+const { project, headingLevel = 'h3', variant = 'row', eager = false } = Astro.props;
 const Heading = headingLevel;
-const flip = index % 2 === 1;
+const full = variant === 'full';
 const titleId = `project-${project.slug}-title`;
 const planned = project.stage === 'planned';
-// Research-area badges: short labels from researchInterests, in the order the project lists them.
 const areaLabels = project.areas
   .map((id) => researchInterests.find((r) => r.id === id)?.short)
   .filter((label): label is string => Boolean(label));
 const caseHref = withBase(`projects/${project.slug}/`);
-
 // Preview images ship as name.webp (1280 wide) and name-640.webp (640 wide).
-const full = project.image ? withBase(project.image) : null;
-const small = project.image && project.image.endsWith('.webp') ? withBase(project.image.replace(/\.webp$/, '-640.webp')) : null;
-const srcset = small && full ? `${small} 640w, ${full} 1280w` : undefined;
+const big = project.image ? withBase(project.image) : null;
+const small = project.image?.endsWith('.webp') ? withBase(project.image.replace(/\.webp$/, '-640.webp')) : null;
+const srcset = small && big ? `${small} 640w, ${big} 1280w` : undefined;
 const tone = planned ? 'planned' : project.stage === 'live' ? 'live' : 'released';
 ---
 
-<article class="pcard" data-flip={flip ? 'true' : 'false'} aria-labelledby={titleId}>
-  <figure class="media">
+<article class:list={['prow', { 'prow--full': full }]} aria-labelledby={titleId}>
+  <figure class="prow__media">
     {
-      full ? (
-        <div class="frame">
+      big ? (
+        <div class="prow__frame">
           <img
-            src={full}
+            src={big}
             srcset={srcset}
-            sizes="(min-width: 1180px) 570px, (min-width: 900px) 48vw, 100vw"
+            sizes="(min-width: 1120px) 440px, (min-width: 768px) 40vw, 100vw"
             width="1280"
             height="800"
-            loading="lazy"
+            loading={eager ? 'eager' : 'lazy'}
             decoding="async"
             alt={project.imageAlt}
           />
         </div>
       ) : (
-        <div class="frame frame--planned">
-          <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-            <defs>
-              <pattern id={`grid-${project.slug}`} width="20" height="20" patternUnits="userSpaceOnUse">
-                <path class="pgrid" d="M20 0H0V20" fill="none" stroke-width="0.6" />
-              </pattern>
-            </defs>
-            <rect width="320" height="200" fill={`url(#grid-${project.slug})`} />
-            <ellipse class="pring pring--a" cx="160" cy="100" rx="86" ry="30" fill="none" stroke-width="1.2" stroke-dasharray="4 6" />
-            <ellipse class="pring pring--b" cx="160" cy="100" rx="86" ry="30" transform="rotate(60 160 100)" fill="none" stroke-width="1.2" stroke-dasharray="4 6" />
-            <circle class="pdot" cx="160" cy="100" r="4" />
-          </svg>
-          <span class="frame__label">Planned. No code or screenshot yet.</span>
+        <div class="prow__frame prow__frame--empty">
+          <span>Planned. No code or screenshot yet.</span>
         </div>
       )
     }
     {project.imageCaption && <figcaption>{project.imageCaption}</figcaption>}
   </figure>
 
-  <div class="body">
-    <StatusPill label={project.status} tone={tone} />
-    <Heading id={titleId}>{project.name}</Heading>
-    <p class="tagline">{project.tagline}</p>
-    <p class="desc">{project.description}</p>
+  <div class="prow__body">
+    <p class="prow__status">
+      <StatusPill label={project.status} tone={tone} />
+    </p>
+    <Heading id={titleId} class="prow__title">
+      <a href={caseHref}>{project.name}</a>
+    </Heading>
+    <p class="prow__tagline">{project.tagline}</p>
+
+    <p class="prow__desc">{full ? project.description : project.computes}</p>
 
     {
-      project.features.length > 0 && (
-        <>
-          <p class="mini-title">Main features</p>
-          <ul class="features">
-            {project.features.map((feature) => (
-              <li>
-                <span class="tick"><Icon name="check" size={16} stroke={2.2} /></span>
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </>
-      )
-    }
-
-    {
-      areaLabels.length > 0 && (
-        <ul class="areas" aria-label={`${project.name} research areas`}>
-          {areaLabels.map((label) => (
-            <li class="chip">{label}</li>
+      full && project.features.length > 0 && (
+        <ul class="prow__features" aria-label={`${project.name}: main features`}>
+          {project.features.map((feature) => (
+            <li>{feature}</li>
           ))}
         </ul>
       )
     }
 
     {
-      project.tech.length > 0 && (
-        <ul class="tech" aria-label={`${project.name} technologies`}>
-          {project.tech.map((t) => <li class="chip">{t}</li>)}
-        </ul>
-      )
-    }
-
-    {
-      (project.siteUrl || project.repoUrl) && (
-        <div class="actions">
-          {project.siteUrl && (
-            <a
-              class="btn btn-primary"
-              href={project.siteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Visit Website for ${project.name} (opens in a new tab)`}
-            >
-              Visit Website
-              <Icon name="external" size={20} />
+      project.result && (
+        <div class="prow__result">
+          <p class="prow__result-kind">{project.result.kind}</p>
+          <p class="prow__result-line">
+            <span class="prow__result-value">{project.result.value}</span>{' '}
+            <span class="prow__result-detail">{project.result.detail}</span>
+          </p>
+          <p class="prow__result-source">
+            Source:{' '}
+            <a href={project.result.sourceUrl} target="_blank" rel="noopener noreferrer">
+              {project.result.source}
+              <span class="sr-only"> (opens in a new tab)</span>
             </a>
-          )}
-          {project.repoUrl && (
-            <a
-              class="btn"
-              href={project.repoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View GitHub Repository for ${project.name} (opens in a new tab)`}
-            >
-              <Icon name="github" size={20} />
-              View GitHub Repository
-            </a>
-          )}
+          </p>
         </div>
       )
     }
 
     {
-      !project.siteUrl && project.comingSoon && (
-        <p class="soon">
-          <span class="soon-label">Website Coming Soon</span>
-        </p>
+      areaLabels.length > 0 && (
+        <ul class="areas-line prow__areas" aria-label={`${project.name}: research areas`}>
+          {areaLabels.map((label) => (
+            <li>{label}</li>
+          ))}
+        </ul>
       )
     }
 
-    <a class="case-link" href={caseHref}>
-      {planned ? 'Read the plan' : 'Read case study'}<span class="sr-only"> for {project.name}</span>
-      <Icon name="arrow-right" size={20} />
-    </a>
+    {
+      full && project.tech.length > 0 && (
+        <ul class="prow__tech" aria-label={`${project.name}: technologies`}>
+          {project.tech.map((t) => (
+            <li class="chip">{t}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <ul class="prow__links" aria-label={`${project.name}: links`}>
+      <li>
+        <a class="prow__link prow__link--main" href={caseHref}>
+          {planned ? 'Read the plan' : 'Case study'}
+          <span class="sr-only"> for {project.name}</span>
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </li>
+      {
+        project.siteUrl && (
+          <li>
+            <a class="prow__link" href={project.siteUrl} target="_blank" rel="noopener noreferrer">
+              Live site<span class="sr-only"> of {project.name} (opens in a new tab)</span>
+              <Icon name="external" size={16} />
+            </a>
+          </li>
+        )
+      }
+      {
+        project.repoUrl && (
+          <li>
+            <a class="prow__link" href={project.repoUrl} target="_blank" rel="noopener noreferrer">
+              Code<span class="sr-only"> of {project.name} on GitHub (opens in a new tab)</span>
+              <Icon name="github" size={16} />
+            </a>
+          </li>
+        )
+      }
+      {!project.siteUrl && project.comingSoon && <li class="prow__soon">Website coming soon</li>}
+    </ul>
   </div>
 </article>
 
 <style>
-  .pcard {
+  .prow {
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    gap: var(--space-5);
-    align-items: start;
-    padding: var(--space-5);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--surface);
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4) var(--space-6);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+  @media (min-width: 768px) {
+    .prow {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      align-items: start;
+    }
   }
 
-  /* Image column. */
-  .media {
+  .prow__media {
     margin: 0;
     min-width: 0;
   }
-  .pcard[data-flip='true'] .media {
-    order: 2;
-  }
-  /* The image keeps its own aspect ratio: nothing is cropped. */
-  .frame {
-    position: relative;
-    border-radius: var(--radius);
+  .prow__frame {
     overflow: hidden;
     border: 1px solid var(--border);
-    background: var(--bg-subtle);
+    border-radius: var(--radius);
+    background: var(--surface);
   }
-  .frame img {
+  .prow__frame img {
     display: block;
     width: 100%;
     height: auto;
   }
-  /* Neutral drawn panel for a project with no screenshot yet. */
-  .frame--planned {
+  .prow__frame--empty {
     display: grid;
     place-items: center;
-    border-style: dashed;
     aspect-ratio: 16 / 10;
-  }
-  .frame--planned svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .pgrid {
-    stroke: var(--border);
-  }
-  .pring--a {
-    stroke: var(--accent);
-    stroke-opacity: 0.6;
-  }
-  .pring--b {
-    stroke: var(--cyan);
-    stroke-opacity: 0.6;
-  }
-  .pdot {
-    fill: var(--accent);
-  }
-  .frame__label {
-    position: relative;
-    max-width: 90%;
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-sm);
-    font-size: var(--fs-small);
-    text-align: center;
+    border-style: dashed;
     color: var(--text-muted);
-    background: var(--surface);
-    border: 1px dashed var(--border-strong);
+    font-size: var(--fs-small);
   }
-  figcaption {
+  .prow__media figcaption {
     margin-top: var(--space-2);
     font-size: var(--fs-label);
-    line-height: 1.5;
+    line-height: 1.45;
     color: var(--text-muted);
-    text-align: center;
   }
 
-  /* Text column. */
-  .body {
+  .prow__body {
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
   }
-  h2,
-  h3 {
+  .prow__status {
+    margin: 0;
+  }
+  .prow__title {
     margin-top: var(--space-2);
+    font-family: var(--font-display);
+    font-weight: 500;
     font-size: var(--fs-section-title);
-    font-weight: 600;
+    line-height: 1.2;
+  }
+  .prow__title a {
     color: var(--text);
-  }
-  .tagline {
-    margin-top: var(--space-1);
-    font-size: var(--fs-body);
-    line-height: 1.5;
-    color: var(--text-muted);
-  }
-  .desc {
-    margin-top: var(--space-3);
-    max-width: 68ch;
-    font-size: var(--fs-small);
-    line-height: 1.6;
-    color: var(--text);
-  }
-  .mini-title {
-    margin: var(--space-4) 0 0;
-    font-size: var(--fs-small);
-    font-weight: 600;
-    color: var(--text);
-  }
-  .features {
-    list-style: none;
-    margin: var(--space-2) 0 0;
-    padding: 0;
-    display: grid;
-    gap: var(--space-1);
-  }
-  .features li {
-    display: grid;
-    grid-template-columns: 1rem minmax(0, 1fr);
-    gap: var(--space-2);
-    font-size: var(--fs-small);
-    line-height: 1.5;
-    color: var(--text);
-  }
-  .tick {
-    display: inline-flex;
-    margin-top: 0.2rem;
-    color: var(--accent);
-  }
-  .areas,
-  .tech {
-    list-style: none;
-    margin: var(--space-4) 0 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-  .areas + .tech {
-    margin-top: var(--space-2);
-  }
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-top: var(--space-4);
-  }
-  .actions .btn {
-    min-height: 44px;
-  }
-  .soon {
-    margin: var(--space-3) 0 0;
-  }
-  .soon-label {
-    display: inline-block;
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-sm);
-    font-size: var(--fs-small);
-    color: var(--text-muted);
-    border: 1px dashed var(--border-strong);
-  }
-  .case-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-height: 44px;
-    margin-top: var(--space-2);
-    font-weight: 600;
-    font-size: 0.9375rem;
-    color: var(--accent);
     text-decoration: none;
   }
-  .case-link:hover {
-    color: var(--accent-hover);
+  .prow__title a:hover {
+    color: var(--accent);
     text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+  .prow__tagline {
+    margin-top: var(--space-1);
+    max-width: var(--measure);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .prow__desc {
+    margin-top: var(--space-3);
+    max-width: var(--measure);
+    line-height: 1.6;
+  }
+  .prow--full .prow__desc {
+    font-size: var(--fs-small);
+  }
+  .prow__features {
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-5);
+    list-style: disc;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+  }
+  .prow__features li + li {
+    margin-top: var(--space-1);
+  }
+  .prow__features li::marker {
+    color: var(--text-muted);
   }
 
-  @media (max-width: 899px) {
-    .pcard {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .pcard[data-flip='true'] .media {
-      order: 0;
-    }
+  /* The checked result: a hairline-ruled block, the value in mono, the kind of evidence named above it. */
+  .prow__result {
+    margin-top: var(--space-4);
+    padding: var(--space-3) 0 var(--space-3) var(--space-4);
+    border-left: 2px solid var(--accent);
+    max-width: var(--measure);
   }
-  @media (max-width: 639px) {
-    .pcard {
-      padding: var(--space-4);
-    }
+  .prow__result-kind {
+    font-size: var(--fs-label);
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .prow__result-line {
+    margin-top: var(--space-1);
+    font-size: var(--fs-small);
+    line-height: 1.5;
+  }
+  .prow__result-value {
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .prow__result-source {
+    margin-top: var(--space-1);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
+  }
+
+  .prow__areas {
+    margin-top: var(--space-4);
+  }
+  .prow__tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .prow__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--space-5);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .prow__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--touch-min);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .prow__link:hover {
+    text-decoration: underline;
+  }
+  .prow__soon {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
   }
 </style>

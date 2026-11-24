@@ -130,9 +130,9 @@ const projectLd: Record<string, unknown> = {
                   href={project.siteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Visit Website for ${project.name} (opens in a new tab)`}
+                  aria-label={`Live site of ${project.name} (opens in a new tab)`}
                 >
-                  Visit Website
+                  Live site
                   <Icon name="external" size={18} />
                 </a>
               )
@@ -144,16 +144,16 @@ const projectLd: Record<string, unknown> = {
                   href={project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`View GitHub Repository for ${project.name} (opens in a new tab)`}
+                  aria-label={`Code of ${project.name} on GitHub (opens in a new tab)`}
                 >
                   <Icon name="github" size={18} />
-                  View GitHub Repository
+                  Code on GitHub
                 </a>
               )
             }
             {
               !project.siteUrl && project.comingSoon && (
-                <span class="soon-label">Website Coming Soon</span>
+                <span class="soon-label">Website coming soon</span>
               )
             }
           </div>
@@ -279,7 +279,7 @@ const projectLd: Record<string, unknown> = {
 
 <style>
   .case {
-    padding-top: calc(var(--nav-h) + var(--space-5));
+    padding-top: var(--space-5);
     padding-bottom: var(--space-8);
   }
 
@@ -393,12 +393,8 @@ const projectLd: Record<string, unknown> = {
     min-height: 44px;
   }
   .soon-label {
-    display: inline-block;
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-sm);
     font-size: var(--fs-small);
     color: var(--text-muted);
-    border: 1px dashed var(--border-strong);
   }
   .head-media {
     margin: 0;

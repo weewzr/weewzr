@@ -179,7 +179,7 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
 
 <style>
   .case {
-    padding-top: calc(var(--nav-h) + var(--space-5));
+    padding-top: var(--space-5);
     padding-bottom: var(--space-8);
   }
 
@@ -351,8 +351,9 @@ const entryHref = (e: CaseEntry) => withBase(`${section.path}${e.id}/`);
   }
   .block > h2,
   .block-plain > h2 {
+    font-family: var(--font-display);
     font-size: var(--fs-section-title);
-    font-weight: 650;
+    font-weight: 500;
     margin-bottom: var(--space-4);
     color: var(--text);
   }

@@ -1,4 +1,4 @@
-﻿---
+---
 /**
  * Research & Writing. Reads the `notes` content collection (src/content/notes/*.md), groups the
  * published notes by category in the order of `noteCategories` in src/data/site.ts and skips
@@ -25,9 +25,11 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || a.data.title.localeCompare(b.data.title),
 );
 
+// Categories are stored in Title Case (content.config.ts); headings show them in sentence case.
+const sentence = (value: string) => value.charAt(0) + value.slice(1).toLowerCase();
 const slugify = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const groups = noteCategories
-  .map((name) => ({ name, slug: slugify(name), entries: notes.filter((note) => note.data.category === name) }))
+  .map((name) => ({ name: sentence(name), slug: slugify(name), entries: notes.filter((note) => note.data.category === name) }))
   .filter((group) => group.entries.length > 0);
 
 const total = notes.length;
@@ -341,8 +343,8 @@ const titleId = standalone ? 'writing-index-title' : 'writing-title';
       outline: none;
     }
     .note-card:has(.card-title a:focus-visible) {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
+      outline: var(--focus-width) solid var(--focus);
+      outline-offset: var(--focus-offset);
     }
   }
   .desc {
