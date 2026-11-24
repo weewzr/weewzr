@@ -434,7 +434,7 @@ export const noteCategories = [
 
 /**
  * Perry the Platypus belongs to Disney. These files are supplied by the site owner,
- * credited below and used as fan artwork. The site shows Perry twice, small: once on the About page
+ * credited below and used as fan artwork. The site shows Perry beside the home statement, and small on the About page
  * (`research` asset) and once on the 404 page (`footer` asset). Set `enabled` to false to swap every
  * placement for the neutral silhouette placeholder.
  */

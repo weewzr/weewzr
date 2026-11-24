@@ -233,7 +233,7 @@ Scale ratio about 1.25, rem on a 16 px root.
 ## B3. Layout
 
 - Container 1120 px. Case-study prose 68ch. The navigation collapses into the phone menu below 1024 px.
-- Home: statement, project rows, outputs ledger, contact. Section pages: page hero (breadcrumb, h1, lead), then content.
+- Home: statement with the Perry mascot beside it (owner decision, 24 November 2026), project rows, contact. Section pages: page hero (breadcrumb, h1, lead), then content.
 
 ## B4. Navigation
 
@@ -243,12 +243,11 @@ Top bar, labelled "Primary", with three labelled groups: **Work** (Projects, Res
 
 - **Project row** (home): a figure from the project's own output, the name and one sentence on what it computes, a status dot with its word, one verified result with its unit and provenance label, and one link row (Case study, Live site, Code). Area tags are plain text separated by middle dots; technology tags are small outlined tags.
 - **Card** (one system): 1 px `--border`, `--radius`, `--surface` fill, no shadow, no hover lift. Padding 24 px (16 px on phones). The whole card is one link through its title; hover and focus change the border colour only.
-- **Outputs ledger**: one table of every project, case study, published document and note, grouped by section (Projects, Research, Writing, Community, Innovation), with columns Title, Type, Date or status and Format, hairline rows and tabular figures. Below 640 px each row becomes a two-line entry (title, then type, date or status and format), so no column is hidden off-screen.
 - **Buttons**: one primary per view (accent fill, `--on-accent` text, 40 px high, 44 px on touch); secondary is an outline in `--border-strong`.
 - **Status**: a 6 px dot plus its word ("Live site", "Released", "Planned"). "Website coming soon" is plain muted text, never a button shape.
 - **Callout**: 1 px border with a 3 px accent rule on the left.
 - **Tables, code, maths, figures**: as in A8 to A11.
-- **Perry the Platypus** (owner's fan tribute, see `NOTICE.md`): appears twice on the site, small, once on About and once on the 404 page. No speech bubbles, no console, no motion.
+- **Perry the Platypus** (owner's fan tribute, see `NOTICE.md`): stands beside the statement on the home page (owner decision, 24 November 2026) and appears small on About and on the 404 page. No speech bubbles, no console, no motion.
 
 ## B6. Interaction
 

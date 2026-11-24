@@ -1,11 +1,12 @@
 ---
 /**
- * Home: one factual statement, the four project rows (figure and one checked result each), the outputs ledger and
- * the contact strip. Every word and number comes from src/data/site.ts and the content collections.
+ * Home: one factual statement with the Perry mascot beside it (the owner's choice), the four project rows
+ * (figure and one checked result each) and the contact strip. Every word and number comes from src/data/site.ts
+ * and the content collections.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FeaturedProjects from '../components/FeaturedProjects.astro';
-import OutputsLedger from '../components/OutputsLedger.astro';
+import PerryImage from '../components/PerryImage.astro';
 import Contact from '../components/Contact.astro';
 import { site, social, education } from '../data/site';
 import { withBase } from '../lib/url';
@@ -23,26 +24,56 @@ const personLd = {
 
 <BaseLayout path="" jsonLd={personLd}>
   <section class="intro" aria-labelledby="intro-title">
-    <div class="container">
-      <p class="intro__name">{site.name}</p>
-      <h1 id="intro-title" class="intro__statement">{site.statement}</h1>
-      <p class="intro__links">
-        <a href={withBase('about/')}>About me</a>
-        <a href={withBase('writing/')}>Writing</a>
-        <a href={social.github} target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a>
-        <a href={social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
-      </p>
+    <div class="container intro__grid">
+      <div class="intro__copy">
+        <p class="intro__name">{site.name}</p>
+        <h1 id="intro-title" class="intro__statement">{site.statement}</h1>
+        <p class="intro__links">
+          <a href={withBase('about/')}>About me</a>
+          <a href={withBase('writing/')}>Writing</a>
+          <a href={social.github} target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a>
+          <a href={social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+        </p>
+      </div>
+      <figure class="intro__perry">
+        <PerryImage slot="hero" loading="eager" />
+      </figure>
     </div>
   </section>
 
   <FeaturedProjects showHead id="projects" />
-  <OutputsLedger />
   <Contact variant="strip" />
 </BaseLayout>
 
 <style>
   .intro {
     padding-block: var(--space-5) 0;
+  }
+  /* Statement on the left, Perry on the right. Perry is sized to the height the statement already takes, so the
+     first project row stays above the fold of a 1440 x 900 window. On narrow screens Perry sits under the links. */
+  .intro__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: var(--space-5);
+  }
+  .intro__perry {
+    margin: 0;
+    width: clamp(150px, 17vw, 240px);
+  }
+  .intro__perry :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  @media (max-width: 719px) {
+    .intro__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-3);
+    }
+    .intro__perry {
+      width: 132px;
+    }
   }
   .intro__name {
     font-size: var(--fs-small);
