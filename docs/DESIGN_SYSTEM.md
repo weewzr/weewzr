@@ -247,7 +247,7 @@ Top bar, labelled "Primary", with three labelled groups: **Work** (Projects, Res
 - **Status**: a 6 px dot plus its word ("Live site", "Released", "Planned"). "Website coming soon" is plain muted text, never a button shape.
 - **Callout**: 1 px border with a 3 px accent rule on the left.
 - **Tables, code, maths, figures**: as in A8 to A11.
-- **Perry the Platypus** (owner's fan tribute, see `NOTICE.md`): stands beside the statement on the home page (owner decision, 24 November 2026) and appears small on About and on the 404 page. No speech bubbles, no console, no motion.
+- **Perry the Platypus** (owner's fan tribute, see `NOTICE.md`): appears in the original three places (owner decision, 24 November 2026): standing beside the statement on the home page, crouching above the link in the Projects header, and walking along the top edge of the footer on every page (hidden below 700 px). It also appears small on About and on the 404 page. No speech bubbles, no console, no motion.
 
 ## B6. Interaction
 

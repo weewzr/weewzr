@@ -113,7 +113,7 @@ Write in plain, precise prose. Quote a number only if it is in the cited source,
 
 Perry the Platypus and the Phineas and Ferb artwork belong to Disney (see `LICENSE` and `docs/CREDITS.md`).
 
-- Placements: Perry stands beside the statement on the home page (owner decision, 24 November 2026; `src/pages/index.astro`), and appears small on the About page and on the 404 page (`src/pages/about/index.astro` and `src/pages/404.astro`), all through `PerryImage.astro`. There are no speech bubbles, no console and no motion.
+- Placements (owner decision, 24 November 2026): Perry stands beside the statement on the home page (`src/pages/index.astro`), crouches in the Projects header (`src/components/FeaturedProjects.astro`), walks along the footer's top edge on every page (`src/components/Footer.astro`), and appears small on the About page and on the 404 page, all through `PerryImage.astro`. There are no speech bubbles, no console and no motion.
 - Disable: set `mascot.enabled` to `false` in `src/data/site.ts`. Every placement then renders `public/mascot/silhouette.svg`, and the footer credit line is hidden because it is no longer needed.
 - Swap: replace the files in `public/mascot/` and update `mascot.assets` (paths, `width`, `height`) in `site.ts`. Each placement needs a `.webp` and a `.png` fallback. Update `mascot.credit` if the artwork changes.
 - Remove completely: set `enabled` to `false`, delete `public/mascot/*` except `silhouette.svg`, delete `assets/readme/perry.png`, and remove the Perry line and image from `README.md`. Honour any takedown request promptly.

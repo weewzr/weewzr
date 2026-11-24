@@ -6,6 +6,7 @@
 import { site, social, sections, mascot } from '../data/site';
 import { withBase } from '../lib/url';
 import Icon from './Icon.astro';
+import PerryImage from './PerryImage.astro';
 
 const year = new Date().getFullYear();
 const creditsUrl = `${social.github}/weewzr/blob/main/docs/CREDITS.md`;
@@ -96,13 +97,40 @@ const groups = [
       </p>
     </div>
   </div>
+  {/* Perry walking along the footer's top edge, as on the original site (owner's choice). */}
+  <figure class="footer__perry">
+    <PerryImage slot="footer" />
+  </figure>
 </footer>
 
 <style>
   .footer {
+    position: relative;
     padding-block: var(--space-7) var(--space-6);
     background: var(--bg-subtle);
     border-top: 1px solid var(--border);
+  }
+  /* Stands on the footer's top edge at the right. Hidden on narrow screens so it never meets footer text. */
+  .footer__perry {
+    display: none;
+    position: absolute;
+    right: clamp(1rem, 4vw, 3rem);
+    bottom: 100%;
+    margin: 0 0 -6px;
+    width: clamp(108px, 11vw, 150px);
+    pointer-events: none;
+  }
+  .footer__perry :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* The walking image faces right; mirror it so Perry walks towards the page. */
+    transform: scaleX(-1);
+  }
+  @media (min-width: 700px) {
+    .footer__perry {
+      display: block;
+    }
   }
   .footer__inner {
     display: grid;
