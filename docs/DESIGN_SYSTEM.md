@@ -1,132 +1,127 @@
 # Design system
 
-One visual and editorial language for the portfolio site, the GitHub profile README and the project READMEs. The site carries the full visual system. READMEs carry the editorial rules and a small subset of the visual ones, because GitHub strips `style` and `class`.
+This document has two parts.
 
-## 1. Principles
+- **Part A, shared core** (sections A1 to A13), is the rule set for all five of the owner's sites: this portfolio, STRATO, NUS-H2, AmCraX and KASCO, and for their READMEs. It fixes the logic (scales, breakpoints, focus, motion, accessibility, figures, tables, mathematics, code, writing) and leaves each site its own colours, typefaces and density.
+- **Part B, portfolio identity** (sections B1 to B8), is the look of this site, <https://weewzr.github.io/weewzr/>.
 
-1. Content first. A reader should find what a project computes, how it was checked and where it stops within one screen.
-2. One accent. Blue marks links, focus and the single primary action in a view. Cyan is a secondary data colour. Everything else is neutral, apart from the night page background, which runs from navy to violet.
+Each repository carries a copy of [`src/styles/tokens.core.css`](../src/styles/tokens.core.css), the tokens Part A names, and a short identity sheet of its own. There is no shared component library and no shared npm package: the stacks differ (Astro, React with Vite, vanilla JavaScript with WebAssembly), and the Astryx evaluation recorded in `docs/MAINTAINING.md` measured what a shared component runtime costs.
+
+Core version: **1.0.0**, 2026-11-24. The same version string heads every copy of `tokens.core.css`. A change to Part A or to the token file raises the version: patch for wording, minor for a new token or rule, major for a changed value.
+
+---
+
+# Part A. Shared core
+
+## A1. Principles
+
+1. Content first. A reader finds what a project computes, how it was checked and where it stops within one screen.
+2. One accent per site. It marks links, focus-adjacent states and the single primary action in a view. Status colours are reserved for status.
 3. Borders before shadows. Surfaces are separated by a 1 px hairline. Nothing glows.
-4. Left aligned. Headings, text and cards share one left edge. Centred text is reserved for figure captions.
-5. Motion only confirms an action. Colour and opacity may change over 150 ms. Nothing moves on scroll.
+4. Left aligned. Headings, text and cards share one left edge. Centred text is for figure captions only.
+5. Every number carries its unit, its case and its provenance (A8).
+6. Motion explains or confirms. It never decorates (A6).
 
-## 2. Colour
+## A2. Type-scale logic
 
-Contrast ratios are WCAG 2.1 values computed from the hex codes (script in the audit notes). Text needs 4.5:1, large text and UI boundaries 3:1.
+Faces are chosen per site (Part B and each site's identity sheet). The logic is shared:
 
-### Night theme (default)
+- One modular scale with a ratio between 1.2 and 1.25, at most six text steps above the caption size, written as rem on a 16 px root. Every `font-size` in a stylesheet traces to a token.
+- At most three families per site: one for headings, one for reading text, one monospace for data and code.
+- Body text 16 to 18 px with a line height of 1.5 to 1.7. Prose measure at most 68ch (`--measure`).
+- Minimum text size 13 px (`--text-min`), minimum chart tick label 12 px (`--tick-min`).
+- Numbers in tables and live readouts use `font-variant-numeric: tabular-nums` or a monospace face.
+- Headings are sentence case. Uppercase letter-spaced labels are not used as eyebrows.
+- Bold marks a term on first definition or a key number, not emphasis in running text.
+- Web fonts are self-hosted, carry an open licence that allows redistribution (SIL OFL 1.1 or similar), and are loaded with a metric-matched fallback (`size-adjust`, `ascent-override`, `descent-override`) so that the swap does not move the layout. A site may use system fonts only (NUS-H2 does, by rule).
 
-The page background is a navy to violet gradient, fixed to the viewport: `linear-gradient(135deg, #060b1b, #0a1838 40%, #241462 76%, #3f1b85)` with two faint radial tints (blue upper right, violet lower left). It is the one gradient and the one place violet appears. Surfaces on top of it are opaque navy, so text on a card never depends on the gradient. Text that sits straight on the page was checked against the lightest stop, `#3f1b85`.
+## A3. Spacing and layout
 
-| Token | Hex | Use | Contrast |
-| --- | --- | --- | --- |
-| `--bg` | `#070d20` | header bar, dialogs, base colour under the gradient | |
-| `--bg-subtle` | `#0b1431` | footer band, code, table header | |
-| `--surface` | `#0f1a3e` | cards, menus | |
-| `--border` | `#27365c` | hairlines | decorative |
-| `--border-strong` | `#7f8fb0` | control edges | 3.78 on the lightest stop |
-| `--text` | `#e7edf4` | body and headings | 10.44 on the lightest stop, 16.63 on the darkest |
-| `--text-muted` | `#b4c0d4` | captions, metadata | 6.70 on the lightest stop |
-| `--accent` | `#8ab8ff` | links, focus ring | 6.08 on the lightest stop |
-| `--accent-hover` | `#b3d0ff` | hover | 7.84 on the lightest stop |
-| `--accent-solid` | `#2f6fed` | primary button fill | white on it 4.55 |
-| `--accent-bg` | `#1a2f66` | selected filter | |
-| `--cyan` | `#67d3e3` | secondary data colour | 7.03 on the lightest stop |
+- Spacing scale: 4, 8, 12, 16, 24, 32, 48, 64, 96 px, tokens `--space-1` to `--space-9`. No value outside the scale.
+- Side gutter 16 px on phones, 24 px from 640 px. A page never scrolls sideways at 320 px and above.
+- Section rhythm: 64 px between sections on phones, 96 px from 1024 px. A heading sits closer to its content than to the previous section.
+- Radii: `--radius-sm` 4 px (tags, inline code), `--radius` 8 px (buttons, inputs, cards, images), `--radius-lg` 12 px (dialogs, large media). Full rounding only for status dots and avatars.
 
-### Light theme
+## A4. Breakpoints
 
-Chosen with the header toggle (`data-theme="light"` on `<html>`), and remembered in the browser.
-
-| Token | Hex | Use | Contrast |
-| --- | --- | --- | --- |
-| `--bg` | `#ffffff` | page | |
-| `--bg-subtle` | `#f4f7fa` | bands, code, table header | |
-| `--border` | `#d5dde6` | hairlines, card edges | decorative |
-| `--border-strong` | `#8794a3` | inputs, control edges | 3.09 on bg |
-| `--text` | `#101a2b` | body and headings | 17.43 on bg |
-| `--text-muted` | `#4b5b6f` | captions, metadata | 6.94 on bg |
-| `--accent` | `#1d4fd7` | links, primary button fill, focus ring | 6.66 on bg |
-| `--accent-hover` | `#173ea8` | hover and active | 9.17 on bg |
-| `--accent-bg` | `#e9f1fe` | selected filter, tinted note | accent on it 5.86 |
-| `--cyan` | `#0b6b85` | secondary data colour, status "live" | 6.08 on bg |
-| `--cyan-bg` | `#e3f4f8` | tint behind cyan text | cyan on it 5.37 |
-| `--navy` | `#0b1f3a` | README banner, image panels | white on it > 15 |
-
-Rules: violet belongs to the night page background and nowhere else. Buttons, links, borders, cards and text stay in the blue, cyan and neutral tokens. No gradient text. Other gradients are allowed only inside figures that come from a project (plots, process diagrams).
-
-## 3. Typography
-
-| Role | Family | Size | Weight | Line height |
-| --- | --- | --- | --- | --- |
-| Page title (h1) | Inter | clamp(2rem, 1.6rem + 1.6vw, 2.75rem) | 650 | 1.15 |
-| Section title (h2) | Inter | clamp(1.5rem, 1.35rem + 0.6vw, 1.75rem) | 650 | 1.25 |
-| Card or sub-section title (h3) | Inter | 1.125rem | 600 | 1.35 |
-| Lead | Inter | 1.125rem | 400 | 1.6 |
-| Body | Inter | 1rem | 400 | 1.65 |
-| Small, captions | Inter | 0.875rem | 400 | 1.5 |
-| Code, numeric data, units | JetBrains Mono | 0.9em | 400 | inherit |
-
-- One sans family for headings and body. Space Grotesk is retired.
-- Tracking: -0.02em on h1, -0.01em on h2, 0 elsewhere.
-- Headings are sentence case and left aligned.
-- Prose measure is 68ch at most.
-- Uppercase letter-spaced mono labels are not used as section eyebrows. Mono is for code, values and units.
-- Bold marks a term on first definition or a key number. It is not used for emphasis in running text.
-
-## 4. Spacing and layout
-
-- Scale (px): 4, 8, 12, 16, 24, 32, 48, 64, 96. No value outside the scale.
-- Container: 1120 px maximum with 16 px side gutters on phones and 24 px from 640 px.
-- Section rhythm: 64 px between sections on phones, 96 px from 1024 px. A heading sits 24 px above its content.
-- Card padding: 24 px (16 px on phones). Gap between cards: 24 px.
-- Grids: one column below 640 px, two from 640 px, three only when every item has the same structure and similar length. Cards in a row stretch to equal height and pin their link row to the bottom.
-- Images keep their intrinsic aspect ratio, sit in a 1 px bordered frame and never crop a diagram.
-
-## 5. Radius, borders and elevation
-
-| Token | Value | Use |
+| Name | Min width | Typical change |
 | --- | --- | --- |
-| `--radius-sm` | 4 px | tags, inline code, small badges |
-| `--radius` | 8 px | buttons, inputs, cards, images |
-| `--radius-lg` | 12 px | large media frames, dialogs |
-| full | 9999 px | avatar and status dot only |
+| sm | 640 px | side gutter 24 px, two-column grids |
+| md | 768 px | tables shown in full where they fit |
+| lg | 1024 px | margin column on long pages, desktop navigation |
+| xl | 1280 px | wide figures |
 
-- Resting cards have a border and no shadow.
-- `--shadow-sm: 0 1px 2px rgb(16 26 43 / 0.06)` for menus and the sticky header once the page has scrolled.
-- No glow, no backdrop blur on content cards, no coloured shadow.
+CSS custom properties cannot be used inside media queries, so these are written as numbers with a comment. A site may keep a documented exception (STRATO keeps its binding 768 and 1200 px).
 
-## 6. Interaction and motion
+## A5. Accessibility
 
-- Transitions: `150ms ease` on `color`, `background-color`, `border-color`, `opacity`. No hover translate or scale.
-- Focus: `outline: 2px solid var(--accent); outline-offset: 2px` on `:focus-visible`.
-- Targets are at least 44 x 44 px on touch layouts.
-- `prefers-reduced-motion: reduce` removes every transition and smooth scroll.
-- No scroll-triggered reveal, no typing effect, no looping animation.
+Target: WCAG 2.2 level AA.
 
-## 7. Icons
+- Text contrast at least 4.5:1, large text and UI boundaries (control edges, focus ring, chart marks that carry meaning) at least 3:1, in every colour mode a site offers. Each site records the computed ratio of every token pair it introduces.
+- Focus: `outline: var(--focus-width) solid <focus colour>; outline-offset: var(--focus-offset)` on `:focus-visible`, on every interactive element. Never removed without a visible replacement.
+- Touch targets at least 44 by 44 px (`--touch-min`) on touch layouts.
+- A skip link to `main`, one `h1` per page, landmarks (`header`, `nav` with a label, `main`, `footer`), no skipped heading levels inside a section.
+- Status is never shown by colour alone: a word, a shape or a pattern goes with it.
+- Every image has `alt`; decorative images have `alt=""`. Charts follow A8.
+- `prefers-reduced-motion: reduce` sets every transition and animation to 0 ms and stops autoplay.
+- Controls work with the keyboard only. Disclosure menus open with Enter or Space and close with Escape, returning focus to their button.
+- No single-key shortcuts unless they can be switched off (WCAG 2.1.4). A command palette (Ctrl or Cmd + K, WAI-ARIA combobox) is allowed only on a site with ten or more destinations and is never the only way to reach a page. Of the five sites, only AmCraX has one.
 
-- Lucide geometry: 24 px grid, 2 px stroke, round caps and joins, `currentColor`.
-- Rendered at 16 px inline with text and 20 px in buttons and navigation.
-- Inline SVG through the existing `Icon.astro`. No icon font, no runtime package.
-- An icon accompanies a label. It does not replace one, except for the GitHub and LinkedIn marks, which carry an `aria-label`.
-- No emoji in headings, lists or badges.
+## A6. Motion
 
-## 8. Components
+- Tokens: `--dur-fast` 120 ms (hover, press), `--dur-base` 150 ms (colour and opacity changes), `--dur-explain` 250 ms (an explanatory figure step).
+- Interface motion changes colour and opacity only. Transforms are allowed in explanatory figures, and an animated figure has a visible pause control.
+- Nothing moves on scroll. No typing effects, looping decoration or parallax.
 
-- Button, primary: solid accent fill, white text, 8 px radius, 40 px high. One per view.
-- Button, secondary: 1 px `--border-strong`, text colour, transparent fill.
-- Link: accent colour, underlined in prose, underline on hover in navigation.
-- Tag: plain small text in a 4 px radius outline. A card shows at most five.
-- Status: a 6 px dot plus text ("Live", "Released", "Planned"). Colour never carries the status alone.
-- Project card: title, one sentence saying what it was built for and what it computes, up to three facts, tags, links. Image on top at a fixed aspect ratio where one exists.
-- Table: horizontal hairlines only, header row on `--bg-subtle`, numbers right aligned in mono, units in the header.
-- Callout: 1 px border with a 3 px accent rule on the left. No fill gradient.
-- Perry console: a terminal-style panel that stays dark in both colour modes. It carries its own five colours as local variables in `PerryConsole.astro`. Perry figures may tilt or hop once on hover or click, for 300 ms at most, and only when the visitor has not asked for reduced motion. This is the only place a transform is animated.
-- Code blocks: plain mono text on `--bg-subtle` with a 1 px border. No syntax colouring, so the same block reads in both colour modes.
+## A7. Colour roles
 
-## 9. README conventions (GitHub Markdown)
+Colours are named by role, not by hue: `--bg`, `--bg-subtle`, `--surface`, `--border`, `--border-strong`, `--text`, `--text-muted`, `--accent`, `--accent-hover`, `--accent-bg`, `--on-accent`, `--focus`. Each site sets these in its own token file for each colour mode it offers. Gradients are not used for page backgrounds, text or to encode a data value; they may appear only inside a figure that a project produced.
 
-Structure for a project README, adapted per repository. Sections that have nothing true to say are left out.
+## A8. Charts and scientific figures
+
+1. **Title and basis.** The title states the quantity. The subtitle states basis, case and unit, for example "Levelised cost of hydrogen, unified reference scenario, USD/kg H2".
+2. **Axes.** Every axis has a title with its unit in parentheses or after a comma, in SI or the domain unit (degC, bar, kmol/h, S$/t CO2e). Log axes show powers of ten (10<sup>-4</sup>), never "1e-4". Ticks at least 12 px. Bar charts start at zero. No dual y-axes; use two panels.
+3. **Legends.** Label lines directly where possible; otherwise the legend sits above the plot in series order. A series is never identified by colour alone: add line style or marker shape.
+4. **Caption.** A figure number and one sentence on what to read from the figure, then a source line naming the data file or commit (for example `results/simulations/baseline.json @ 70993a5`) and the model or engine version (for example `STRATO v1.0.1`).
+5. **Provenance marking.** Every figure and headline number says what kind of value it is:
+
+   | Kind | Meaning | Encoding |
+   | --- | --- | --- |
+   | Computed | produced by the project's code for the stated inputs | solid line |
+   | Precomputed | computed earlier and stored; shown without rerunning | solid line, "Precomputed" in the caption |
+   | Measured or literature | from an experiment or a publication | markers only, error bars where reported |
+   | Assumed or extrapolated | an input or a value outside the checked range | dashed line, labelled in the legend |
+   | Illustrative | explains a shape, not a result | grey with hatching and the word "Illustrative" |
+
+   Verification (code against code or against an exact solution) and validation (code against measurement) are named as such and are never placed in one chart without labels. A verification result is never described as validation.
+6. **Uncertainty.** A shaded band at 20% opacity or error bars, with the meaning stated (for example "Sobol 95% interval").
+7. **Colour.** Categorical series use the Okabe-Ito palette, tokens `--cvd-1` to `--cvd-7`. On light backgrounds blue, vermillion, bluish green and reddish purple may be lines; orange, sky blue and yellow fall below 3:1 on white and are fills with a darker outline only. Sequential data use cividis (viridis as an option); diverging data use a colour-blind-safe ColorBrewer scheme (PuOr or BrBG). Never rainbow or jet. A site's own semantic colours (AmCraX species and provenance, KASCO evidence labels) keep their meaning across that site.
+8. **Text alternative.** A chart has `role="img"` and an accessible name that states the finding, plus its data as a table (in a toggle or `<details>`) and a CSV download where the data is public. Chart text is real text, not raster.
+9. **Raster figures** from Python or Aspen Plus need text at least 12 px at the displayed size; otherwise crop or regenerate them. Generated figures come from scripts in the project repository and are never redrawn by hand.
+10. **Numbers in text** carry the same significant figures as their table, a space before the unit, and the case name next to any headline number.
+11. **Model-version label.** Any page that shows computed numbers states the model or engine version and the commit or release they came from.
+
+## A9. Tables
+
+- Horizontal hairlines only; the header row on `--bg-subtle`.
+- Numbers right aligned in tabular figures; units in the header, not in every cell.
+- A wide table scrolls sideways inside its own focusable, labelled box (`role="region"`, `tabindex="0"`, `aria-label`) and never widens the page.
+- Prose is not put in tables.
+
+## A10. Mathematics
+
+- Inline Unicode or HTML (`<sub>`, `<sup>`) for the occasional formula.
+- Typeset mathematics uses KaTeX, pre-rendered at build time where the stack allows, at `font-size: 1.1em`. Display equations are numbered on the right, in brackets, and referred to as "Equation (n)".
+- Symbols in italic, units and function names in roman type, a space between a value and its unit.
+
+## A11. Code blocks
+
+- Monospace text on `--bg-subtle` with a 1 px border and `--radius`. No syntax colouring, so a block reads in every colour mode.
+- Fences name their language. Commands are one per line and run as written from the repository root. Units go in comments.
+
+## A12. README conventions (GitHub Markdown)
+
+Structure for a project README, adapted per repository. Sections with nothing true to say are left out.
 
 1. `# Name: what it is` and one paragraph that states the problem, the method and the status.
 2. A figure or screenshot, or a link to the live app.
@@ -145,12 +140,11 @@ Markdown rules:
 - No decorative dividers, banner art, typing animations, visitor counters or stat cards. At most three badges (CI, release, licence) and only where they report something real.
 - Images use relative paths, an `alt` text that describes the content, and `width` no larger than 720. Light and dark variants use `<picture>` with `prefers-color-scheme`.
 - Equations use `$...$` and `$$...$$`. Units are written with the value, in SI unless the source uses another unit.
-- Code fences name their language. Commands are one per line and run as written from the repository root.
-- Tables are for parameters and results. Prose is not put in tables.
+- Tables are for parameters and results.
 - Development logs, tool evaluations and audit trails live under `docs/`, linked from the README.
-- British spelling (optimiser, licence as a noun, modelling), matching the existing text.
+- British spelling (optimiser, licence as a noun, modelling).
 
-## 10. Writing rules
+## A13. Writing rules
 
 Adapted from blader/humanizer, conorbronsdon/avoid-ai-writing, hardikpandya/stop-slop and AIScientists-Dev/academic-humanizer. The purpose is clarity. A rewrite never adds a fact, a number or a claim that the repository does not already support.
 
@@ -166,30 +160,122 @@ Adapted from blader/humanizer, conorbronsdon/avoid-ai-writing, hardikpandya/stop
 - First person is fine on the profile and the site. Project READMEs describe the software.
 - Keep the author's own sentences where they are already plain. Edit, do not regenerate.
 
-## 11. Canonical names
+Canonical names:
 
 | Short name | Full name | First-line context |
 | --- | --- | --- |
 | STRATO | Spherical TRISO Analysis and Transport Operations | fission-product diffusion in a TRISO coated fuel particle |
 | KASCO | Kalimantan SAF Supply Chain Optimiser | sustainable aviation fuel network planning tool |
 | NUS-H2 | Nuclear-upgraded steam methane reforming with carbon capture for low-carbon hydrogen in Singapore | process and techno-economic study with a browser simulator |
+| AmCraX | Ammonia cracking simulation and optimisation platform | Aspen Plus flowsheet with independent Python models and a browser simulator |
 
 Research interests, in this order and wording everywhere: nuclear engineering and energy systems; hydrogen and low-carbon technologies; chemical process modelling and simulation; techno-economic analysis; process safety and sustainability; scientific computing and numerical methods.
 
-## 12. Where the rules come from
+## How the five sites differ
 
-Values were read from each project's source on 2026-11-19. They were used as reference points. No code or component was copied.
+| | Portfolio | STRATO | NUS-H2 | AmCraX | KASCO |
+| --- | --- | --- | --- | --- | --- |
+| Default mode | light paper, follows the system setting; flat dark variant | follows the system; light and dark | light only | dark navy; light variant | dark only |
+| Typefaces | Newsreader headings, Inter text, JetBrains Mono | Literata, IBM Plex Sans and Mono, KaTeX | system fonts only | its own self-hosted faces | its own stack |
+| Accent | brick | slate blue; cividis for fields | violet | sky and orange | teal |
+| Density | low, reading | medium, tool with documents | high, data sheet | high, console | high, dashboard |
+
+---
+
+# Part B. Portfolio identity: "editorial notebook"
+
+A research notebook set like a well-made journal: warm paper, a serif voice for headings, Inter for reading and data, and each project shown by its own figure and a verified result. The home page is an index of real work, not a pitch.
+
+## B1. Colour
+
+Light is the default when the system asks for light or states no preference; the dark variant follows `prefers-color-scheme: dark`. The header button sets `data-theme` on `<html>` and the choice is remembered in the browser. Both modes are flat: there is no gradient and no texture.
+
+Contrast is the WCAG 2.x ratio computed from the hex codes (relative luminance), against the page background unless stated.
+
+| Token | Light | Ratio | Dark | Ratio | Use |
+| --- | --- | --- | --- | --- | --- |
+| `--bg` | `#f7f5f0` | | `#14130f` | | page |
+| `--bg-subtle` | `#efebe2` | | `#1a1915` | | table header, code, footer band |
+| `--surface` | `#ffffff` | | `#1d1c18` | | cards, menus |
+| `--border` | `#d9d4c8` | decorative | `#34312a` | decorative | hairlines |
+| `--border-strong` | `#8a8478` | 3.41 (3.72 on surface) | `#77715f` | 3.82 (3.50 on surface) | control edges |
+| `--text` | `#1b1a17` | 15.97 (17.40 on surface, 14.63 on subtle) | `#ece8df` | 15.20 (13.95 on surface, 14.39 on subtle) | body and headings |
+| `--text-muted` | `#5a564d` | 6.71 (7.31 on surface, 6.14 on subtle) | `#a8a296` | 7.32 (6.72 on surface, 6.93 on subtle) | captions, metadata |
+| `--accent` | `#a1301c` | 6.52 (7.11 on surface, 5.97 on subtle) | `#e8836a` | 6.98 (6.40 on surface, 6.61 on subtle) | links, current page, primary button |
+| `--accent-hover` | `#7d2414` | 9.03 | `#f2a691` | 9.42 | hover and active |
+| `--accent-bg` | `#f6e6e1` | accent on it 5.86 | `#3a2219` | accent on it 5.54 | selected filter |
+| `--on-accent` | `#ffffff` | 7.11 on accent | `#14130f` | 6.98 on accent | text on the primary button |
+| `--focus` | `#1f5fbf` | 5.59 (6.09 on surface) | `#8fb4ff` | 8.98 (8.23 on surface) | focus ring |
+| `--st-live` | `#2f6b3a` | 5.87 | `#86c08f` | 8.81 | status dot "live" |
+
+The focus ring is blue, not brick, so that it stays distinct from links and the current-page mark. Status dots always sit next to their word.
+
+## B2. Typography
+
+Scale ratio about 1.25, rem on a 16 px root.
+
+| Role | Face | Size | Line height | Notes |
+| --- | --- | --- | --- | --- |
+| Home statement | Newsreader 500 | clamp(2rem, 1.6rem + 1.8vw, 3rem) | 1.15 | one factual sentence; -0.01em |
+| Page title (h1) | Newsreader 500 | clamp(2rem, 1.7rem + 1.3vw, 2.625rem) | 1.15 | |
+| Section title (h2) | Newsreader 500 | clamp(1.5rem, 1.3rem + 0.8vw, 1.75rem) | 1.25 | |
+| Sub-section (h3) | Inter 600 | 1.125rem | 1.35 | |
+| Lead | Inter 400 | 1.1875rem | 1.55 | |
+| Body | Inter 400 | 1.0625rem | 1.65 | measure 68ch |
+| Small, caption | Inter 400 | 0.875rem | 1.5 | |
+| Meta label | Inter 500 | 0.8125rem | 1.4 | sentence case |
+| Data, code, units | JetBrains Mono 400 | 0.875em | inherit | tabular by construction |
+
+- Newsreader is used at 24 px and above only. Numbers stay in Inter (with `tabular-nums` in tables) or JetBrains Mono.
+- All three faces are self-hosted from Fontsource packages, latin and latin-ext subsets only, with metric-matched local fallbacks (`Newsreader fallback` from Georgia, `Inter fallback` from Arial, `JetBrains Mono fallback` from Consolas or Courier New). The repository measured a layout shift of 0.18 to 0.21 from font swap on the STRATO page before these fallbacks existed (`docs/MAINTAINING.md`).
+- Space Grotesk is retired.
+
+## B3. Layout
+
+- Container 1120 px. Case-study prose 68ch.
+- Home: statement, project rows, outputs ledger, contact. Section pages: page hero (breadcrumb, h1, lead), then content.
+
+## B4. Navigation
+
+Top bar, labelled "Primary", with two groups: **Work** (Projects, Research, Writing) and **Beyond the lab** (Community, Innovation), then About. On wide screens the groups are separated by a hairline and each carries its label for screen readers; in the phone menu the labels are visible. Current page: brick underline and `aria-current`. The colour-mode toggle and the GitHub and LinkedIn icons sit at the right. No command palette.
+
+## B5. Components
+
+- **Project row** (home): a figure from the project's own output, the name and one sentence on what it computes, a status dot with its word, one verified result with its unit and provenance label, and one link row (Case study, Live site, Code). Area tags are plain text separated by middle dots; technology tags are small outlined tags.
+- **Card** (one system): 1 px `--border`, `--radius`, `--surface` fill, no shadow, no hover lift. Padding 24 px (16 px on phones). The whole card is one link through its title; hover and focus change the border colour only.
+- **Outputs ledger**: one table of every project, document and note, with columns Date, Type, Title and Section, hairline rows, mono dates.
+- **Buttons**: one primary per view (accent fill, `--on-accent` text, 40 px high, 44 px on touch); secondary is an outline in `--border-strong`.
+- **Status**: a 6 px dot plus its word ("Live site", "Released", "Planned"). "Website coming soon" is plain muted text, never a button shape.
+- **Callout**: 1 px border with a 3 px accent rule on the left.
+- **Tables, code, maths, figures**: as in A8 to A11.
+- **Perry the Platypus** (owner's fan tribute, see `NOTICE.md`): appears twice on the site, small, once on About and once on the 404 page. No speech bubbles, no console, no motion.
+
+## B6. Interaction
+
+- Project filter on the Projects page: toggle buttons with `aria-pressed` and a polite status line that states how many projects match.
+- Case-study tabs (WAI-ARIA tabs), figure zoom, gallery and document viewer as before.
+- Transitions are colour and opacity over `--dur-base`; under reduced motion they are 0 ms.
+
+## B7. Icons
+
+- Lucide geometry: 24 px grid, 2 px stroke, round caps and joins, `currentColor`, inline SVG through `Icon.astro`.
+- 16 px inline with text, 20 px in buttons and navigation. An icon goes with a label, except the GitHub and LinkedIn marks, which carry an `aria-label`.
+- No emoji in headings, lists or badges.
+
+## B8. Where the rules come from
+
+Values were read from each project's source on 2026-11-19 and the Stage A design review of 2026-11-24. They were used as reference points. No code or component was copied.
 
 | Source | What was adopted |
 | --- | --- |
-| [shadcn/ui](https://github.com/shadcn-ui/ui) | Every radius derives from one base value; cards are a hairline border with almost no shadow; a short ladder of surfaces (page, subtle, card). |
-| [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) | 4 px spacing grid; 150 ms ease for transitions; shadows no stronger than the `sm` step. |
+| [shadcn/ui](https://github.com/shadcn-ui/ui) | Every radius derives from one base value; cards are a hairline border with almost no shadow; a short ladder of surfaces. |
+| [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) | 4 px spacing grid; 150 ms ease for transitions. |
 | [Tailwind Typography](https://github.com/tailwindlabs/tailwindcss-typography) | Prose measure near 65ch; more space above a heading than below it; tables with horizontal hairlines only. |
 | [Lucide](https://github.com/lucide-icons/lucide) | 24 px grid, 2 px stroke, `currentColor`, inline SVG with no runtime package. |
-| [Primer](https://github.com/primer/primitives) | Small radii for controls with 12 px reserved for large surfaces; near-invisible resting elevation; all motion gated on reduced-motion. |
-| [Radix Themes and Colors](https://github.com/radix-ui/themes) | Colour tokens named by role (background, border, solid, text); tracking tightens as type grows; ARIA patterns for tabs and disclosure. |
-| [github/markup](https://github.com/github/markup) and GitHub Docs | Which HTML survives in a README (`img width`, `picture`, `details`, `sub`), and that `style` and `class` are stripped. |
-| [Best-README-Template](https://github.com/othneildrew/Best-README-Template), [awesome-readme](https://github.com/matiassingers/awesome-readme) | Section order for a project README, trimmed to what a solo research code needs. |
-| [awesome-github-profile-readme](https://github.com/abhisheknaiidu/awesome-github-profile-readme) | A text-first profile: who, projects, tools, links. No stat cards or animations. |
-| [openmc](https://github.com/openmc-dev/openmc), [PyBaMM](https://github.com/pybamm-team/PyBaMM), [dolfinx](https://github.com/FEniCS/dolfinx) | Scientific READMEs stay short and point to fuller documents. |
-| [blader/humanizer](https://github.com/blader/humanizer), [conorbronsdon/avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing), [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop), [AIScientists-Dev/academic-humanizer](https://github.com/AIScientists-Dev/academic-humanizer) | The writing rules in section 10. They are used for clarity and for matching claims to evidence. They are not used to hide how a text was written. |
+| [Primer](https://github.com/primer/primitives) | Small radii for controls with 12 px reserved for large surfaces; all motion gated on reduced motion. |
+| [Radix Themes and Colors](https://github.com/radix-ui/themes) | Colour tokens named by role; ARIA patterns for tabs and disclosure. |
+| [github/markup](https://github.com/github/markup) and GitHub Docs | Which HTML survives in a README. |
+| [Okabe and Ito, "Color Universal Design"](https://jfly.uni-koeln.de/color/) | The categorical palette in A8. |
+| Our World in Data, Distill, OpenMC documentation | Chart titles with unit and basis, labelled controls with live values, numbered equations (A8, A10). |
+| maggieappleton.com, colah.github.io, gwern.net | A factual one-sentence home statement, figure-led project rows, metadata lines with honest status (Part B). |
+| [blader/humanizer](https://github.com/blader/humanizer), [conorbronsdon/avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing), [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop), [AIScientists-Dev/academic-humanizer](https://github.com/AIScientists-Dev/academic-humanizer) | The writing rules in A13. They are used for clarity and for matching claims to evidence. They are not used to hide how a text was written. |

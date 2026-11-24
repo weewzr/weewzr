@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+/* Shared core tokens (spacing, radii, motion, focus, type floors, categorical palette). docs/DESIGN_SYSTEM.md part A. */
+@import './tokens.core.css';
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/jetbrains-mono';
 
@@ -32,23 +34,10 @@
 
   --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
-  --radius-sm: 4px;
-  --radius: 8px;
-  --radius-lg: 12px;
+  /* Spacing, radii and durations come from tokens.core.css. */
   --maxw: 1120px;
   --nav-h: 64px;
-  --ease: 150ms ease;
-
-  /* Spacing scale in px: 4, 8, 12, 16, 24, 32, 48, 64, 96. */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4rem;
-  --space-9: 6rem;
+  --ease: var(--dur-base) var(--ease-standard);
 
   /* Type scale. */
   --fs-page-title: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
