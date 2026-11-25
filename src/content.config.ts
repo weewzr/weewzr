@@ -29,6 +29,46 @@ const milestone = z.object({
 });
 
 /**
+ * Calendar words and years that a phase roadmap must not contain: month names and four-digit years from
+ * 1900 to 2099. Version identifiers (v1.0.1, v2.0), phase numbers and numerical values are not matched.
+ */
+const DATE_PATTERN =
+  /\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\b|\b(19|20)\d{2}\b/;
+const dateFree = (what: string) =>
+  z.string().refine((s) => !DATE_PATTERN.test(s), { message: `${what} must not contain a month name or a year` });
+
+/**
+ * One phase of a phase-based roadmap (milestone cards). It has no date field on purpose: the roadmap reads by
+ * phase, status and milestone, and every text field is checked at build time to hold no month name or year.
+ * `status` is what the phase is today. Each milestone says what kind of evidence it is, so implemented,
+ * verified, documented, derived and deployed work stay distinct; there is no "validated" kind until a
+ * model-to-measurement comparison exists.
+ */
+const phase = z.object({
+  id: z.string(),
+  /** Short label above the title, for example "Phase 1" or "Web demonstration". */
+  label: dateFree('A phase label'),
+  title: dateFree('A phase title'),
+  /** Version identifiers, for example ["v1.0.0", "v1.0.1"]. */
+  versions: z.array(dateFree('A version')).default([]),
+  status: z.enum(['completed', 'in-progress', 'planned']),
+  /** What the phase covers: the scientific or computational capabilities. */
+  scope: dateFree('The scope'),
+  milestones: z
+    .array(
+      z.object({
+        kind: z.enum(['implemented', 'verified', 'documented', 'derived', 'decided', 'deployed']),
+        label: dateFree('A milestone'),
+      }),
+    )
+    .default([]),
+  /** Shown instead of the milestone list when a phase has none yet. */
+  noMilestones: dateFree('The empty-milestone note').optional(),
+  next: z.array(dateFree('A next step')).default([]),
+  links: z.array(z.object({ label: dateFree('A link label'), url: z.string().url() })).default([]),
+});
+
+/**
  * A document shown in the page viewer. Pages are pre-rendered WebP files named p-001.webp, p-002.webp, ...
  * inside `pageDir`. A document with `published: false` renders a neutral "held for review" card and none of
  * its files are referenced, so nothing has to exist under /public for it.
@@ -69,12 +109,25 @@ const projects = defineCollection({
     order: z.number().default(0),
     /** One or two sentences on where the project stands today. */
     statusNote: z.string().optional(),
-    /** Development roadmap, oldest first. */
+    /** Development roadmap, oldest first (dated timeline). Ignored when `phases` is given. */
     roadmap: z.array(milestone).default([]),
+    /**
+     * Phase-based roadmap without dates, shown as milestone cards instead of `roadmap`. When it is given,
+     * `statusNote` is checked for dates as well.
+     */
+    phases: z.array(phase).default([]),
     /** Screenshots and diagrams shown below the body. */
     figures: z.array(image).default([]),
     /** Facts a reader can check, each with the repository file or section it comes from. */
     sources: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
+  }).superRefine((d, ctx) => {
+    if (d.phases.length > 0 && d.statusNote && DATE_PATTERN.test(d.statusNote)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['statusNote'],
+        message: 'statusNote sits above a phase roadmap and must not contain a month name or a year',
+      });
+    }
   }),
 });
 

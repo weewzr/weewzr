@@ -11,6 +11,7 @@ import Icon from '../../components/Icon.astro';
 import ScrollTable from '../../components/ScrollTable.astro';
 import Figure from '../../components/case/Figure.astro';
 import Roadmap from '../../components/case/Roadmap.astro';
+import PhaseRoadmap from '../../components/case/PhaseRoadmap.astro';
 import SourceList from '../../components/case/SourceList.astro';
 import CaseProseStyles from '../../components/case/CaseProseStyles.astro';
 import { projects, caseStudyTabs, caseStudyPinned, site } from '../../data/site';
@@ -65,8 +66,10 @@ const srcset = full && small ? `${small} 640w, ${full} 1280w` : undefined;
 
 const statusNote = entry?.data.statusNote;
 const roadmap = entry?.data.roadmap ?? [];
+// A phase-based roadmap (milestone cards, no dates) replaces the dated timeline when the entry has one.
+const phases = entry?.data.phases ?? [];
 const figures = entry?.data.figures ?? [];
-const hasStatus = Boolean(statusNote) || roadmap.length > 0;
+const hasStatus = Boolean(statusNote) || roadmap.length > 0 || phases.length > 0;
 
 // Fallback source list so a page without an MDX entry still points at its repository (when it has one).
 const sources: { label: string; url: string }[] = entry?.data.sources?.length
@@ -230,7 +233,11 @@ const projectLd: Record<string, unknown> = {
         hasStatus && (
           <section class="extra glass" aria-labelledby="status-title">
             <h2 id="status-title">Development status and roadmap</h2>
-            <Roadmap items={roadmap} statusNote={statusNote} label="Development roadmap" />
+            {phases.length > 0 ? (
+              <PhaseRoadmap phases={phases} statusNote={statusNote} label="Development roadmap" />
+            ) : (
+              <Roadmap items={roadmap} statusNote={statusNote} label="Development roadmap" />
+            )}
           </section>
         )
       }

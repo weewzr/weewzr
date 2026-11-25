@@ -1,0 +1,313 @@
+---
+/**
+ * Phase-based development roadmap: one compact milestone card per phase, with no dates.
+ * Used by a project page when its front matter has `phases` (src/content.config.ts); the dated
+ * Roadmap/Timeline pair stays for the other projects.
+ * Each card shows, in this order: label and status, title, versions, scope, milestones (each with the kind of
+ * evidence it is) and next steps, then documentation links. The status is a word plus a shape, never colour alone.
+ * Props: phases, statusNote (optional), label (accessible name of the list).
+ */
+import type { CollectionEntry } from 'astro:content';
+
+type Phase = CollectionEntry<'projects'>['data']['phases'][number];
+
+interface Props {
+  phases: readonly Phase[];
+  statusNote?: string;
+  label?: string;
+}
+const { phases, statusNote, label = 'Development roadmap' } = Astro.props;
+
+const statusText: Record<Phase['status'], string> = {
+  completed: 'Completed',
+  'in-progress': 'In Progress',
+  planned: 'Planned',
+};
+const kindText: Record<Phase['milestones'][number]['kind'], string> = {
+  implemented: 'Implemented',
+  verified: 'Verified',
+  documented: 'Documented',
+  derived: 'Derived',
+  decided: 'Decided',
+  deployed: 'Deployed',
+};
+const count = (s: Phase['status']) => phases.filter((p) => p.status === s).length;
+const summary = `${phases.length} ${phases.length === 1 ? 'phase' : 'phases'}: ${count('completed')} completed, ${count('in-progress')} in progress, ${count('planned')} planned.`;
+---
+
+{statusNote && <p class="status-note">{statusNote}</p>}
+{
+  phases.length > 0 && (
+    <div class="pr">
+      <p class="pr-summary">{summary}</p>
+      <ol class="pr-list" aria-label={label}>
+        {phases.map((p) => (
+          <li class={`pr-card st-${p.status}`} aria-labelledby={`pr-${p.id}-title`}>
+            <div class="pr-head">
+              <p class="pr-label">{p.label}</p>
+              <p class={`pr-status st-${p.status}`}>
+                <span class="pr-mark" aria-hidden="true" />
+                <span class="sr-only">Status: </span>
+                {statusText[p.status]}
+              </p>
+            </div>
+            <h3 id={`pr-${p.id}-title`} class="pr-title">
+              {p.title}
+            </h3>
+            {p.versions.length > 0 && (
+              <ul class="pr-versions" aria-label="Versions">
+                {p.versions.map((v) => (
+                  <li>{v}</li>
+                ))}
+              </ul>
+            )}
+            <p class="pr-scope">
+              <span class="pr-k">Scope</span>
+              {p.scope}
+            </p>
+            <div class="pr-cols">
+              <div class="pr-col">
+                <p class="pr-k">Milestones</p>
+                {p.milestones.length > 0 ? (
+                  <ul class="pr-ms">
+                    {p.milestones.map((m) => (
+                      <li>
+                        <span class="pr-kind">{kindText[m.kind]}</span>
+                        <span class="pr-ms-text">{m.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="pr-none">{p.noMilestones ?? 'None yet.'}</p>
+                )}
+              </div>
+              <div class="pr-col">
+                <p class="pr-k">Next steps</p>
+                {p.next.length > 0 ? (
+                  <ul class="pr-next">
+                    {p.next.map((n) => (
+                      <li>{n}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="pr-none">None recorded.</p>
+                )}
+              </div>
+            </div>
+            {p.links.length > 0 && (
+              <ul class="pr-links" aria-label={`Documentation for ${p.title}`}>
+                {p.links.map((l) => (
+                  <li>
+                    <a href={l.url} target="_blank" rel="noopener noreferrer">
+                      {l.label}
+                      <span class="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
+<style>
+  .status-note {
+    margin: 0 0 var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .pr-summary {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .pr-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  /* The card system of the case pages: hairline border, a 3 px status edge on the left, white surface. */
+  .pr-card {
+    min-width: 0;
+    padding: var(--space-4);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .pr-card.st-completed {
+    border-left-color: var(--accent);
+  }
+  .pr-card.st-in-progress {
+    border-left-color: var(--cyan);
+  }
+  .pr-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+  }
+  .pr-label {
+    margin: 0;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+  .pr-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0 var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-label);
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .pr-status.st-completed {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+  }
+  .pr-status.st-in-progress {
+    border-color: var(--cyan);
+  }
+  .pr-status.st-planned {
+    background: var(--bg-subtle);
+  }
+  /* Shape carries the status together with the word: full, half, empty. */
+  .pr-mark {
+    flex: none;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 9999px;
+    border: 1.5px solid var(--border-strong);
+  }
+  .st-completed .pr-mark {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .st-in-progress .pr-mark {
+    border-color: var(--cyan);
+    background: linear-gradient(90deg, var(--cyan) 50%, transparent 50%);
+  }
+  .pr-title {
+    margin-top: var(--space-2);
+    font-size: var(--fs-card-title);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text);
+  }
+  .pr-versions {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-2) 0 0;
+    padding: 0;
+  }
+  .pr-versions li {
+    padding: 0 var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--text);
+    background: var(--bg-subtle);
+  }
+  .pr-k {
+    display: block;
+    margin: 0 0 var(--space-1);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .pr-scope {
+    margin-top: var(--space-3);
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .pr-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3) var(--space-5);
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+  }
+  @media (min-width: 900px) {
+    .pr-cols {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+  .pr-col {
+    min-width: 0;
+  }
+  .pr-ms,
+  .pr-next {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .pr-ms li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--border);
+  }
+  .pr-kind {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--text-muted);
+  }
+  .pr-next li {
+    position: relative;
+    padding-left: var(--space-4);
+  }
+  .pr-next li::before {
+    content: '';
+    position: absolute;
+    left: 0.25rem;
+    top: 0.7em;
+    width: 0.375rem;
+    height: 1px;
+    background: var(--border-strong);
+  }
+  .pr-none {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+  .pr-links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-4);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    font-size: var(--fs-small);
+  }
+  .pr-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+  }
+</style>

@@ -2,46 +2,132 @@
 title: "STRATO: Spherical TRISO Analysis and Transport Operations"
 summary: "A verified numerical model of fission-product diffusion out of a single TRISO fuel particle, solved two independent ways in its v1.0 release, which uses synthetic example parameters. Phase 2 (decay, generation, temperature-dependent diffusivity) exists as checked mathematics and pseudocode, with no Phase 2 code yet."
 order: 3
-statusNote: "The latest release is v1.0.1 (6 to 7 November 2026) and it is the only released code. Phase 2 has derivations, pseudocode and a literature data register in the repository, checked by scripts, and no Phase 2 Rust code has been written."
-roadmap:
+statusNote: "v1.0.1 is the latest tagged release and the only released solver code. The interactive web demonstration is live with web phases 1 to 5 and runs the verified v1.0 solver in the browser through WebAssembly. The Phase 2 physics (decay, generation and temperature-dependent diffusivity) is derived but not implemented, and nothing has been validated against measurements yet. A rebuild of the numerical method as a BTCS finite-difference solver in Rust is in progress."
+phases:
   - id: phase1
-    title: "Phase 1: multilayer diffusion model (v1.0)"
-    period: "Developed June to October 2026, released November 2026"
-    status: done
-    summary: "Constant temperature, constant diffusivity in each layer, initial inventory in the kernel. Solved by a finite-volume method and by an eigenfunction series."
-    items:
-      - date: "6 November 2026"
-        label: "v1.0.0"
-        detail: "The Phase 1 baseline was established as a clean project: finite-volume solver (Code B), eigenfunction series (Code C), command-line driver (Code A), tests, a verification example and CI. Source: CHANGELOG.md, release v1.0.0."
-      - date: "7 November 2026"
-        label: "v1.0.1, documentation release"
-        detail: "Adds the Full Mathematical Derivation, the Final Deliverable, four figures and the PDF workflow. No change to the code or to any numerical result. The GitHub release is dated 7 November; the changelog heading says 6 November."
+    label: "Phase 1"
+    title: "Multilayer diffusion model"
+    versions: ["v1.0.0", "v1.0.1"]
+    status: completed
+    scope: "Fission-product diffusion through the five layers of one TRISO particle (kernel, buffer, inner pyrolytic carbon, silicon carbide, outer pyrolytic carbon) at constant temperature, with a constant diffusivity in each layer and the whole initial inventory in the kernel. Solved two independent ways: a conservative finite-volume method and an exact eigenfunction series."
+    milestones:
+      - kind: implemented
+        label: "v1.0.0: finite-volume solver (Code B), eigenfunction series (Code C) and command-line driver (Code A), with unit, cross-method and regression tests, a verification example and CI."
+      - kind: verified
+        label: "On the synthetic five-layer case: spatial order 2.00 against the exact series, relative inventory balance residual at most 2.8 × 10⁻¹³, and the spatially extrapolated finite volume agrees with the series to 1.3 × 10⁻¹². Synthetic inputs, so this is numerical verification, not validation."
+      - kind: documented
+        label: "v1.0.1: the Full Mathematical Derivation, the Final Deliverable, four figures and the PDF workflow, with no change to the code or to any numerical result."
+    next:
+      - "Nothing remains within v1.0. Physical inputs and comparison with measured release data belong to the later phases below."
+    links:
+      - label: "Full Mathematical Derivation"
+        url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/v1.0.0/STRATO_Full_Mathematical_Derivation.md"
+      - label: "Final Deliverable"
+        url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/v1.0.0/STRATO_Final_Deliverable.md"
+      - label: "Verification output"
+        url: "https://github.com/weewzr/STRATO/blob/main/tests/golden/v1.0/verify_stdout.txt"
+      - label: "Release v1.0.1"
+        url: "https://github.com/weewzr/STRATO/releases/tag/v1.0.1"
+  - id: btcs-rebuild
+    label: "Numerical method"
+    title: "Rebuild as a BTCS finite-difference solver in Rust"
+    status: in-progress
+    scope: "The numerical method is being rebuilt as a spherical Backward Time, Centred Space (BTCS) finite-difference scheme for the same five layers, a tridiagonal linear system solved in Rust. The v1.0 finite-volume solver stays the released and verified code until the replacement passes its own verification checks."
+    noMilestones: "None finished yet. The BTCS solver is not released and is not yet verified, so nothing on this page counts it as done."
+    next:
+      - "Derive the five-layer BTCS system and its tridiagonal matrix."
+      - "Implement it in Rust and verify it against the exact eigenfunction series, with a convergence study and an inventory balance."
+      - "Retire the finite-volume solver only after the BTCS solver passes those checks."
+    links:
+      - label: "Project repository"
+        url: "https://github.com/weewzr/STRATO"
   - id: phase2-maths
-    title: "Phase 2 (v2.0): mathematics and pseudocode first"
-    period: "November 2026"
-    status: active
-    summary: "The development table in the README lists Phase 2 as in development, with mathematics and pseudocode before any code. The scope is radioactive decay, fission-product generation, inventory accounting, Arrhenius diffusivity and temperature histories."
-    items:
-      - date: "7 November 2026"
-        label: "Review package, derivations, pseudocode and parameter register committed"
-        detail: "docs/development/phase2_review_package.md, docs/mathematics/STRATO_Phase2_Derivations.md, docs/mathematics/STRATO_Phase2_Pseudocode.md and the register under data/."
-      - date: "13 November 2026"
-        label: "Open mathematics items worked on, PDFs added"
-        detail: "Items O4, O10, O11, O12, R2.4 and P2 were derived and checked, and PDFs of the Phase 2 derivation and pseudocode were added. No file under src/, tests/ or examples/ changed."
-      - label: "Owner decisions pending"
-        detail: "The review package lists decisions D1 to D16 that the owner must make before implementation. D15 and D16 are marked pending there, and the owner-choice column for D1 to D14 in prompt/PROGRESS.md reads PENDING."
+    label: "Phase 2"
+    title: "Decay, generation and temperature-dependent diffusivity: mathematics and design"
+    versions: ["v2.0"]
+    status: in-progress
+    scope: "First-order radioactive decay, a fission-product source in the kernel, an inventory account that includes decay, Arrhenius (temperature-dependent) diffusivity and temperature histories. The order is mathematics, then pseudocode, then a review, then code."
+    milestones:
+      - kind: derived
+        label: "Derivations, pseudocode and the Phase 2 review package. Its 17 Python section scripts check the algebra and the quoted numbers (251 passes, no failure line); they do not test any Rust code."
+      - kind: derived
+        label: "Open mathematics items O4, O10, O11, O12, R2.4 and P2 worked out and checked, with PDFs of the derivations and the pseudocode."
+      - kind: documented
+        label: "A literature parameter register under data/, which the v1.0 program does not read, and a list of the 25 modelling changes from v1.0 to v2.0."
+      - kind: decided
+        label: "Owner decisions D1 to D16 recorded, with implementation split into gate 2.1 (decay, source, inventory) and gate 2.2 (temperature-dependent diffusivity)."
+    next:
+      - "Settle the open sub-items of decision D5 (temperature-history format and reference temperature) before gate 2.2."
+      - "Resolve the open review items: the gas constant and decay treatment of the CRP-6 benchmark, the data gaps O1, O7, O8 and O9, and the missing stiff-regime staircase proof."
+    links:
+      - label: "Phase 2 review package"
+        url: "https://github.com/weewzr/STRATO/blob/main/docs/development/phase2_review_package.md"
+      - label: "Phase 2 derivations"
+        url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/STRATO_Phase2_Derivations.md"
+      - label: "Phase 2 pseudocode"
+        url: "https://github.com/weewzr/STRATO/blob/main/docs/mathematics/STRATO_Phase2_Pseudocode.md"
+      - label: "Changes from v1.0 to v2.0"
+        url: "https://github.com/weewzr/STRATO/blob/main/docs/development/v1_to_v2_changes.md"
   - id: phase2-code
-    title: "Phase 2 implementation"
-    status: upcoming
-    summary: "The review package states that implementation starts only after the decisions are made. The README plans publication of experimental comparison results for v2.0."
+    label: "Phase 2"
+    title: "Phase 2 physics in the Rust solver"
+    versions: ["v2.0"]
+    status: planned
+    scope: "Gate 2.1 adds decay, the kernel source and the inventory balance to the solver; gate 2.2 then adds temperature-dependent diffusivity. A mechanism is switched on in the web demonstration only after the solver implements it and it is verified."
+    noMilestones: "None yet. No Phase 2 Rust code has been written; the gate for 2.1 is open because its decisions are made."
+    next:
+      - "Implement and verify gate 2.1: decay, kernel source and inventory balance."
+      - "Then implement and verify gate 2.2: temperature-dependent diffusivity."
+    links:
+      - label: "Project progress record"
+        url: "https://github.com/weewzr/STRATO/blob/main/prompt/PROGRESS.md"
   - id: web-demo
+    label: "Web demonstration"
     title: "Interactive web demonstration"
-    status: upcoming
-    summary: "The repository holds an instruction package for an interactive web demo in prompt/. Its progress file lists build phases 0 to 8 as not started."
+    status: in-progress
+    scope: "A browser demonstration that shows the governing equation first and the live simulation directly under it. Every value it shows comes from the verified Rust solver compiled to WebAssembly, or from verified precomputed native output; no scientific equation is reimplemented in JavaScript or TypeScript."
+    milestones:
+      - kind: deployed
+        label: "Live with web phases 1 to 5: frontend foundation, staged equation builder, solver integration, particle visualisation and scientific graphs."
+      - kind: implemented
+        label: "Staged equation builder with a research status for each mechanism: five-layer diffusion VERIFIED; generation, decay and temperature-dependent diffusivity RESEARCHED, that is derived and not implemented."
+      - kind: implemented
+        label: "Particle cross-section (2D, with an optional 3D cutaway), radial profile, release fraction of both methods, inventory balance, comparison, verification and data views with downloads."
+      - kind: verified
+        label: "Browser against native output: 22 930 of 22 941 values bit-identical, largest relative difference 4.6 × 10⁻¹⁴."
+    next:
+      - "Research catalogue interface (web phase 5.5)."
+      - "Phase 2 physics in the demonstration (web phases 6.1 and 6.2), once the solver implements it."
+      - "Validation views (web phase 7), then polish (web phase 8)."
+    links:
+      - label: "Live demonstration"
+        url: "https://weewzr.github.io/STRATO/"
+      - label: "Web demonstration progress record"
+        url: "https://github.com/weewzr/STRATO/blob/main/prompt/PROGRESS.md"
+  - id: validation
+    label: "Validation"
+    title: "Comparison with measured release data"
+    status: planned
+    scope: "Comparison of model results with public release measurements, with AGR-1 release data as the public-validation objective the README names for v2.0. It is planned for after the Phase 2 physics is implemented and verified."
+    noMilestones: "None yet. Everything above is numerical verification: it shows that the code solves its equations, not that the equations and inputs match real particles."
+    next:
+      - "Start after gate 2.2 is implemented and verified."
+      - "Publish the experimental comparison results, which the README plans for v2.0."
+    links:
+      - label: "README: verification"
+        url: "https://github.com/weewzr/STRATO/blob/main/README.md#verification"
   - id: v3
-    title: "v3.0"
-    status: upcoming
-    summary: "The README lists partition coefficients, matrix transport, inverse modelling, uncertainty quantification and particle populations as planned, with no date."
+    label: "v3.0"
+    title: "Extended transport physics"
+    versions: ["v3.0"]
+    status: planned
+    scope: "Partition coefficients, matrix transport, inverse modelling, uncertainty quantification and particle populations."
+    noMilestones: "None yet. The README lists this scope as planned."
+    next:
+      - "Follows v2.0. The README gives the scope only."
+    links:
+      - label: "README: development status"
+        url: "https://github.com/weewzr/STRATO/blob/main/README.md#development-status"
 figures:
   - src: "projects/strato/triso-cross-section.webp"
     alt: "Cross-section of a TRISO particle drawn to scale: orange kernel, yellow buffer, blue inner pyrolytic carbon, green silicon carbide and pink outer pyrolytic carbon, with a radial axis below marking R1 to R5."
@@ -141,13 +227,13 @@ STRATO is a Rust library with a command-line program on top of it. The two solve
 | Documents | `docs/mathematics/`, `docs/development/` | Derivations, pseudocode, the Phase 2 review package and the provenance record. |
 | CI | `.github/workflows/ci.yml`, `docs-pdf.yml` | Format, lint, tests, verification and audit; PDF build of the documents. |
 
-The data flow in a run is: TOML input, validation, mesh and finite-volume time stepping, the exact series on the same input, the comparison and the refinement study, and then the CSV and SVG outputs (`timeseries.csv`, `final_profile.csv`, `comparison_fv_vs_analytical.csv`, `convergence_study.csv` and three SVG figures). There is no WebAssembly build and no front end yet. The repository holds an instruction package for an interactive web demonstration in `prompt/`, and its progress file records the build phases as not started.
+The data flow in a run is: TOML input, validation, mesh and finite-volume time stepping, the exact series on the same input, the comparison and the refinement study, and then the CSV and SVG outputs (`timeseries.csv`, `final_profile.csv`, `comparison_fv_vs_analytical.csv`, `convergence_study.csv` and three SVG figures). The interactive web demonstration is a separate front end in `web/`. It calls the same library through a WebAssembly wrapper in `crates/strato-wasm`, and its progress file in `prompt/` records web phases 1 to 5 as done.
 
 ## Approach
 
 The particle has five concentric spherical layers: kernel, buffer, inner pyrolytic carbon, silicon carbide and outer pyrolytic carbon. Each obeys spherical diffusion with its own diffusivity. The centre is a symmetry point, interfaces are in perfect contact so that concentration and flux are continuous, and the outer surface absorbs everything that arrives.
 
-The same problem is solved twice. The analytical solver is an exact multilayer Sturm-Liouville eigenfunction series. The finite-volume solver is a conservative scheme that tracks inventory, cumulative release and their balance throughout. Two written documents derive both methods. The Full Mathematical Derivation builds them one step at a time, and the Final Deliverable links each final equation to its pseudocode and to the Rust code with file and line references. Phase 1 was developed from June to October 2026 in earlier repositories and moved into this one as a clean project on 6 November 2026, and `docs/development/provenance.md` maps every file to its source.
+The same problem is solved twice. The analytical solver is an exact multilayer Sturm-Liouville eigenfunction series. The finite-volume solver is a conservative scheme that tracks inventory, cumulative release and their balance throughout. Two written documents derive both methods. The Full Mathematical Derivation builds them one step at a time, and the Final Deliverable links each final equation to its pseudocode and to the Rust code with file and line references. Phase 1 was developed in earlier repositories and moved into this one as a clean project, and `docs/development/provenance.md` maps every file to its source.
 
 Phase 2 follows a fixed order, which the changelog gives as mathematics, then pseudocode, then a review, then code. The change document lists 25 modelling changes from v1.0 to v2.0, and each is labelled implemented, derived but not implemented, or future.
 
@@ -239,7 +325,7 @@ Each doubling of the cell count divides the error by four, which is second-order
 - The model covers a single intact particle. Matrix transport, failed particles and particle populations are not modelled.
 - Backward Euler is first order in time, so the time step controls accuracy at early times.
 - Phase 2 exists as mathematics and pseudocode. No Phase 2 equation has been run in STRATO, and the review package lists unresolved items, among them the gas constant used by the CRP-6 benchmark participants and the convergence of the joined scheme.
-- There is no interactive demonstration and no website of its own. The Pages address of the repository shows the README only.
+- The interactive web demonstration runs the v1.0 physics only. Decay, generation and temperature-dependent diffusivity appear there as equations with the status RESEARCHED and are not computed.
 
 ## Technology
 
