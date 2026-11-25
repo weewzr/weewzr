@@ -1,0 +1,241 @@
+---
+/**
+ * The main Perry beside the home statement, with the hover speech bubble (owner's Easter egg).
+ * Restored from the PerryHero component and the shared bubble script that existed before the editorial redesign
+ * (commit ac8f9fd), adapted to the current layout: the artwork, its size and its place are unchanged; only the
+ * button and the bubble are added around it.
+ *
+ * Behaviour (src/data/site.ts, `mascot.messages`, holds the words):
+ *  - the first interaction shows messages[0]; each later one picks at random among the others and never repeats
+ *    the previous message;
+ *  - the message is chosen when the bubble opens and stays the same until it closes;
+ *  - mouse: shows on pointer enter, hides on leave; touch: a tap shows or dismisses; keyboard: shows on focus and on
+ *    Enter or Space, hides on Escape and on blur;
+ *  - the text is also written to a polite live region, so screen readers announce it;
+ *  - motion (fade, slight scale, slight tilt) only without prefers-reduced-motion.
+ * Without JavaScript the button does nothing and hover shows the first message from CSS.
+ * Position: from 720 px the bubble sits left of Perry at the height of the links row, where the copy column is
+ * empty; below 720 px Perry sits under the links and the bubble sits to his right, beside his head.
+ */
+import { mascot } from '../data/site';
+import PerryImage from './PerryImage.astro';
+
+const enabled = mascot.enabled;
+const messages = mascot.messages;
+---
+
+<figure class="perry-hero" data-perry-hero data-messages={enabled ? JSON.stringify(messages) : undefined}>
+  {
+    enabled ? (
+      <>
+        <button type="button" class="perry-hero__btn" aria-label={`${mascot.name}, ${mascot.alias}: show a message`} data-perry-btn>
+          <PerryImage slot="hero" loading="eager" />
+        </button>
+        <span class="perry-hero__bubble" aria-hidden="true" data-perry-bubble>
+          {messages[0]}
+        </span>
+        <span class="sr-only" role="status" aria-live="polite" data-perry-live />
+      </>
+    ) : (
+      <PerryImage slot="hero" loading="eager" />
+    )
+  }
+</figure>
+
+<style>
+  .perry-hero {
+    position: relative;
+    margin: 0;
+    width: clamp(150px, 17vw, 240px);
+  }
+  .perry-hero :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .perry-hero__btn {
+    appearance: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .perry-hero__btn:focus-visible {
+    outline: var(--focus-width) solid var(--focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  /* The bubble: site type and colours, a hairline border and a small tail pointing at Perry. */
+  .perry-hero__bubble {
+    position: absolute;
+    z-index: 2;
+    right: calc(100% + var(--space-3));
+    bottom: var(--space-1);
+    width: max-content;
+    max-width: 13rem;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    font-weight: 500;
+    line-height: 1.35;
+    box-shadow: var(--shadow-sm);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: 100% 50%;
+    transition:
+      opacity var(--ease),
+      visibility 0s linear var(--dur-base);
+  }
+  .perry-hero__bubble::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 5px);
+    right: -6px;
+    width: 10px;
+    height: 10px;
+    background: inherit;
+    border: 0 solid var(--border-strong);
+    border-width: 1px 1px 0 0;
+    transform: rotate(45deg);
+  }
+  /* Shown: by the script (.is-talking), or by hover alone while the script has not run. */
+  .perry-hero.is-talking .perry-hero__bubble,
+  .perry-hero:not([data-ready]):hover .perry-hero__bubble {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  @media (max-width: 719px) {
+    .perry-hero {
+      width: 132px;
+    }
+    .perry-hero__bubble {
+      right: auto;
+      bottom: auto;
+      left: calc(100% + var(--space-3));
+      top: 8%;
+      max-width: min(13rem, calc(100vw - 132px - 3.5rem));
+      transform-origin: 0 50%;
+    }
+    .perry-hero__bubble::after {
+      right: auto;
+      left: -6px;
+      border-width: 0 0 1px 1px;
+    }
+  }
+
+  /* Motion is opt-in: a short fade with a slight scale, and a very slight tilt of Perry while he talks. */
+  @media (prefers-reduced-motion: no-preference) {
+    .perry-hero__bubble {
+      transform: scale(0.96);
+      transition:
+        opacity var(--dur-explain) var(--ease-standard),
+        transform var(--dur-explain) var(--ease-standard),
+        visibility 0s linear var(--dur-explain);
+    }
+    .perry-hero.is-talking .perry-hero__bubble,
+    .perry-hero:not([data-ready]):hover .perry-hero__bubble {
+      transform: scale(1);
+    }
+    .perry-hero :global(img) {
+      transform-origin: 50% 100%;
+      transition: transform var(--dur-explain) var(--ease-standard);
+    }
+    .perry-hero.is-talking :global(img) {
+      transform: rotate(-2deg);
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-perry-hero][data-messages]');
+  const btn = root?.querySelector<HTMLButtonElement>('[data-perry-btn]');
+  const bubble = root?.querySelector<HTMLElement>('[data-perry-bubble]');
+  const live = root?.querySelector<HTMLElement>('[data-perry-live]');
+  if (root && btn && bubble && live) {
+    let messages: string[] = [];
+    try {
+      messages = JSON.parse(root.dataset.messages ?? '[]');
+    } catch {
+      messages = [];
+    }
+    let previous: string | null = null;
+    let open = false;
+    let lastPointer = '';
+    let liveTimer = 0;
+
+    // First interaction: the first message. Afterwards: random among the others, never the previous one.
+    const pick = (): string => {
+      if (previous === null) return messages[0];
+      const pool = messages.slice(1).filter((m) => m !== previous);
+      return pool[Math.floor(Math.random() * pool.length)] ?? messages[0];
+    };
+    const show = () => {
+      if (open || messages.length === 0) return; // one message per interaction
+      const message = pick();
+      previous = message;
+      open = true;
+      bubble.textContent = message;
+      root.classList.add('is-talking');
+      // Clear, then write, so a repeated text is announced again.
+      live.textContent = '';
+      window.clearTimeout(liveTimer);
+      liveTimer = window.setTimeout(() => {
+        live.textContent = message;
+      }, 50);
+    };
+    const hide = () => {
+      if (!open) return;
+      open = false;
+      root.classList.remove('is-talking');
+      window.clearTimeout(liveTimer);
+      live.textContent = '';
+    };
+
+    root.dataset.ready = '';
+    btn.addEventListener('pointerdown', (e) => {
+      lastPointer = e.pointerType;
+    });
+    btn.addEventListener('pointerenter', (e) => {
+      if (e.pointerType === 'mouse' || e.pointerType === 'pen') show();
+    });
+    btn.addEventListener('pointerleave', (e) => {
+      if ((e.pointerType === 'mouse' || e.pointerType === 'pen') && !btn.matches(':focus-visible')) hide();
+    });
+    btn.addEventListener('focus', () => {
+      if (btn.matches(':focus-visible')) show();
+    });
+    btn.addEventListener('blur', hide);
+    btn.addEventListener('click', () => {
+      const touch = lastPointer === 'touch';
+      lastPointer = '';
+      if (touch) {
+        if (open) hide();
+        else show();
+        return;
+      }
+      // Mouse click or Enter / Space: open if closed; an open bubble keeps its message.
+      if (!open) show();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') hide();
+    });
+    // A tap or click anywhere else closes the bubble.
+    document.addEventListener('pointerdown', (e) => {
+      if (open && !root.contains(e.target as Node)) hide();
+    });
+  }
+</script>

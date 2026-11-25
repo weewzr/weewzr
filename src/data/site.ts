@@ -434,9 +434,11 @@ export const noteCategories = [
 
 /**
  * Perry the Platypus belongs to Disney. These files are supplied by the site owner,
- * credited below and used as fan artwork. The site shows Perry beside the home statement (`hero`), in the Projects header (`projects`), on the footer edge of every page (`footer`), and small on the About page
- * (`research` asset) and once on the 404 page (`footer` asset). Set `enabled` to false to swap every
- * placement for the neutral silhouette placeholder.
+ * credited below and used as fan artwork. The site shows Perry beside the home statement (`hero`, with the hover
+ * speech bubble), on the footer edge of every page (`footer`, decorative), and small on the About page
+ * (`research` asset) and once on the 404 page (`footer` asset). The `projects` asset (crouching Perry) is not placed
+ * anywhere at present; it stays here so the placement can be restored. Set `enabled` to false to swap every
+ * placement for the neutral silhouette placeholder and switch the speech bubble off.
  */
 export const mascot = {
   enabled: true,
@@ -449,6 +451,19 @@ export const mascot = {
     research: { webp: 'mascot/perry-agent-head.webp', png: 'mascot/perry-agent-head.png', width: 418, height: 360 },
     footer: { webp: 'mascot/perry-walk.webp', png: 'mascot/perry-walk.png', width: 562, height: 420 },
   },
+  /**
+   * Speech-bubble messages of the home-page Perry (src/components/PerryHero.astro). The first one is always shown
+   * on a visitor's first interaction; later interactions pick at random among the others and never repeat the
+   * previous message. Edit the wording here; keep the first entry first.
+   */
+  messages: [
+    'Agent P is on the case!',
+    "Don't worry, the reactor is under control.",
+    'Trust me, I checked the mass balance.',
+    "You've discovered my secret agent!",
+    'Another day, another simulation.',
+    'This research is classified. Just kidding.',
+  ],
 } as const;
 
 /**
